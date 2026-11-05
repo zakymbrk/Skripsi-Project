@@ -92,6 +92,7 @@ $config['language']	= 'english';
 |
 */
 $config['charset'] = 'UTF-8';
+date_default_timezone_set('Asia/Jakarta');
 
 /*
 |--------------------------------------------------------------------------
@@ -138,7 +139,7 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = (file_exists(APPPATH . '../vendor/autoload.php')) ? APPPATH . '../vendor/autoload.php' : FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -326,7 +327,8 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/userguide3/libraries/encryption.html
 |
 */
-$config['encryption_key'] = '';
+$config['encryption_key'] = 'r4nd0m_K3y_SiPKL_2026_!8f7c2b1a9d6e';
+$config['google_maps_api_key'] = 'YOUR_GOOGLE_MAPS_API_KEY';
 
 /*
 |--------------------------------------------------------------------------
@@ -411,8 +413,8 @@ $config['sess_regenerate_destroy'] = FALSE;
 $config['cookie_prefix']	= '';
 $config['cookie_domain']	= '';
 $config['cookie_path']		= '/';
-$config['cookie_secure']	= FALSE;
-$config['cookie_httponly'] 	= FALSE;
+$config['cookie_secure']		= !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+$config['cookie_httponly'] 	= TRUE;
 $config['cookie_samesite'] 	= 'Lax';
 
 /*

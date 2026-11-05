@@ -105,6 +105,7 @@
                                     <option value="menunggu" <?php echo ($siswa->status_pengajuan == 'menunggu') ? 'selected' : ''; ?>>Menunggu</option>
                                     <option value="disetujui" <?php echo ($siswa->status_pengajuan == 'disetujui') ? 'selected' : ''; ?>>Disetujui</option>
                                     <option value="ditolak" <?php echo ($siswa->status_pengajuan == 'ditolak') ? 'selected' : ''; ?>>Ditolak</option>
+                                    <option value="selesai" <?php echo ($siswa->status_pengajuan == 'selesai') ? 'selected' : ''; ?>>Selesai PKL / Publikasikan Nilai</option>
                                 </select>
                             </td>
                         </tr>

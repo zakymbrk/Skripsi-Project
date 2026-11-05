@@ -110,13 +110,7 @@
                         <?php echo form_error('siswa_jurusan', '<small class="text-danger">', '</small>'); ?>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="siswa_asal_sekolah" class="form-label">Sekolah</label>
-                        <input type="text" class="form-control" id="siswa_asal_sekolah" name="siswa_asal_sekolah" 
-                               value="<?php echo set_value('siswa_asal_sekolah') ?>">
-                        <?php echo form_error('siswa_asal_sekolah', '<small class="text-danger">', '</small>'); ?>
-                    </div>
-                    
+
                     <div class="mb-3">
                         <label for="siswa_telepon" class="form-label">Telepon Siswa</label>
                         <input type="text" class="form-control" id="siswa_telepon" name="siswa_telepon" 
@@ -197,10 +191,11 @@
                     <div class="mb-3">
                         <label for="status_pengajuan" class="form-label">Status Pengajuan</label>
                         <select class="form-select" id="status_pengajuan" name="status_pengajuan">
-                            <option value="draft" <?php echo set_value('status_pengajuan') == 'draft' ? 'selected' : ''; ?>>Draft</option>
+                            <option value="draft" <?php echo set_value('status_pengajuan', 'draft') == 'draft' ? 'selected' : ''; ?>>Draft</option>
                             <option value="menunggu" <?php echo set_value('status_pengajuan') == 'menunggu' ? 'selected' : ''; ?>>Menunggu</option>
                             <option value="disetujui" <?php echo set_value('status_pengajuan') == 'disetujui' ? 'selected' : ''; ?>>Disetujui</option>
                             <option value="ditolak" <?php echo set_value('status_pengajuan') == 'ditolak' ? 'selected' : ''; ?>>Ditolak</option>
+                            <option value="selesai" <?php echo set_value('status_pengajuan') == 'selesai' ? 'selected' : ''; ?>>Selesai</option>
                         </select>
                         <?php echo form_error('status_pengajuan', '<small class="text-danger">', '</small>'); ?>
                     </div>

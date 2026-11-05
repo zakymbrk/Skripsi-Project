@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
     
     <style>
         /* CSS Version: 3.0 - Enhanced Menu */
@@ -33,16 +34,16 @@
         }
         
         .header-siswa {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #563b82;
             color: white;
-            padding: 15px 20px;
+                color: #563b82;
             position: sticky;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        .header-siswa .logo {
+                color: #563b82;
             font-size: 1.5rem;
             font-weight: 700;
             display: flex;
@@ -53,11 +54,11 @@
         .header-siswa .user-info {
             font-size: 0.9rem;
             margin-top: 5px;
-        }
-        
-        .header-siswa .school-info {
-            font-size: 0.75rem;
-            opacity: 0.9;
+                    gap: 10px;
+                    margin: 0;
+                    padding: 0;
+                    background: transparent;
+                    border-radius: 0;
             margin-top: 2px;
         }
         
@@ -68,7 +69,7 @@
         
         .card-mobile {
             background: white;
-            border-radius: 15px;
+            border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
@@ -77,43 +78,32 @@
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin: 25px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 20px;
+            gap: 12px;
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
         }
         
         .menu-item {
             text-align: center;
             padding: 25px 20px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            background: #fff;
+                    transform: none;
+                    border-color: #563b82;
             text-decoration: none;
-            color: #2c3e50;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #292633;
+            transition: background-color .15s ease, border-color .15s ease;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 140px;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
+            min-height: 112px;
+            border: 1px solid #e5e1eb;
         }
         
         .menu-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 20px;
+            content: none;
         }
         
         .menu-item:hover::before {
@@ -121,44 +111,44 @@
         }
         
         .menu-item:hover {
-            transform: translateY(-12px) scale(1.03);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
-            color: #667eea;
+            transform: none;
+            box-shadow: 0 1px 3px rgba(33, 27, 42, .05);
+            color: #563b82;
             text-decoration: none;
-            border-color: #667eea;
+            border-color: #563b82;
         }
         
         .menu-item:active {
-            transform: translateY(-5px) scale(0.98);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            background: linear-gradient(135deg, #f0f2ff 0%, #e6e9ff 100%);
+            transform: none;
+            box-shadow: 0 1px 3px rgba(33, 27, 42, .05);
+            background: #f0ebf7;
         }
         
         .menu-item i {
             font-size: 2.5rem;
-            color: #667eea;
+            color: #563b82;
             margin-bottom: 15px;
-            text-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
-            transition: all 0.3s ease;
+            text-shadow: none;
+            transition: color .15s ease;
         }
         
         .menu-item:hover i {
-            transform: scale(1.2) rotate(5deg);
-            color: #4a6cf7;
+            transform: none;
+            color: #432e67;
         }
         
         .menu-item span {
             font-size: 1rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: #292633;
             line-height: 1.4;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            text-shadow: none;
+            transition: color .15s ease;
         }
         
         .menu-item:hover span {
-            color: #667eea;
-            transform: translateY(-2px);
+            color: #563b82;
+            transform: none;
         }
         
         .menu-item span {
@@ -540,9 +530,223 @@
             background: #c1c1c1;
             border-radius: 3px;
         }
+
+        .student-app {
+            --student-purple: #563b82;
+            --student-purple-dark: #432e67;
+            --student-purple-soft: #f0ebf7;
+            --student-ink: #292633;
+            --student-muted: #716d79;
+            --student-line: #e5e1eb;
+            --student-canvas: #f5f4f7;
+            background: var(--student-canvas);
+            color: var(--student-ink);
+        }
+
+        .student-app .header-siswa {
+            background: var(--student-purple);
+            padding: 12px 20px;
+            box-shadow: 0 1px 4px rgba(37, 25, 56, .18);
+        }
+
+        .student-app .content-wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .student-app .card,
+        .student-app .card-mobile,
+        .student-app .info-card {
+            border: 1px solid var(--student-line) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 1px 3px rgba(33, 27, 42, .05) !important;
+        }
+
+        .student-app .card-header {
+            border-bottom: 1px solid var(--student-line) !important;
+        }
+
+        .student-app .btn-primary,
+        .student-app .bg-primary {
+            background-color: var(--student-purple) !important;
+            border-color: var(--student-purple) !important;
+        }
+
+        .student-app .btn-primary:hover,
+        .student-app .btn-primary:focus {
+            background-color: var(--student-purple-dark) !important;
+            border-color: var(--student-purple-dark) !important;
+        }
+
+        .student-app .bg-primary.bg-opacity-10 {
+            background-color: var(--student-purple-soft) !important;
+        }
+
+        .student-app .btn-outline-primary {
+            color: var(--student-purple) !important;
+            border-color: var(--student-purple) !important;
+        }
+
+        .student-app .btn-outline-primary:hover {
+            color: #fff !important;
+            background: var(--student-purple) !important;
+        }
+
+        .student-app .text-primary,
+        .student-app a:not(.btn):not(.dropdown-item) {
+            color: var(--student-purple) !important;
+        }
+
+        .student-app .form-control:focus,
+        .student-app .form-select:focus {
+            border-color: #8a72ad;
+            box-shadow: 0 0 0 .2rem rgba(86, 59, 130, .14);
+        }
+
+        .student-app .menu-grid {
+            gap: 12px;
+            margin: 0;
+            padding: 0;
+            background: transparent;
+        }
+
+        .student-app .menu-item,
+        .student-app .menu-item:hover,
+        .student-app .menu-item:active {
+            min-height: 112px;
+            padding: 18px 14px;
+            border: 1px solid var(--student-line) !important;
+            border-radius: 8px;
+            background: #fff !important;
+            box-shadow: 0 1px 3px rgba(33, 27, 42, .05);
+            color: var(--student-ink) !important;
+            transform: none;
+            animation: none;
+            overflow: visible;
+        }
+
+        .student-app .menu-item::before {
+            content: none;
+        }
+
+        .student-app .menu-item i {
+            color: var(--student-purple) !important;
+            font-size: 1.65rem;
+            margin-bottom: 10px;
+            text-shadow: none;
+            transform: none;
+        }
+
+        .student-app .menu-item span,
+        .student-app .menu-item:hover span {
+            color: var(--student-ink) !important;
+            font-size: .9rem;
+            font-weight: 600;
+            text-shadow: none;
+            transform: none;
+        }
+
+        .student-app .header-menu-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        .student-app .header-menu-icon:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .12);
+        }
+
+        .student-app .dropdown-menu-header {
+            border: 1px solid var(--student-line);
+            border-radius: 8px;
+            box-shadow: 0 8px 22px rgba(33, 27, 42, .12);
+        }
+
+        .student-app .dropdown-item-header i,
+        .student-app .dropdown-item-header:hover {
+            color: var(--student-purple) !important;
+        }
+
+        .student-app .student-icon {
+            display: inline-flex;
+            width: 24px;
+            height: 24px;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Material Symbols Rounded';
+            font-size: 22px;
+            font-weight: normal;
+            font-style: normal;
+            line-height: 1;
+            vertical-align: middle;
+            white-space: nowrap;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .student-app .content-wrapper .fas,
+        .student-app .content-wrapper .far,
+        .student-app .content-wrapper .fa-solid {
+            text-shadow: none;
+        }
+
+        .student-app .content-wrapper i[class*="fa-"]:not(.text-success):not(.text-danger):not(.text-warning):not(.text-white):not(.text-muted):not(.text-secondary):not(.text-info) {
+            color: var(--student-purple) !important;
+        }
+
+        .student-app .student-icon {
+            color: var(--student-purple);
+        }
+
+        .student-app .header-menu-icon .student-icon,
+        .student-app .profile-placeholder-header .material-symbols-rounded,
+        .student-app .back-btn .student-icon {
+            color: #fff;
+        }
+
+        .student-app .dropdown-item-header .student-icon {
+            color: var(--student-purple);
+        }
+
+        @media (max-width: 576px) {
+            .student-app .content-wrapper {
+                padding: 16px 12px;
+            }
+
+            .student-app .menu-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .student-app .menu-item,
+            .student-app .menu-item:hover {
+                min-height: 96px;
+                padding: 14px 8px;
+            }
+
+            .student-app .header-menu-right {
+                gap: 4px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .student-app *,
+            .student-app *::before,
+            .student-app *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
+        }
     </style>
 </head>
-<body>
+<body class="student-app">
     <!-- Header -->
     <div class="header-siswa">
         <?php 
@@ -558,7 +762,7 @@
         <div class="d-flex align-items-center">
             <?php if(uri_string() != 'siswa/view' && uri_string() != 'siswa/view/home'){ ?>
             <a href="<?php echo base_url('siswa/view') ?>" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
+                <span class="material-symbols-rounded student-icon" aria-hidden="true">arrow_back</span>
             </a>
             <?php } ?>
             <div class="d-flex align-items-center flex-grow-1">
@@ -569,7 +773,7 @@
                              class="profile-img-header">
                     <?php } else { ?>
                         <div class="profile-placeholder-header">
-                            <i class="fas fa-user"></i>
+                            <span class="material-symbols-rounded" aria-hidden="true">person</span>
                         </div>
                     <?php } ?>
                 </div>
@@ -588,18 +792,18 @@
             <div class="header-menu-right">
                 <!-- Profil -->
                 <a href="<?php echo base_url('siswa/view/profile') ?>" class="header-menu-icon" title="Profil">
-                    <i class="fas fa-user"></i>
+                    <span class="material-symbols-rounded student-icon" aria-hidden="true">person</span>
                 </a>
                 
                 <!-- Beranda -->
                 <a href="<?php echo base_url('siswa/view') ?>" class="header-menu-icon" title="Beranda">
-                    <i class="fas fa-home"></i>
+                    <span class="material-symbols-rounded student-icon" aria-hidden="true">home</span>
                 </a>
                 
                 <!-- Notifikasi -->
                 <div class="dropdown">
                     <a href="#" class="header-menu-icon dropdown-toggle" data-bs-toggle="dropdown" title="Notifikasi">
-                        <i class="fas fa-bell"></i>
+                        <span class="material-symbols-rounded student-icon" aria-hidden="true">notifications</span>
                         <?php if($notifikasi_count > 0){ ?>
                         <span class="notification-badge"><?php echo $notifikasi_count > 9 ? '9+' : $notifikasi_count; ?></span>
                         <?php } ?>
@@ -620,7 +824,7 @@
                             foreach($notif_pengumuman as $notif){ ?>
                             <li>
                                 <a class="dropdown-item dropdown-item-header" href="<?php echo base_url('siswa/view/detail-pengumuman/'.$notif->pengumuman_id) ?>">
-                                    <i class="fas fa-bullhorn"></i>
+                                    <span class="material-symbols-rounded student-icon" aria-hidden="true">campaign</span>
                                     <div>
                                         <div style="font-weight: 600;"><?php echo $notif->judul; ?></div>
                                         <small class="text-muted"><?php echo date('d M Y', strtotime($notif->created_at)); ?></small>
@@ -631,7 +835,7 @@
                         } else { ?>
                         <li>
                             <a class="dropdown-item dropdown-item-header" href="#">
-                                <i class="fas fa-check-circle"></i>
+                                <span class="material-symbols-rounded student-icon" aria-hidden="true">task_alt</span>
                                 <div>Tidak ada notifikasi baru</div>
                             </a>
                         </li>
@@ -644,27 +848,39 @@
                 <!-- Menu Lainnya -->
                 <div class="dropdown">
                     <a href="#" class="header-menu-icon dropdown-toggle" data-bs-toggle="dropdown" title="Menu">
-                        <i class="fas fa-ellipsis-v"></i>
+                        <span class="material-symbols-rounded student-icon" aria-hidden="true">more_vert</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-header">
                         <li>
                             <a class="dropdown-item dropdown-item-header" href="<?php echo base_url('siswa/view/profile') ?>">
-                                <i class="fas fa-user"></i>
+                                <span class="material-symbols-rounded student-icon" aria-hidden="true">person</span>
                                 <div>Profil</div>
                             </a>
                         </li>
 
                         <li>
                             <a class="dropdown-item dropdown-item-header" href="<?php echo base_url('siswa/view') ?>">
-                                <i class="fas fa-home"></i>
+                                <span class="material-symbols-rounded student-icon" aria-hidden="true">home</span>
                                 <div>Beranda</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item dropdown-item-header" href="<?php echo base_url('siswa/view/presensi') ?>">
+                                <span class="material-symbols-rounded student-icon" aria-hidden="true">event_available</span>
+                                <div>Presensi PKL</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item dropdown-item-header" href="<?php echo base_url('siswa/view/logbook') ?>">
+                                <span class="material-symbols-rounded student-icon" aria-hidden="true">menu_book</span>
+                                <div>Logbook PKL</div>
                             </a>
                         </li>
 
 
                         <li>
                             <a class="dropdown-item dropdown-item-header" href="<?php echo base_url('siswa/view/kontak-pembimbing') ?>">
-                                <i class="fas fa-address-book"></i>
+                                <span class="material-symbols-rounded student-icon" aria-hidden="true">contact_page</span>
                                 <div>Kontak Pembimbing</div>
                             </a>
                         </li>
@@ -672,14 +888,14 @@
 
                         <li>
                             <a class="dropdown-item dropdown-item-header" href="<?php echo base_url('siswa/view/change-password') ?>">
-                                <i class="fas fa-key"></i>
+                                <span class="material-symbols-rounded student-icon" aria-hidden="true">key</span>
                                 <div>Ubah Password</div>
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item dropdown-item-header text-danger" href="<?php echo base_url('auth/logout') ?>" onclick="return confirm('Yakin ingin logout?')">
-                                <i class="fas fa-sign-out-alt"></i>
+                                <span class="material-symbols-rounded student-icon" aria-hidden="true">logout</span>
                                 <div>Logout</div>
                             </a>
                         </li>
@@ -707,6 +923,87 @@
             });
         }, 5000);
     </script>
+    <?php
+    $tracking_userdata = $this->session->userdata('userdata');
+    $tracking_siswa = null;
+    $tracking_presensi = null;
+    if ($tracking_userdata && isset($tracking_userdata['id'])) {
+        $this->db->where('user_id', $tracking_userdata['id']);
+        $tracking_siswa = $this->db->get('tb_siswa')->row();
+        if ($tracking_siswa && $tracking_siswa->status_pengajuan === 'disetujui') {
+            $tracking_presensi = $this->db
+                ->where('siswa_id', $tracking_siswa->siswa_id)
+                ->where('tanggal', date('Y-m-d'))
+                ->where('jam_masuk IS NOT NULL', null, false)
+                ->where('jam_pulang IS NULL', null, false)
+                ->where('status_validasi', 'valid')
+                ->get('tb_presensi')->row();
+        }
+    }
+    ?>
+    <?php if ($tracking_presensi || $content === 'siswa/logbook'): ?>
+    <script>
+    (function () {
+        var endpoint = '<?php echo base_url('siswa/update_lokasi_realtime'); ?>';
+        var logbookForm = document.getElementById('form-logbook');
+        var trackingEnabled = <?php echo $tracking_presensi ? 'true' : 'false'; ?>;
+        var trackingWatchId = null;
+        var invalidAttendanceNoticeShown = false;
+
+        function sendLocation(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            if (logbookForm) {
+                document.getElementById('logbook-latitude').value = latitude;
+                document.getElementById('logbook-longitude').value = longitude;
+            }
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json'},
+                credentials: 'same-origin',
+                body: 'latitude=' + encodeURIComponent(latitude) + '&longitude=' + encodeURIComponent(longitude)
+            }).then(function (response) {
+                return response.json();
+            }).then(function (result) {
+                if (result.attendance_invalid) {
+                    trackingEnabled = false;
+                    if (trackingWatchId !== null && navigator.geolocation) {
+                        navigator.geolocation.clearWatch(trackingWatchId);
+                        trackingWatchId = null;
+                    }
+                    if (!invalidAttendanceNoticeShown) {
+                        invalidAttendanceNoticeShown = true;
+                        window.alert(result.message || 'Presensi tidak sah. Hubungi guru pembimbing untuk klarifikasi.');
+                    }
+                }
+            }).catch(function () {});
+        }
+
+        if (trackingEnabled && navigator.geolocation) {
+            trackingWatchId = navigator.geolocation.watchPosition(sendLocation, function () {}, {enableHighAccuracy: true, maximumAge: 15000, timeout: 15000});
+        }
+
+        if (logbookForm) {
+            logbookForm.addEventListener('submit', function (event) {
+                if (logbookForm.dataset.locationReady === '1') return;
+                event.preventDefault();
+                if (!navigator.geolocation) {
+                    window.alert('Browser tidak mendukung GPS.');
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    document.getElementById('logbook-latitude').value = position.coords.latitude;
+                    document.getElementById('logbook-longitude').value = position.coords.longitude;
+                    logbookForm.dataset.locationReady = '1';
+                    logbookForm.submit();
+                }, function () {
+                    window.alert('Lokasi tidak dapat diambil. Izinkan akses GPS lalu coba lagi.');
+                }, {enableHighAccuracy: true, maximumAge: 0, timeout: 15000});
+            });
+        }
+    })();
+    </script>
+    <?php endif; ?>
 </body>
 </html>
 

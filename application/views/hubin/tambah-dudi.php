@@ -28,6 +28,37 @@
     </div>
 <?php } ?>
 
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h6 class="mb-1 fw-bold"><i class="fas fa-file-import me-2 text-success"></i>Import DUDI (CSV / Excel)</h6>
+                <small class="text-muted">Jika Anda ingin mengimport banyak data sekaligus.</small>
+            </div>
+            <div>
+                <a href="<?php echo base_url('uploads/imports'); ?>" class="btn btn-outline-success btn-sm me-2" target="_blank">
+                    <i class="fas fa-folder-open me-1"></i>Folder Import
+                </a>
+            </div>
+        </div>
+
+        <form action="<?php echo site_url('hubin/import_dudi') ?>" method="post" enctype="multipart/form-data" class="mt-3">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label for="dudi_file" class="form-label small fw-semibold">Pilih File</label>
+                    <input type="file" class="form-control" id="dudi_file" name="dudi_file" accept=".csv,.xlsx,.xls" required>
+                    <div class="form-text">Format header: Nama DUDI, Alamat, Telepon, Email, Penanggung Jawab (PIC), NIP PIC, Instruktur, NIP Instruktur, Status Mitra, Latitude, Longitude, Radius Toleransi (Meter)</div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-upload me-2"></i>Import DUDI
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Card -->
 <div class="card fade-in">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -106,6 +137,39 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Konfigurasi Geolocation & Radius Presensi (Rule-Based Validation) -->
+            <div class="card bg-light border-0 rounded-4 p-4 mt-3 mb-2">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <h6 class="fw-bold text-dark mb-0"><i class="fas fa-map-marked-alt text-primary me-2"></i>Konfigurasi Titik Lokasi & Radius Presensi (GPS)</h6>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="btn-get-location">
+                        <i class="fas fa-location-crosshairs me-1"></i>Ambil Lokasi Saat Ini
+                    </button>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="latitude" class="form-label small fw-semibold">Latitude DUDI</label>
+                        <input type="text" class="form-control form-control-sm" id="latitude" name="latitude" 
+                               value="<?php echo set_value('latitude') ?>" placeholder="Contoh: -7.032145">
+                        <div class="form-text text-muted" style="font-size: 0.75rem;">Titik lintang lokasi kantor DUDI. Bisa diambil otomatis atau diisi manual.</div>
+                        <?php echo form_error('latitude', '<small class="text-danger">', '</small>'); ?>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="longitude" class="form-label small fw-semibold">Longitude DUDI</label>
+                        <input type="text" class="form-control form-control-sm" id="longitude" name="longitude" 
+                               value="<?php echo set_value('longitude') ?>" placeholder="Contoh: 107.712345">
+                        <div class="form-text text-muted" style="font-size: 0.75rem;">Titik bujur lokasi kantor DUDI. Bisa diambil otomatis atau diisi manual.</div>
+                        <?php echo form_error('longitude', '<small class="text-danger">', '</small>'); ?>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="radius" class="form-label small fw-semibold">Radius Toleransi (Meter) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control form-control-sm" id="radius" name="radius" 
+                               value="<?php echo set_value('radius', 100) ?>" min="10" max="5000" required>
+                        <div class="form-text text-muted" style="font-size: 0.75rem;">Batas jarak maksimal presensi (default: 100 meter).</div>
+                        <?php echo form_error('radius', '<small class="text-danger">', '</small>'); ?>
+                    </div>
+                </div>
+            </div>
             
             <hr>
             
@@ -120,3 +184,42 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnGetLocation = document.getElementById('btn-get-location');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+
+        if (btnGetLocation) {
+            btnGetLocation.addEventListener('click', function () {
+                if (!navigator.geolocation) {
+                    alert('Browser Anda tidak mendukung fitur geolocation. Silakan isi Latitude dan Longitude secara manual.');
+                    return;
+                }
+
+                btnGetLocation.disabled = true;
+                btnGetLocation.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Mengambil Lokasi...';
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    latitudeInput.value = lat.toFixed(8);
+                    longitudeInput.value = lng.toFixed(8);
+
+                    btnGetLocation.disabled = false;
+                    btnGetLocation.innerHTML = '<i class="fas fa-location-crosshairs me-1"></i>Ambil Lokasi Saat Ini';
+                }, function () {
+                    btnGetLocation.disabled = false;
+                    btnGetLocation.innerHTML = '<i class="fas fa-location-crosshairs me-1"></i>Ambil Lokasi Saat Ini';
+                    alert('Gagal mengambil lokasi browser. Silakan isi Latitude dan Longitude secara manual.');
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 20000,
+                    maximumAge: 0
+                });
+            });
+        }
+    });
+</script>

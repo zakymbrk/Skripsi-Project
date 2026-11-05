@@ -63,6 +63,7 @@ $route['hubin/view/dudi'] = 'hubin/view/data-dudi';
 $route['default_controller'] = 'home';
 $route['login/siswa'] = 'auth/login_siswa';
 $route['login/hubin'] = 'auth/login_hubin';
+$route['login/pembimbing'] = 'auth/login_pembimbing';
 $route['404_override'] = 'home/show_404';
 $route['translate_uri_dashes'] = FALSE;
 $route['siswa/peta/osm'] = 'siswa/peta_openstreetmap';

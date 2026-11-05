@@ -1,4 +1,9 @@
 RewriteEngine On
+
+<FilesMatch "(\.sql|\.env|\.log|composer\.(json|lock)|set_default_passwords\.php)$">
+	Require all denied
+</FilesMatch>
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L]

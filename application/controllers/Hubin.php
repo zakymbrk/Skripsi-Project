@@ -16,16 +16,64 @@ class Hubin extends CI_Controller {
         $this->load->driver('cache');
     }
 
+    private function normalize_pkl_start_date($tanggal_mulai)
+    {
+        if (empty($tanggal_mulai)) {
+            return date('Y-m-d');
+        }
+
+        $date = DateTime::createFromFormat('Y-m-d', $tanggal_mulai);
+        if (!$date || $date->format('Y-m-d') !== $tanggal_mulai) {
+            return date('Y-m-d');
+        }
+
+        $today = new DateTime('today');
+        $start = new DateTime($tanggal_mulai);
+        if ($start > $today && $start->diff($today)->days <= 30) {
+            return $tanggal_mulai;
+        }
+        if ($start > $today->modify('+30 days')) {
+            return $today->format('Y-m-d');
+        }
+
+        return $tanggal_mulai;
+    }
+
+    private function get_pkl_period_data($siswa)
+    {
+        $tanggal_mulai = $this->normalize_pkl_start_date(!empty($siswa->tanggal_mulai) ? $siswa->tanggal_mulai : date('Y-m-d'));
+        $tanggal_selesai = !empty($siswa->tanggal_selesai) ? $siswa->tanggal_selesai : date('Y-m-d', strtotime($tanggal_mulai . ' +3 months -1 day'));
+
+        $start_dt = DateTime::createFromFormat('Y-m-d', $tanggal_mulai);
+        $end_dt = DateTime::createFromFormat('Y-m-d', $tanggal_selesai);
+        if (!$start_dt || !$end_dt || $end_dt < $start_dt) {
+            $tanggal_mulai = date('Y-m-d');
+            $tanggal_selesai = date('Y-m-d', strtotime($tanggal_mulai . ' +3 months -1 day'));
+        }
+
+        $diff_days = $start_dt ? $start_dt->diff($end_dt ?: new DateTime($tanggal_mulai))->days : 90;
+        if ($diff_days < 60 || $diff_days > 150) {
+            $tanggal_selesai = date('Y-m-d', strtotime($tanggal_mulai . ' +3 months -1 day'));
+        }
+
+        return array(
+            'tanggal_mulai' => $tanggal_mulai,
+            'tanggal_selesai' => $tanggal_selesai,
+            'lama_pelaksanaan' => 90,
+            'periode' => date('Y', strtotime($tanggal_mulai)) . '/' . (date('Y', strtotime($tanggal_mulai)) + 1)
+        );
+    }
+
     // Method to download import template
     public function download_template()
     {
-        $template_type = $this->input->get('type') ? $this->input->get('type') : 'csv';
+        $template_type = $this->input->get('type') ? $this->input->get('type') : 'excel';
         
-        if($template_type == 'excel') {
-            // Generate Excel template
-            $this->generate_excel_template();
+        if($template_type == 'pembimbing') {
+            redirect('export_excel/export_data_pembimbing_template');
+        } elseif($template_type == 'excel') {
+            redirect('export_excel/export_data_siswa_template');
         } else {
-            // Generate CSV template
             $this->generate_csv_template();
         }
     }
@@ -33,10 +81,24 @@ class Hubin extends CI_Controller {
     private function generate_csv_template()
     {
         $template_data = [
-            ['Username', 'Nama Lengkap', 'Password', 'NIS', 'NISN', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir (YYYY-MM-DD)', 'Kelas', 'Jurusan', 'Telepon', 'Alamat', 'Email', 'Periode', 'Tanggal Mulai (YYYY-MM-DD)', 'Tanggal Selesai (YYYY-MM-DD)', 'Nama DUDI', 'Status Pengajuan'],
-            ['siswa001', 'Andi Setiawan', 'password123', '1234567890', '0987654321', 'L', 'Jakarta', '2005-01-15', 'XI RPL 1', 'Rekayasa Perangkat Lunak', '08123456789', 'Jl. Contoh No. 1', 'andi@example.com', '2026/2027', '2024-06-01', '2024-08-30', 'PT Contoh Perusahaan', 'menunggu'],
-            ['siswa002', 'Budi Santoso', 'password123', '1234567891', '0987654322', 'L', 'Bandung', '2005-03-20', 'XI TKJ 1', 'Teknik Komputer dan Jaringan', '08123456790', 'Jl. Contoh No. 2', 'budi@example.com', '2026/2027', '2024-06-01', '2024-08-30', 'PT Teknologi Indonesia', 'menunggu'],
-            ['siswa003', 'Citra Dewi', 'password123', '1234567892', '0987654323', 'P', 'Semarang', '2005-05-10', 'XI MM 1', 'Multimedia', '08123456791', 'Jl. Contoh No. 3', 'citra@example.com', '2026/2027', '2024-06-01', '2024-08-30', 'PT Media Kreatif', 'menunggu']
+            [
+                'Nama Siswa', 'NIS', 'NISN', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir',
+                'Kelas', 'Jurusan', 'Sekolah', 'Telepon Siswa', 'Username', 'Password',
+                'Email', 'Alamat Lengkap', 'Perusahaan (DUDI)', 'Tanggal Mulai PKL',
+                'Tanggal Selesai PKL', 'Lama Pelaksanaan (hari)', 'Status Pengajuan', 'Periode PKL'
+            ],
+            [
+                'Andi Setiawan', '1234567890', '0987654321', 'L', 'Bandung', '2006-05-15',
+                'XI TKJ 1', 'Teknik Komputer dan Jaringan', 'SMK ITIKURIH HIBARNA', '081234567890',
+                'andi_tkj', 'password123', 'andi@example.com', 'Jl. Raya Laswi No. 12, Ciparay',
+                'PT. Telekomunikasi Indonesia', '2026-07-01', '2026-09-30', '90', 'disetujui', '2026/2027'
+            ],
+            [
+                'Budi Santoso', '1234567891', '0987654322', 'L', 'Bandung', '2006-03-20',
+                'XI RPL 1', 'Rekayasa Perangkat Lunak', 'SMK ITIKURIH HIBARNA', '081234567891',
+                'budi_rpl', 'password123', 'budi@example.com', 'Jl. Contoh No. 2, Ciparay',
+                'PT Teknologi Indonesia', '2026-07-01', '2026-09-30', '90', 'disetujui', '2026/2027'
+            ]
         ];
         
         $filename = 'template_import_siswa_' . date('Y-m-d') . '.csv';
@@ -61,7 +123,12 @@ class Hubin extends CI_Controller {
     private function generate_excel_template()
     {
         // Load PhpSpreadsheet library
-        require_once FCPATH . 'vendor/autoload.php';
+        if (!class_exists('\\PhpOffice\\PhpSpreadsheet\\Spreadsheet')) {
+            $autoload_path = FCPATH . 'vendor/autoload.php';
+            if (file_exists($autoload_path)) {
+                require_once $autoload_path;
+            }
+        }
         
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -238,14 +305,14 @@ class Hubin extends CI_Controller {
                 $this->db->where('s.siswa_id', $siswa_id);
                 $siswa = $this->db->get()->row();
                 
-                // Generate QR code after student data is fetched
-                $data['qr_code_url'] = $this->qr_generator->generate_qr_code(
-                    'https://smk.itikurih-hibarna.sch.id/?page_id=140&id=' . $siswa->siswa_id . 
-                    '&nama=' . urlencode($siswa->siswa_nama) . '&kelas=' . urlencode($siswa->siswa_kelas),
-                    160, 'M', 2
-                );
-                
                 if($siswa){
+                    // Generate QR code only after confirming student data exists
+                    $data['qr_code_url'] = $this->qr_generator->generate_qr_code(
+                        'https://smk.itikurih-hibarna.sch.id/?page_id=140&id=' . $siswa->siswa_id . 
+                        '&nama=' . urlencode($siswa->siswa_nama) . '&kelas=' . urlencode($siswa->siswa_kelas),
+                        160, 'M', 2
+                    );
+                    
                     // Pre-process data for faster view rendering
                     $siswa->foto_profil_url = null;
                     if($siswa->user_id && $siswa->foto_profil && file_exists('./uploads/profil/'.$siswa->foto_profil)){
@@ -459,7 +526,7 @@ class Hubin extends CI_Controller {
             $data['offset'] = $offset;
         }
         
-        // Load student data for daftar-siswa page (only for level 2 - siswa)
+        // Load student data for daftar-siswa page (only for level 3 - siswa)
         if($page == 'daftar-siswa'){
             $this->load->model('M_user');
             
@@ -476,7 +543,7 @@ class Hubin extends CI_Controller {
             $this->db->join('tb_group g', 'g.group_id = u.level');
             $this->db->join('tb_siswa s', 's.user_id = u.id', 'left');
             $this->db->join('tb_dudi d', 'd.dudi_id = s.dudi_id', 'left');
-            $this->db->where('u.level', 2); // Only Siswa
+            $this->db->where('u.level', 3); // Only Siswa
             $this->db->where('u.id !=', $userdata['id']); // Exclude current user
             if ($search) {
                 $this->db->group_start();
@@ -491,7 +558,7 @@ class Hubin extends CI_Controller {
             $data['getuser'] = $this->db->get();
             
             // Set total_rows to actual count but no pagination
-            $this->db->where('level', 2); // Only Siswa
+            $this->db->where('level', 3); // Only Siswa
             $this->db->where('id !=', $userdata['id']); // Exclude current user
             if ($search) {
                 $this->db->group_start();
@@ -628,6 +695,12 @@ class Hubin extends CI_Controller {
     function tambah_user()
     {
         $status = true;
+        $this->load->model('M_user');
+
+        if ($this->input->post('nip_nim') !== null && $this->input->post('nip_nim') !== '') {
+            $_POST['nip_nim'] = $this->M_user->normalize_identifier_value($this->input->post('nip_nim'));
+        }
+
         $this->form_validation->set_rules('username', 'Username', 'required|alpha_numeric|is_unique[tb_user.username]');
         $this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'required');
         $this->form_validation->set_rules('password', 'Password', 'required');
@@ -647,7 +720,6 @@ class Hubin extends CI_Controller {
         }
 
         if($status){
-            $this->load->model('M_user');
             $password_plain = $this->input->post('password');
             $hash = password_hash($password_plain, PASSWORD_DEFAULT);
             $code = $this->M_user->generateRandomString(30);
@@ -686,8 +758,8 @@ class Hubin extends CI_Controller {
             // Get the inserted user ID
             $user_id = $this->db->insert_id();
             
-            // Jika level siswa (2), auto-create basic student data
-            if(2 == 2){ // Always create student data for tambah_siswa
+            // Jika level siswa (3), auto-create basic student data
+            if($this->input->post('level') == 3){ // Create student data only for student level
                 $this->load->model('M_siswa');
                 
                 // Check if student data already exists
@@ -704,10 +776,10 @@ class Hubin extends CI_Controller {
                     );
                     $this->M_siswa->tambah_data_siswa($siswa_data);
                     
-                    // After creation, update the status_pengajuan to NULL to avoid automatic redirection
-                    // Since the default is 'menunggu', we need to update it after creation
+                    // Default status awal siswa harus konsisten dengan alur PKL.
+                    // Null membuat daftar status tidak konsisten dan memicu redirect/logic yang salah.
                     $this->db->where('user_id', $user_id);
-                    $this->db->update('tb_siswa', array('status_pengajuan' => NULL));
+                    $this->db->update('tb_siswa', array('status_pengajuan' => 'draft'));
                 }
                 
                 // Simpan username dan password untuk ditampilkan
@@ -759,6 +831,11 @@ class Hubin extends CI_Controller {
         $content = 'hubin/edit-user';
         $user_code = $this->input->post('user_code');
         $this->load->model('M_user');
+
+        if ($this->input->post('nip_nim') !== null && $this->input->post('nip_nim') !== '') {
+            $_POST['nip_nim'] = $this->M_user->normalize_identifier_value($this->input->post('nip_nim'));
+        }
+
         $cekusers = $this->M_user->get_data_user($user_code);
         if(!$cekusers){
             $status = false;
@@ -929,7 +1006,7 @@ class Hubin extends CI_Controller {
             }
             
             // Update status to disetujui
-            $update = array('status_pengajuan' => 'disetujui');
+            $update = array_merge(array('status_pengajuan' => 'disetujui'), $this->get_pkl_period_data($siswa));
             $this->M_siswa->update_siswa($update, $siswa_code);
             
             // Set success message
@@ -1045,6 +1122,8 @@ class Hubin extends CI_Controller {
                     'dudi_nip_pic' => $siswa->other_dudi_nip_pic,
                     'dudi_instruktur' => $siswa->other_dudi_instruktur,
                     'dudi_nip_instruktur' => $siswa->other_dudi_nip_instruktur,
+                    'latitude' => $siswa->other_dudi_latitude,
+                    'longitude' => $siswa->other_dudi_longitude,
                     'is_mitra' => 1,  // Mark as mitra
                     'status_kerjasama' => 'mitra',  // Consistent status
                     'sumber_data' => 'siswa'  // Mark as student-submitted
@@ -1063,6 +1142,7 @@ class Hubin extends CI_Controller {
                         'status_pengajuan' => 'disetujui',
                         'other_dudi_nama' => null  // Clear the proposed company name
                     );
+                    $update_siswa = array_merge($update_siswa, $this->get_pkl_period_data($siswa));
                     $this->M_siswa->update_siswa($update_siswa, $siswa_code);
                     
                     $this->session->set_flashdata('message', 'Pengajuan PKL berhasil disetujui dan telah dipindahkan ke Data Siswa. Silakan assign pembimbing untuk siswa ini.');
@@ -1085,6 +1165,8 @@ class Hubin extends CI_Controller {
                     'dudi_nip_pic' => $siswa->other_dudi_nip_pic,
                     'dudi_instruktur' => $siswa->other_dudi_instruktur,
                     'dudi_nip_instruktur' => $siswa->other_dudi_nip_instruktur,
+                    'latitude' => $siswa->other_dudi_latitude,
+                    'longitude' => $siswa->other_dudi_longitude,
                     'is_mitra' => 0,  // Mark as non-mitra
                     'status_kerjasama' => 'non_mitra',  // Consistent status
                     'sumber_data' => 'siswa'  // Mark as student-submitted
@@ -1103,6 +1185,7 @@ class Hubin extends CI_Controller {
                         'status_pengajuan' => 'disetujui',
                         'other_dudi_nama' => null  // Clear the proposed company name
                     );
+                    $update_siswa = array_merge($update_siswa, $this->get_pkl_period_data($siswa));
                     $this->M_siswa->update_siswa($update_siswa, $siswa_code);
                     
                     $this->session->set_flashdata('message', 'Pengajuan PKL berhasil disetujui dan telah dipindahkan ke Data Siswa. Silakan assign pembimbing untuk siswa ini.');
@@ -1276,14 +1359,162 @@ class Hubin extends CI_Controller {
                 'dudi_nip_pic' => $this->input->post('dudi_nip_pic'),
                 'dudi_instruktur' => $this->input->post('dudi_instruktur'),
                 'dudi_nip_instruktur' => $this->input->post('dudi_nip_instruktur'),
-                'is_mitra' => $this->input->post('is_mitra') ? 1 : 0  // Add is_mitra field
+                'latitude' => $this->input->post('latitude') !== '' ? $this->input->post('latitude') : null,
+                'longitude' => $this->input->post('longitude') !== '' ? $this->input->post('longitude') : null,
+                'radius' => $this->input->post('radius') !== '' ? (int)$this->input->post('radius') : 100,
+                'is_mitra' => $this->input->post('is_mitra') ? 1 : 0,
+                'status_kerjasama' => $this->input->post('is_mitra') ? 'mitra' : 'non_mitra'
             );
             $this->M_dudi->tambah_dudi($data);
-            $this->session->set_flashdata('message', 'Berhasil menambah data DUDI');
+            $this->session->set_flashdata('message', 'Berhasil menambah data DUDI beserta konfigurasi lokasi radius presensi');
             redirect('hubin/view/data-dudi');
         }else{
             $this->view('tambah-dudi');
         }
+    }
+
+    function import_dudi()
+    {
+        if (empty($_FILES['dudi_file']['name'])) {
+            $this->session->set_flashdata('error_message', 'File import DUDI belum dipilih.');
+            redirect('hubin/view/tambah-dudi');
+        }
+
+        $config['upload_path'] = './uploads/imports';
+        $config['allowed_types'] = 'csv|xlsx|xls';
+        $config['max_size'] = 2048;
+        $config['encrypt_name'] = TRUE;
+
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, true);
+        }
+
+        $this->load->library('upload', $config);
+        if (!$this->upload->do_upload('dudi_file')) {
+            $this->session->set_flashdata('error_message', $this->upload->display_errors('', ''));
+            redirect('hubin/view/tambah-dudi');
+        }
+
+        $upload_data = $this->upload->data();
+        $file_path = $upload_data['full_path'];
+        $file_ext = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
+        $rows = [];
+
+        if ($file_ext === 'csv') {
+            $handle = fopen($file_path, 'r');
+            if ($handle === false) {
+                $this->session->set_flashdata('error_message', 'File CSV tidak dapat dibaca.');
+                redirect('hubin/view/tambah-dudi');
+            }
+
+            $headers = fgetcsv($handle, 2000, ',');
+            if ($headers === false) {
+                fclose($handle);
+                unlink($file_path);
+                $this->session->set_flashdata('error_message', 'File CSV kosong atau tidak valid.');
+                redirect('hubin/view/tambah-dudi');
+            }
+
+            $normalized_headers = [];
+            foreach ($headers as $header) {
+                $normalized_headers[] = strtolower(trim((string) $header));
+            }
+
+            while (($row = fgetcsv($handle, 2000, ',')) !== false) {
+                if (count($row) < 1) {
+                    continue;
+                }
+
+                $mapped = [];
+                foreach ($row as $idx => $value) {
+                    $key = $normalized_headers[$idx] ?? 'column_' . $idx;
+                    $mapped[$key] = trim((string) $value);
+                }
+
+                $rows[] = [
+                    'dudi_nama' => $mapped['nama dudi'] ?? $mapped['nama_dudi'] ?? $mapped['dudi_nama'] ?? '',
+                    'dudi_alamat' => $mapped['alamat'] ?? $mapped['dudi_alamat'] ?? '',
+                    'dudi_telepon' => $mapped['telepon'] ?? $mapped['dudi_telepon'] ?? '',
+                    'dudi_email' => $mapped['email'] ?? $mapped['dudi_email'] ?? '',
+                    'dudi_pic' => $mapped['penanggung jawab (pic)'] ?? $mapped['penanggung_jawab'] ?? $mapped['dudi_pic'] ?? '',
+                    'dudi_nip_pic' => $mapped['nip pic'] ?? $mapped['nip_pic'] ?? $mapped['dudi_nip_pic'] ?? '',
+                    'dudi_instruktur' => $mapped['instruktur'] ?? $mapped['dudi_instruktur'] ?? '',
+                    'dudi_nip_instruktur' => $mapped['nip instruktur'] ?? $mapped['nip_instruktur'] ?? $mapped['dudi_nip_instruktur'] ?? '',
+                    'status_kerjasama' => $mapped['status mitra'] ?? $mapped['status_kerjasama'] ?? $mapped['is_mitra'] ?? 'mitra',
+                    'latitude' => $mapped['latitude'] ?? '',
+                    'longitude' => $mapped['longitude'] ?? '',
+                    'radius' => $mapped['radius toleransi (meter)'] ?? $mapped['radius'] ?? 100,
+                ];
+            }
+
+            fclose($handle);
+        } else {
+            if (!class_exists('PhpOffice\\PhpSpreadsheet\\IOFactory')) {
+                $this->session->set_flashdata('error_message', 'Library PhpSpreadsheet belum terinstall untuk import Excel.');
+                unlink($file_path);
+                redirect('hubin/view/tambah-dudi');
+            }
+
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_path);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows_raw = $worksheet->toArray();
+
+            if (empty($rows_raw)) {
+                unlink($file_path);
+                $this->session->set_flashdata('error_message', 'File Excel kosong.');
+                redirect('hubin/view/tambah-dudi');
+            }
+
+            $headers = array_shift($rows_raw);
+            $normalized_headers = [];
+            foreach ($headers as $header) {
+                $normalized_headers[] = strtolower(trim((string) $header));
+            }
+
+            foreach ($rows_raw as $row) {
+                if (empty(array_filter($row, function($cell) { return $cell !== null && trim((string) $cell) !== ''; }))) {
+                    continue;
+                }
+
+                $mapped = [];
+                foreach ($row as $idx => $value) {
+                    $key = $normalized_headers[$idx] ?? 'column_' . $idx;
+                    $mapped[$key] = trim((string) $value);
+                }
+
+                $rows[] = [
+                    'dudi_nama' => $mapped['nama dudi'] ?? $mapped['nama_dudi'] ?? $mapped['dudi_nama'] ?? '',
+                    'dudi_alamat' => $mapped['alamat'] ?? $mapped['dudi_alamat'] ?? '',
+                    'dudi_telepon' => $mapped['telepon'] ?? $mapped['dudi_telepon'] ?? '',
+                    'dudi_email' => $mapped['email'] ?? $mapped['dudi_email'] ?? '',
+                    'dudi_pic' => $mapped['penanggung jawab (pic)'] ?? $mapped['penanggung_jawab'] ?? $mapped['dudi_pic'] ?? '',
+                    'dudi_nip_pic' => $mapped['nip pic'] ?? $mapped['nip_pic'] ?? $mapped['dudi_nip_pic'] ?? '',
+                    'dudi_instruktur' => $mapped['instruktur'] ?? $mapped['dudi_instruktur'] ?? '',
+                    'dudi_nip_instruktur' => $mapped['nip instruktur'] ?? $mapped['nip_instruktur'] ?? $mapped['dudi_nip_instruktur'] ?? '',
+                    'status_kerjasama' => $mapped['status mitra'] ?? $mapped['status_kerjasama'] ?? $mapped['is_mitra'] ?? 'mitra',
+                    'latitude' => $mapped['latitude'] ?? '',
+                    'longitude' => $mapped['longitude'] ?? '',
+                    'radius' => $mapped['radius toleransi (meter)'] ?? $mapped['radius'] ?? 100,
+                ];
+            }
+        }
+
+        unlink($file_path);
+
+        $this->load->model('M_dudi');
+        $result = $this->M_dudi->import_dudi_batch($rows);
+
+        if ($result['inserted'] > 0 || $result['updated'] > 0) {
+            $message = 'Import DUDI berhasil: ' . $result['inserted'] . ' ditambahkan, ' . $result['updated'] . ' diperbarui.';
+            if (!empty($result['errors'])) {
+                $message .= ' Beberapa baris dilewati: ' . count($result['errors']);
+            }
+            $this->session->set_flashdata('message', $message);
+        } else {
+            $this->session->set_flashdata('error_message', 'Tidak ada data DUDI yang diproses. ' . (count($result['errors']) > 0 ? implode(' | ', array_slice($result['errors'], 0, 5)) : 'Periksa format file anda.'));
+        }
+
+        redirect('hubin/view/tambah-dudi');
     }
 
     function edit_dudi($dudi_code = null)
@@ -1335,6 +1566,9 @@ class Hubin extends CI_Controller {
                 'dudi_nip_pic' => $this->input->post('dudi_nip_pic'),
                 'dudi_instruktur' => $this->input->post('dudi_instruktur'),
                 'dudi_nip_instruktur' => $this->input->post('dudi_nip_instruktur'),
+                'latitude' => $this->input->post('latitude') !== '' ? $this->input->post('latitude') : null,
+                'longitude' => $this->input->post('longitude') !== '' ? $this->input->post('longitude') : null,
+                'radius' => $this->input->post('radius') !== '' ? (int)$this->input->post('radius') : 100,
                 'is_mitra' => $this->input->post('is_mitra') ? 1 : 0  // Update is_mitra field
             );
             $this->M_dudi->update_dudi($update, $dudi_code);
@@ -1453,11 +1687,16 @@ class Hubin extends CI_Controller {
     function tambah_siswa()
     {
         $status = true;
+        $this->load->model('M_siswa');
+
+        $submitted_status = $this->M_siswa->normalize_status_pengajuan($this->input->post('status_pengajuan'));
+        $_POST['status_pengajuan'] = $submitted_status;
         
         // Validate student data fields
         $this->form_validation->set_rules('siswa_nama', 'Nama Siswa', 'required');
         $this->form_validation->set_rules('siswa_kelas', 'Kelas Siswa', 'required');
         $this->form_validation->set_rules('siswa_jk', 'Jenis Kelamin', 'required|in_list[L,P]');
+        $this->form_validation->set_rules('status_pengajuan', 'Status Pengajuan', 'required|in_list[draft,menunggu,disetujui,ditolak,selesai]');
         
         // Validate NIS/NISN uniqueness
         $nis = $this->input->post('siswa_nis');
@@ -1490,8 +1729,10 @@ class Hubin extends CI_Controller {
         }
 
         if($status){
-            $this->load->model('M_siswa');
             $this->load->model('M_user');
+
+            // Pastikan kolom status_pengajuan di DB mendukung seluruh alur yang valid.
+            $this->db->query("ALTER TABLE `tb_siswa` MODIFY `status_pengajuan` ENUM('draft','menunggu','disetujui','ditolak','selesai') NOT NULL DEFAULT 'draft'");
             
             // Check for duplicate data before creation
             $duplicate_check = $this->check_duplicate_student($nis, $nisn, $this->input->post('siswa_nama'), $this->input->post('siswa_kelas'));
@@ -1516,7 +1757,7 @@ class Hubin extends CI_Controller {
                 'tempat_lahir' => $this->input->post('siswa_tempat_lahir'),
                 'tanggal_lahir' => $this->input->post('siswa_tanggal_lahir') ? date('Y-m-d', strtotime($this->input->post('siswa_tanggal_lahir'))) : NULL,
                 'jenis_kelamin' => $this->input->post('siswa_jk'), // Store gender in user table
-                'level' => 2, // Student level
+                'level' => 3, // Student level
                 'is_active' => 1,
                 'created_at' => date('Y-m-d H:i:s')
             );
@@ -1556,7 +1797,7 @@ class Hubin extends CI_Controller {
                     'siswa_nis' => $nis,
                     'siswa_nisn' => $nisn,
                     'dudi_id' => $this->input->post('dudi_id') ? $this->input->post('dudi_id') : NULL,
-                    'status_pengajuan' => $this->input->post('status_pengajuan') ? $this->input->post('status_pengajuan') : 'draft',
+                    'status_pengajuan' => $this->M_siswa->normalize_status_pengajuan($this->input->post('status_pengajuan')),
                     'periode' => $this->input->post('periode'),
                     'user_id' => $user->id,
                     'siswa_code' => $code,
@@ -1759,37 +2000,67 @@ class Hubin extends CI_Controller {
             'is_active' => $user->is_active
         );
         
-        // Jika user adalah siswa (level 2)
-        if($user->level == 2){
+        // Jika user adalah siswa (level 3)
+        if($user->level == 3){
             $siswa = $this->M_siswa->get_siswa_with_biodata_by_user_id($user->id);
             
             // If student record doesn't exist in tb_siswa, create a basic object with user data
             if(!$siswa) {
                 $siswa = (object) array(
-                    'siswa_nama' => $user->nama_lengkap,
-                    'username' => $user->username,
+                    'siswa_id' => null,
+                    'user_id' => $user->id,
                     'user_code' => $user->user_code,
+                    'siswa_nama' => $user->nama_lengkap,
+                    'nama_lengkap' => $user->nama_lengkap,
+                    'username' => $user->username,
                     'siswa_nis' => $user->nip_nim,
+                    'siswa_nisn' => null,
                     'siswa_kelas' => null,
                     'siswa_jurusan' => null,
+                    'siswa_asal_sekolah' => 'SMK ITIKURIH HIBARNA',
+                    'siswa_telepon' => $user->telepon,
                     'telepon' => $user->telepon,
+                    'user_telepon' => $user->telepon,
                     'email' => $user->email,
+                    'user_email' => $user->email,
                     'alamat' => $user->alamat,
+                    'siswa_alamat' => $user->alamat,
+                    'user_alamat' => $user->alamat,
                     'tempat_lahir' => $user->tempat_lahir,
+                    'siswa_tempat_lahir' => $user->tempat_lahir,
+                    'user_tempat_lahir' => $user->tempat_lahir,
                     'tanggal_lahir' => $user->tanggal_lahir,
+                    'siswa_tanggal_lahir' => $user->tanggal_lahir,
+                    'user_tanggal_lahir' => $user->tanggal_lahir,
                     'jenis_kelamin' => $user->jenis_kelamin,
+                    'siswa_jk' => $user->jenis_kelamin,
+                    'user_jenis_kelamin' => $user->jenis_kelamin,
                     'nip_nim' => $user->nip_nim,
+                    'user_nip_nim' => $user->nip_nim,
                     'dudi_nama' => null,
                     'dudi_is_mitra' => null,
-                    'status_pengajuan' => 'belum_daftar',
+                    'status_pengajuan' => 'draft',
                     'periode' => null,
                     'tanggal_mulai' => null,
                     'tanggal_selesai' => null,
+                    'lama_pelaksanaan' => null,
                     'pembimbing_nama' => null,
                     'pembimbing_email' => null,
                     'pembimbing_telepon' => null,
                     'updated_at' => $user->updated_at
                 );
+            } else {
+                // Pastikan fallback nilai dari user jika di siswa kosong
+                if(empty($siswa->siswa_nama)) $siswa->siswa_nama = $user->nama_lengkap;
+                if(empty($siswa->siswa_nis)) $siswa->siswa_nis = $user->nip_nim;
+                if(empty($siswa->siswa_telepon)) $siswa->siswa_telepon = $user->telepon;
+                if(empty($siswa->siswa_alamat)) $siswa->siswa_alamat = $user->alamat;
+                if(empty($siswa->siswa_tempat_lahir)) $siswa->siswa_tempat_lahir = $user->tempat_lahir;
+                if(empty($siswa->siswa_tanggal_lahir)) $siswa->siswa_tanggal_lahir = $user->tanggal_lahir;
+                if(empty($siswa->siswa_jk)) $siswa->siswa_jk = $user->jenis_kelamin;
+                if(empty($siswa->siswa_asal_sekolah)) $siswa->siswa_asal_sekolah = 'SMK ITIKURIH HIBARNA';
+                $siswa->user_email = $user->email;
+                $siswa->nama_lengkap = $user->nama_lengkap;
             }
             
             $data['biodata'] = $siswa;
@@ -1818,8 +2089,8 @@ class Hubin extends CI_Controller {
             return;
         }
         
-        // Jika user adalah siswa (level 2)
-        if($user->level == 2){
+        // Jika user adalah siswa (level 3)
+        if($user->level == 3){
             $siswa = $this->M_siswa->get_siswa_with_biodata_by_user_id($user->id);
             
             $data['biodata'] = $siswa;
@@ -1866,7 +2137,7 @@ class Hubin extends CI_Controller {
         }
         
         // Ensure the user is a student
-        if($user->level != 2){
+        if($user->level != 3){
             $this->session->set_flashdata('error_message', 'User bukan merupakan siswa');
             redirect('hubin/view/daftar-siswa');
             return;
@@ -1970,6 +2241,32 @@ class Hubin extends CI_Controller {
             }
         }
         
+        $new_profile_photo = null;
+        if($status){
+            if (!empty($_FILES['foto_profil']['name'])) {
+                $upload_path = FCPATH . 'uploads/profil/';
+                if (!is_dir($upload_path)) {
+                    mkdir($upload_path, 0777, true);
+                }
+                $config = [
+                    'upload_path' => $upload_path,
+                    'allowed_types' => 'jpg|jpeg|png|gif',
+                    'max_size' => 2048,
+                    'file_name' => 'profil_' . $user->id . '_' . time(),
+                    'overwrite' => false
+                ];
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload('foto_profil')) {
+                    $this->session->set_flashdata('error_message', 'Upload foto gagal: ' . $this->upload->display_errors('', ''));
+                    $status = false;
+                } else {
+                    $new_profile_photo = $this->upload->data('file_name');
+                }
+            }
+
+        }
+
         if($status){
             // Update data user dasar with student data synchronization
             // For student data, we should synchronize user data with student data
@@ -1983,6 +2280,9 @@ class Hubin extends CI_Controller {
                 'nip_nim' => $this->input->post('nip_nim'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
+            if ($new_profile_photo) {
+                $user_update['foto_profil'] = $new_profile_photo;
+            }
             
             // Handle jenis_kelamin from student data
             $siswa_jk = $this->input->post('siswa_jk');
@@ -2250,7 +2550,7 @@ class Hubin extends CI_Controller {
                 'siswa_tanggal_lahir' => $this->input->post('siswa_tanggal_lahir') ? date('Y-m-d', strtotime($this->input->post('siswa_tanggal_lahir'))) : NULL,
                 'siswa_asal_sekolah' => $this->input->post('siswa_asal_sekolah'),
                 'dudi_id' => $this->input->post('dudi_id') ? $this->input->post('dudi_id') : NULL,
-                'status_pengajuan' => $this->input->post('status_pengajuan') ? $this->input->post('status_pengajuan') : 'draft',
+                'status_pengajuan' => $this->M_siswa->normalize_status_pengajuan($this->input->post('status_pengajuan')),
                 'periode' => $this->input->post('periode'),
                 'user_id' => $this->input->post('user_id') ? $this->input->post('user_id') : NULL
             );
@@ -2614,12 +2914,14 @@ class Hubin extends CI_Controller {
 
 
 
-    // Tambah Pembimbing (Tanpa User Otomatis)
+    // Tambah Pembimbing beserta Akun Login User (Level 2)
     function tambah_pembimbing()
     {
         $status = true;
         $this->form_validation->set_rules('pembimbing_nama', 'Nama Pembimbing', 'required|trim');
         $this->form_validation->set_rules('pembimbing_nip', 'NIP', 'required|trim');
+        $this->form_validation->set_rules('username', 'Username', 'required|trim');
+        $this->form_validation->set_rules('password', 'Password', 'required');
         
         // Validasi tambahan untuk biodata
         if($this->input->post('tahun_masuk')) {
@@ -2649,51 +2951,99 @@ class Hubin extends CI_Controller {
         
         if($status){
             $this->load->model('M_pembimbing');
+            $this->load->model('M_user');
             
-            // Check if NIP already exists
-            $this->db->where('pembimbing_nip', trim($this->input->post('pembimbing_nip')));
-            $check_nip = $this->db->get('tb_pembimbing')->row();
-            if($check_nip){
-                $this->session->set_flashdata('error_message', 'NIP "'.$this->input->post('pembimbing_nip').'" sudah digunakan oleh pembimbing lain');
-                redirect('hubin/view/tambah-pembimbing');
+            $username = trim($this->input->post('username'));
+            $nip = trim($this->input->post('pembimbing_nip'));
+            $email = trim($this->input->post('pembimbing_email'));
+            
+            // Check if username already exists in tb_user
+            $this->db->where('username', $username);
+            $check_user = $this->db->get('tb_user')->row();
+            if($check_user){
+                $this->session->set_flashdata('error_message', 'Username "'.$username.'" sudah digunakan. Silakan gunakan username yang berbeda.');
+                $this->view('tambah-pembimbing');
+                return;
             }
             
-            // Create pembimbing as pure data for assignment purposes
-            // Pembimbing are not users/actors, just data for student assignment
+            // Check if NIP already exists in tb_pembimbing
+            $this->db->where('pembimbing_nip', $nip);
+            $check_nip = $this->db->get('tb_pembimbing')->row();
+            if($check_nip){
+                $this->session->set_flashdata('error_message', 'NIP "'.$nip.'" sudah digunakan oleh pembimbing lain.');
+                $this->view('tambah-pembimbing');
+                return;
+            }
+            
             $pembimbing_alamat = trim($this->input->post('pembimbing_alamat'));
             $tempat_lahir = trim($this->input->post('tempat_lahir'));
             $tanggal_lahir = $this->input->post('tanggal_lahir') ? trim($this->input->post('tanggal_lahir')) : null;
             $jenis_kelamin = trim($this->input->post('jenis_kelamin'));
+            $telepon = trim($this->input->post('pembimbing_telepon'));
+            $nama = trim($this->input->post('pembimbing_nama'));
             
-            // Generate unique pembimbing code
+            // 1. Buat user account di tb_user (Level 2 = Guru Pembimbing)
+            $user_code = $this->M_user->generateRandomString(30);
+            $hashed_password = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
+            
+            $user_data = array(
+                'user_code'     => $user_code,
+                'username'      => $username,
+                'password'      => $hashed_password,
+                'nama_lengkap'  => $nama,
+                'email'         => !empty($email) ? $email : null,
+                'telepon'       => !empty($telepon) ? $telepon : null,
+                'alamat'        => !empty($pembimbing_alamat) ? $pembimbing_alamat : null,
+                'tempat_lahir'  => !empty($tempat_lahir) ? $tempat_lahir : null,
+                'tanggal_lahir' => !empty($tanggal_lahir) ? date('Y-m-d', strtotime($tanggal_lahir)) : null,
+                'jenis_kelamin' => !empty($jenis_kelamin) ? $jenis_kelamin : null,
+                'nip_nim'       => !empty($nip) ? $nip : null,
+                'level'         => 2, // Pembimbing
+                'is_active'     => 1,
+                'created_at'    => date('Y-m-d H:i:s')
+            );
+            
+            $this->M_user->tambah_data_user($user_data);
+            
+            // Dapatkan ID user yang baru dibuat
+            $this->db->where('username', $username);
+            $new_user = $this->db->get('tb_user')->row();
+            $user_id = $new_user ? $new_user->id : null;
+            
+            // 2. Buat data pembimbing di tb_pembimbing
             $pembimbing_code = $this->M_pembimbing->generateRandomString(30);
-            
-            // Create pembimbing record directly without user account
             $pembimbing_data = array(
-                'pembimbing_nama' => trim($this->input->post('pembimbing_nama')),
-                'pembimbing_nip' => trim($this->input->post('pembimbing_nip')),
-                'pembimbing_telepon' => trim($this->input->post('pembimbing_telepon')),
-                'pembimbing_email' => trim($this->input->post('pembimbing_email')),
-                'pembimbing_code' => $pembimbing_code,
+                'user_id'             => $user_id,
+                'pembimbing_nama'     => $nama,
+                'pembimbing_nip'      => $nip,
+                'pembimbing_telepon'  => !empty($telepon) ? $telepon : null,
+                'pembimbing_email'    => !empty($email) ? $email : null,
+                'pembimbing_code'     => $pembimbing_code,
                 // Professional data fields
                 'pendidikan_terakhir' => trim($this->input->post('pendidikan_terakhir')),
-                'jabatan' => trim($this->input->post('jabatan')),
-                'jurusan_keahlian' => trim($this->input->post('jurusan_keahlian')),
-                'tahun_masuk' => trim($this->input->post('tahun_masuk')),
-                'status_kepegawaian' => trim($this->input->post('status_kepegawaian')),
-                'tempat_tugas' => trim($this->input->post('tempat_tugas')),
+                'jabatan'             => trim($this->input->post('jabatan')),
+                'jurusan_keahlian'    => trim($this->input->post('jurusan_keahlian')),
+                'tahun_masuk'         => trim($this->input->post('tahun_masuk')),
+                'status_kepegawaian'  => trim($this->input->post('status_kepegawaian')),
+                'tempat_tugas'        => trim($this->input->post('tempat_tugas')),
                 // Personal data fields
-                'pembimbing_alamat' => !empty($pembimbing_alamat) ? $pembimbing_alamat : null,
-                'tempat_lahir' => !empty($tempat_lahir) ? $tempat_lahir : null,
-                'tanggal_lahir' => !empty($tanggal_lahir) ? $tanggal_lahir : null,
-                'jenis_kelamin' => !empty($jenis_kelamin) ? $jenis_kelamin : null,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'pembimbing_alamat'   => !empty($pembimbing_alamat) ? $pembimbing_alamat : null,
+                'tempat_lahir'        => !empty($tempat_lahir) ? $tempat_lahir : null,
+                'tanggal_lahir'       => !empty($tanggal_lahir) ? $tanggal_lahir : null,
+                'jenis_kelamin'       => !empty($jenis_kelamin) ? $jenis_kelamin : null,
+                'is_active'           => 1,
+                'created_at'          => date('Y-m-d H:i:s'),
+                'updated_at'          => date('Y-m-d H:i:s')
             );
             
             $this->M_pembimbing->tambah_data_pembimbing($pembimbing_data);
             
-            $this->session->set_flashdata('message', 'Berhasil menambah data pembimbing "'.$pembimbing_data['pembimbing_nama'].'" untuk keperluan pembagian pembimbing kepada siswa');
+            // Set flashdata informasi akun baru untuk diserahkan ke pembimbing
+            $this->session->set_flashdata('message', 'Berhasil menambah data pembimbing "'.$nama.'" dan akun login');
+            $this->session->set_flashdata('new_user_nama', $nama);
+            $this->session->set_flashdata('new_user_username', $username);
+            $this->session->set_flashdata('new_user_password', $this->input->post('password'));
+            
             redirect('hubin/view/data-pembimbing');
         }else{
             $this->view('tambah-pembimbing');
@@ -2777,6 +3127,17 @@ class Hubin extends CI_Controller {
                 'telepon' => $this->input->post('pembimbing_telepon'),
                 'updated_at' => date('Y-m-d H:i:s')
             );
+            $username = trim((string) $this->input->post('username'));
+            if ($username !== '' && $username !== $cekpembimbing->username) {
+                $this->db->where('username', $username);
+                $this->db->where('id !=', $cekpembimbing->user_id);
+                if ($this->db->get('tb_user')->num_rows() > 0) {
+                    $this->session->set_flashdata('error_message', 'Username sudah digunakan oleh akun lain.');
+                    redirect('hubin/edit_pembimbing/' . $pembimbing_code);
+                    return;
+                }
+                $user_update['username'] = $username;
+            }
             
             // Add personal information fields to user update
             if (isset($_POST['pembimbing_alamat'])) {
@@ -2793,6 +3154,11 @@ class Hubin extends CI_Controller {
             }
             if (isset($_POST['pembimbing_nip'])) {
                 $user_update['nip_nim'] = $nip_nim !== '' ? $nip_nim : $this->input->post('pembimbing_nip');
+            }
+
+            if (!empty($cekpembimbing->user_id)) {
+                $this->db->where('id', $cekpembimbing->user_id);
+                $this->db->update('tb_user', $user_update);
             }
             
             // Update pembimbing data directly (no longer connected to user account)
@@ -3086,7 +3452,7 @@ class Hubin extends CI_Controller {
                 'siswa_tanggal_lahir' => $this->input->post('siswa_tanggal_lahir') ? date('Y-m-d', strtotime($this->input->post('siswa_tanggal_lahir'))) : NULL,
                 'siswa_asal_sekolah' => $this->input->post('siswa_asal_sekolah'),
                 'dudi_id' => $this->input->post('dudi_id') ? $this->input->post('dudi_id') : NULL,
-                'status_pengajuan' => $this->input->post('status_pengajuan') ? $this->input->post('status_pengajuan') : 'draft',
+                'status_pengajuan' => $this->M_siswa->normalize_status_pengajuan($this->input->post('status_pengajuan')),
                 'periode' => $this->input->post('periode'),
                 'user_id' => $this->input->post('user_id') ? $this->input->post('user_id') : NULL
             );
@@ -3415,6 +3781,19 @@ class Hubin extends CI_Controller {
             $this->db->join('tb_pembimbing', 'tb_pembimbing.pembimbing_id = tb_pengelompokan.pembimbing_id', 'inner');
             $siswa_dengan_pembimbing = $this->db->get()->num_rows();
 
+            // Statistik Monitoring PKL (presensi & logbook)
+            $total_presensi = $this->db->table_exists('tb_presensi') ? $this->db->count_all('tb_presensi') : 0;
+            $total_logbook = 0;
+            $logbook_valid = 0;
+            $logbook_tidak_valid = 0;
+            if ($this->db->table_exists('tb_logbook')) {
+                $total_logbook = $this->db->count_all('tb_logbook');
+                $this->db->where('status_validasi', 'valid');
+                $logbook_valid = $this->db->count_all_results('tb_logbook');
+                $this->db->where('status_validasi', 'tidak_valid');
+                $logbook_tidak_valid = $this->db->count_all_results('tb_logbook');
+            }
+
             // Return JSON response
             $this->output->set_content_type('application/json');
             echo json_encode(array(
@@ -3433,7 +3812,11 @@ class Hubin extends CI_Controller {
                     'pembimbing_available' => $pembimbing_available,
                     'pengajuan_hari_ini' => $pengajuan_hari_ini,
                     'siswa_belum_assign' => $siswa_belum_assign,
-                    'siswa_dengan_pembimbing' => $siswa_dengan_pembimbing
+                    'siswa_dengan_pembimbing' => $siswa_dengan_pembimbing,
+                    'total_presensi' => $total_presensi,
+                    'total_logbook' => $total_logbook,
+                    'logbook_valid' => $logbook_valid,
+                    'logbook_tidak_valid' => $logbook_tidak_valid
                 ),
                 'timestamp' => date('Y-m-d H:i:s')
             ));
@@ -3445,6 +3828,53 @@ class Hubin extends CI_Controller {
                 'message' => $e->getMessage()
             ));
         }
+    }
+
+    public function reset_periode_pkl()
+    {
+        if ($this->input->method() !== 'post') {
+            redirect('hubin/view/home');
+            return;
+        }
+
+        $this->db->trans_start();
+        $this->db->query('CREATE TABLE IF NOT EXISTS tb_presensi_arsip LIKE tb_presensi');
+        $this->db->query('CREATE TABLE IF NOT EXISTS tb_logbook_arsip LIKE tb_logbook');
+        $this->db->query('CREATE TABLE IF NOT EXISTS tb_penilaian_arsip LIKE tb_penilaian');
+        foreach (['tb_presensi_arsip' => 'presensi_id', 'tb_logbook_arsip' => 'logbook_id', 'tb_penilaian_arsip' => 'penilaian_id'] as $table => $primary_key) {
+            if (!$this->db->field_exists('archived_at', $table)) {
+                $this->db->query("ALTER TABLE `{$table}` ADD COLUMN `archived_at` DATETIME NULL");
+            }
+            $this->db->query("INSERT INTO `{$table}` SELECT source.*, NOW() FROM `" . str_replace('_arsip', '', $table) . "` source");
+        }
+        $this->db->empty_table('tb_presensi');
+        $this->db->empty_table('tb_logbook');
+        $this->db->empty_table('tb_penilaian');
+        $this->db->empty_table('tb_pengelompokan');
+        $this->db->set([
+            'dudi_id' => null,
+            'pembimbing_id' => null,
+            'status_pengajuan' => 'draft',
+            'tanggal_mulai' => null,
+            'tanggal_selesai' => null,
+            'lama_pelaksanaan' => null,
+            'periode' => null,
+            'mentor_assignment_notified' => 0,
+            'other_dudi_nama' => null,
+            'other_dudi_alamat' => null,
+            'other_dudi_telepon' => null,
+            'other_dudi_email' => null,
+            'other_dudi_pic' => null,
+            'other_dudi_nip_pic' => null,
+            'other_dudi_instruktur' => null,
+            'other_dudi_nip_instruktur' => null,
+            'other_dudi_latitude' => null,
+            'other_dudi_longitude' => null
+        ])->update('tb_siswa');
+        $this->db->trans_complete();
+
+        $this->session->set_flashdata($this->db->trans_status() ? 'message' : 'error_message', $this->db->trans_status() ? 'Periode PKL berhasil direset. Data lama telah diarsipkan dan siswa dapat mengajukan PKL untuk periode baru.' : 'Reset periode PKL gagal dan transaksi dibatalkan.');
+        redirect('hubin/view/home');
     }
     
     // ========== Data DUDI Terpisah ==========

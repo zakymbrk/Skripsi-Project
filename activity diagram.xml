@@ -1,0 +1,1483 @@
+<mxfile host="app.diagrams.net" agent="SIPKL-Comprehensive-Activity-Diagram" pages="16">
+  <diagram id="diag_login" name="1. Login Multi-Role (Hubin &amp; Guru Pembimbing)">
+    <mxGraphModel dx="980" dy="1270" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_login_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Pengguna (Hubin / Guru Pembimbing)" vertex="1">
+          <mxGeometry height="840" width="365" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_n_start" parent="diag_login_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_act_buka" parent="diag_login_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Portal Login Admin / Guru" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_act_input" parent="diag_login_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Mengisi Username / NIP &amp;amp; Password" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_act_submit" parent="diag_login_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menekan Tombol Login" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="840" width="380" x="425" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_act_show_login" parent="diag_login_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Halaman Login Portal" vertex="1">
+          <mxGeometry height="50" width="190" x="95" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_dec_lengkap" parent="diag_login_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Apakah Data&lt;br&gt;Lengkap?" vertex="1">
+          <mxGeometry height="80" width="140" x="120" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_act_err_lengkap" parent="diag_login_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Pesan Kesalahan Form" vertex="1">
+          <mxGeometry height="50" width="160" x="110" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="d1_e6" edge="1" parent="diag_login_lane_sys" source="diag_login_dec_lengkap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="diag_login_act_err_lengkap" value="Tidak">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="385.17" />
+              <mxPoint x="190" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_login_dec_db" parent="diag_login_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Kredensial Cocok&lt;br&gt;dengan DB?" vertex="1">
+          <mxGeometry height="80" width="150" x="115" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_act_err_gagal" parent="diag_login_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Pesan Gagal Login" vertex="1">
+          <mxGeometry height="50" width="160" x="25" y="645" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_act_dashboard" parent="diag_login_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="&lt;font&gt;Membuat Session &amp;amp;&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(237, 237, 237));&quot;&gt;&lt;font&gt;MenampilkanDashboard&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(237, 237, 237));&quot;&gt;&lt;font&gt;&amp;nbsp;Sesuai Role&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="160" x="205" y="645" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_login_n_end" parent="diag_login_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="175" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="d1_e12" edge="1" parent="diag_login_lane_sys" source="diag_login_act_dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_login_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1_e9" edge="1" parent="diag_login_lane_sys" source="diag_login_dec_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="diag_login_act_err_gagal" value="Tidak">
+          <mxGeometry relative="1" x="-0.2414" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="190.03" y="620.03" />
+              <mxPoint x="105" y="620.03" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1_e10" edge="1" parent="diag_login_lane_sys" source="diag_login_dec_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_login_act_dashboard" value="Ya">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="620" />
+              <mxPoint x="285" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1_e1" edge="1" parent="1" source="diag_login_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_login_act_buka">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1_e2" edge="1" parent="1" source="diag_login_act_buka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_login_act_show_login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1_e3" edge="1" parent="1" source="diag_login_act_show_login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_login_act_input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="230" />
+              <mxPoint x="230" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1_e4" edge="1" parent="1" source="diag_login_act_input" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_login_act_submit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1_e5" edge="1" parent="1" source="diag_login_act_submit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_login_dec_lengkap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1_e7" edge="1" parent="1" source="diag_login_dec_lengkap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="diag_login_dec_db" value="Ya">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="385" />
+              <mxPoint x="740" y="600.03" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1_e11" edge="1" parent="1" source="diag_login_act_err_gagal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0.004;exitY=0.594;exitDx=0;exitDy=0;exitPerimeter=0;" target="diag_login_act_input" value="Ulangi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450.58" y="710" />
+              <mxPoint x="90" y="710" />
+              <mxPoint x="90" y="290.08" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1_e8" edge="1" parent="1" source="diag_login_act_err_lengkap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="diag_login_act_input" value="Ulangi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="515" />
+              <mxPoint x="110" y="290.08" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_login_siswa" name="1b. Login Siswa">
+    <mxGraphModel dx="700" dy="907" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_ls_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=0;fontSize=14;fontColor=#000000;align=center;" value="Siswa" vertex="1">
+          <mxGeometry height="900" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_n_start" parent="diag_ls_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;strokeWidth=2;fontStyle=0" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_buka_beranda" parent="diag_ls_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Membuka Halaman Beranda (Landing Page)" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_klik_login" parent="diag_ls_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Menekan Tombol / Menu &quot;Login Siswa&quot;" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_input" parent="diag_ls_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Mengisi NIS &amp;amp; Password" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_submit" parent="diag_ls_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Menekan Tombol Login" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=0;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="900" width="380" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_show_beranda" parent="diag_ls_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Menampilkan Halaman Beranda SIPKL" vertex="1">
+          <mxGeometry height="50" width="190" x="95" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_show_login" parent="diag_ls_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Menampilkan Form Login Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="95" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_dec_lengkap" parent="diag_ls_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Apakah Data&lt;br&gt;Lengkap?" vertex="1">
+          <mxGeometry height="80" width="140" x="120" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_dec_db" parent="diag_ls_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Validasi NIS &amp;amp;&lt;br&gt;Password ke DB?" vertex="1">
+          <mxGeometry height="80" width="150" x="115" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_err_gagal" parent="diag_ls_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Menampilkan Pesan NIS / Password Salah" vertex="1">
+          <mxGeometry height="50" width="160" x="10" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_dashboard" parent="diag_ls_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Membuat Sesi Siswa&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(237, 237, 237));&quot;&gt;&amp;amp;&lt;/span&gt;&lt;div&gt;Menampilkan&lt;/div&gt;&lt;div&gt;&amp;nbsp;Dashboard Siswa&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="160" x="200" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_n_end" parent="diag_ls_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="265" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_ls_act_err_lengkap" parent="diag_ls_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Menampilkan Pesan Kesalahan Form" vertex="1">
+          <mxGeometry height="50" width="160" x="110" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="d1b_e8" edge="1" parent="diag_ls_lane_sys" source="diag_ls_dec_lengkap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=0" target="diag_ls_act_err_lengkap" value="Tidak">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="530" />
+              <mxPoint x="190" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1b_e1" edge="1" parent="1" source="diag_ls_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_act_buka_beranda">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1b_e2" edge="1" parent="1" source="diag_ls_act_buka_beranda" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_act_show_beranda">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1b_e3" edge="1" parent="1" source="diag_ls_act_show_beranda" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_act_klik_login">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="230" />
+              <mxPoint x="230" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1b_e4" edge="1" parent="1" source="diag_ls_act_klik_login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_act_show_login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1b_e5" edge="1" parent="1" source="diag_ls_act_show_login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_act_input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="330" />
+              <mxPoint x="230" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1b_e6" edge="1" parent="1" source="diag_ls_act_input" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_act_submit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1b_e7" edge="1" parent="1" source="diag_ls_act_submit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_dec_lengkap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1b_e9" edge="1" parent="1" source="diag_ls_dec_lengkap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontStyle=0" target="diag_ls_dec_db" value="Ya">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="475" />
+              <mxPoint x="710" y="690" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1b_e11" edge="1" parent="1" source="diag_ls_dec_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontStyle=0" target="diag_ls_act_err_gagal" value="Tidak">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="760" />
+              <mxPoint x="500" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1b_e12" edge="1" parent="1" source="diag_ls_dec_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_act_dashboard" value="Ya">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1b_e13" edge="1" parent="1" source="diag_ls_act_err_gagal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fontStyle=0" target="diag_ls_act_input" value="Ulangi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="815" />
+              <mxPoint x="100" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1b_e14" edge="1" parent="1" source="diag_ls_act_dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_ls_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1b_e10" edge="1" parent="1" source="diag_ls_act_err_lengkap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fontStyle=0" target="diag_ls_act_input" value="Ulangi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="595.03" />
+              <mxPoint x="110" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_register" name="2. Pembuatan Akun &amp; Kelengkapan Profil Siswa">
+    <mxGraphModel dx="980" dy="1270" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dreg_lane_admin" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=0;fontSize=14;fontColor=#000000;align=center;fontFamily=Times New Roman;" value="Admin / Hubin" vertex="1">
+          <mxGeometry height="1338" width="320" x="60" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_n_start" parent="dreg_lane_admin" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;fontStyle=0;strokeWidth=2;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="145" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_admin_buka" parent="dreg_lane_admin" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;absoluteArcSize=0;fontFamily=Times New Roman;" value="Membuka Menu Kelola Akun Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="65" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_admin_input" parent="dreg_lane_admin" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menginput NIS, Nama Lengkap, Kelas, Jurusan &amp;amp; Password Sementara" vertex="1">
+          <mxGeometry height="60" width="190" x="65" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_admin_simpan" parent="dreg_lane_admin" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menekan Tombol Simpan Akun" vertex="1">
+          <mxGeometry height="50" width="190" x="65" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_admin_info" parent="dreg_lane_admin" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menginformasikan Kredensial Login kepada Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="80" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_lane_siswa" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=0;fontSize=14;fontColor=#000000;align=center;fontFamily=Times New Roman;" value="Siswa" vertex="1">
+          <mxGeometry height="1338" width="320" x="380" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_siswa_login" parent="dreg_lane_siswa" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Login Menggunakan NIS &amp;amp; Password yang Diberikan Admin" vertex="1">
+          <mxGeometry height="60" width="190" x="65" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_siswa_buka_profil" parent="dreg_lane_siswa" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Membuka Menu Edit Profil" vertex="1">
+          <mxGeometry height="50" width="190" x="65" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=0;fontSize=14;fontColor=#000000;align=center;fontFamily=Times New Roman;" value="Sistem" vertex="1">
+          <mxGeometry height="1338" width="380" x="700" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_sys_form" parent="dreg_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menampilkan Form&amp;nbsp;&lt;div&gt;Tambah Akun Siswa&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="190" x="95" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_sys_dec_nis" parent="dreg_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="NIS Sudah&amp;nbsp;&lt;div&gt;Terdaftar?&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="150" x="115" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_sys_err_nis" parent="dreg_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menampilkan Pesan NIS Sudah Terdaftar" vertex="1">
+          <mxGeometry height="50" width="190" x="95" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_sys_save" parent="dreg_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menyimpan Akun Siswa ke Database dengan&amp;nbsp;&lt;div&gt;Status Aktif&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="190" x="95" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_sys_notif_admin" parent="dreg_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menampilkan Notifikasi Akun Berhasil Dibuat" vertex="1">
+          <mxGeometry height="50" width="190" x="95" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_e6" edge="1" parent="dreg_lane_sys" source="dreg_sys_dec_nis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0;fontFamily=Times New Roman;" target="dreg_sys_err_nis" value="&lt;font style=&quot;&quot;&gt;Ya (Duplikat)&lt;/font&gt;">
+          <mxGeometry relative="1" x="-0.4" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dreg_e8" edge="1" parent="dreg_lane_sys" source="dreg_sys_dec_nis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontStyle=0;fontFamily=Times New Roman;" target="dreg_sys_save" value="&lt;font style=&quot;&quot;&gt;Tidak (Unik)&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="365.03" />
+              <mxPoint x="340" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dreg_e9" edge="1" parent="dreg_lane_sys" source="dreg_sys_save" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_sys_notif_admin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_sys_auth" parent="dreg_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Memverifikasi Kredensial &amp;amp; Membuat Sesi Login Siswa" vertex="1">
+          <mxGeometry height="60" width="190" x="95" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_sys_form_profil" parent="dreg_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menampilkan Form Edit Profil dengan Data Awal yang Diisi Admin" vertex="1">
+          <mxGeometry height="60" width="190" x="95" y="925" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_sys_save_profil" parent="dreg_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Menyimpan Kelengkapan Data Profil Siswa ke Database" vertex="1">
+          <mxGeometry height="60" width="190" x="95" y="1150" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_n_end" parent="dreg_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="175" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_e17" edge="1" parent="dreg_lane_sys" source="dreg_sys_save_profil" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_e16" edge="1" parent="dreg_lane_sys" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_sys_save_profil">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-160" y="1120" />
+              <mxPoint x="190" y="1120" />
+            </Array>
+            <mxPoint x="-160" y="1060" as="sourcePoint" />
+            <mxPoint x="190" y="1130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dreg_e1" edge="1" parent="1" source="dreg_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_admin_buka">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_e2" edge="1" parent="1" source="dreg_admin_buka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_sys_form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_e3" edge="1" parent="1" source="dreg_sys_form" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_admin_input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="890" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dreg_e4" edge="1" parent="1" source="dreg_admin_input" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_admin_simpan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_e5" edge="1" parent="1" source="dreg_admin_simpan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontStyle=0;fontFamily=Times New Roman;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="dreg_sys_dec_nis">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="375" />
+              <mxPoint x="510" y="375" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dreg_e7" edge="1" parent="1" source="dreg_sys_err_nis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=0;fontFamily=Times New Roman;" target="dreg_admin_input" value="&lt;span style=&quot;&quot;&gt;Perbaiki&lt;/span&gt;">
+          <mxGeometry relative="1" x="-0.9062" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="90" y="490" />
+              <mxPoint x="90" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dreg_e10" edge="1" parent="1" source="dreg_sys_notif_admin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_admin_info">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="890" y="760" />
+              <mxPoint x="235" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dreg_e12" edge="1" parent="1" source="dreg_siswa_login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_sys_auth">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_siswa_isi_profil" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0;fontFamily=Times New Roman;" value="Melengkapi Data Profil (Foto, Alamat, No. Telp, Tempat Lahir)" vertex="1">
+          <mxGeometry height="60" width="190" x="445" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_e15" edge="1" parent="1" source="dreg_sys_form_profil" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontStyle=0;fontFamily=Times New Roman;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dreg_siswa_isi_profil">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="890" y="1020" />
+              <mxPoint x="540" y="1020" />
+            </Array>
+            <mxPoint x="540" y="1040" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dreg_e14" edge="1" parent="1" source="dreg_siswa_buka_profil" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_sys_form_profil">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dreg_e13" edge="1" parent="1" source="dreg_sys_auth" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontStyle=0;fontFamily=Times New Roman;" target="dreg_siswa_buka_profil">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="890" y="920.06" />
+              <mxPoint x="540.06" y="920.06" />
+            </Array>
+            <mxPoint x="910" y="1040" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mA6s5-sHiXCKjfH8BWdt-7" edge="1" parent="1" source="dreg_admin_info" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontStyle=0" target="dreg_siswa_login" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_pengajuan" name="3. Pengajuan Tempat PKL">
+    <mxGraphModel dx="817" dy="1058" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_pengajuan_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Siswa" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_n_start" parent="diag_pengajuan_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_act_buka_pkl" parent="diag_pengajuan_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Pengajuan PKL" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_act_isi_pkl" parent="diag_pengajuan_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Memilih DUDI &amp;amp; Mengisi Data Periode PKL" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_act_submit_pkl" parent="diag_pengajuan_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menekan Tombol Kirim Pengajuan" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_act_show_dudi" parent="diag_pengajuan_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Daftar DUDI &amp;amp; Sisa Kuota" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_dec_kuota" parent="diag_pengajuan_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Kuota DUDI&amp;nbsp;&lt;div&gt;Masih&lt;br&gt;Tersedia?&lt;/div&gt;" vertex="1">
+          <mxGeometry height="95" width="160" x="105" y="292.5" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_act_err_kuota" parent="diag_pengajuan_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Pesan Kuota Penuh" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_act_save_pkl" parent="diag_pengajuan_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menyimpan Pengajuan dengan Status &#39;Pending&#39;" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_act_status_pkl" parent="diag_pengajuan_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Status Pengajuan Menunggu Verifikasi" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_n_end" parent="diag_pengajuan_lane_sys" style="ellipse;html=1;shape=endState;fillColor=light-dark(#050505, #121212);strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_9" edge="1" parent="diag_pengajuan_lane_sys" source="diag_pengajuan_act_save_pkl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_pengajuan_act_status_pkl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_10" edge="1" parent="diag_pengajuan_lane_sys" source="diag_pengajuan_act_status_pkl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_pengajuan_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_1" edge="1" parent="1" source="diag_pengajuan_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_pengajuan_act_buka_pkl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_2" edge="1" parent="1" source="diag_pengajuan_act_buka_pkl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_pengajuan_act_show_dudi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_3" edge="1" parent="1" source="diag_pengajuan_act_show_dudi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="diag_pengajuan_act_isi_pkl">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_4" edge="1" parent="1" source="diag_pengajuan_act_isi_pkl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_pengajuan_act_submit_pkl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_5" edge="1" parent="1" source="diag_pengajuan_act_submit_pkl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="diag_pengajuan_dec_kuota">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="380" />
+              <mxPoint x="430" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_6" edge="1" parent="1" source="diag_pengajuan_dec_kuota" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_pengajuan_act_err_kuota" value="Tidak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_7" edge="1" parent="1" source="diag_pengajuan_dec_kuota" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="diag_pengajuan_act_save_pkl" value="Ya">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710.03" y="380" />
+              <mxPoint x="710.03" y="605.03" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_pengajuan_edge_8" edge="1" parent="1" source="diag_pengajuan_act_err_kuota" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="diag_pengajuan_act_isi_pkl">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="90" y="525" />
+              <mxPoint x="90" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_verif_pkl" name="4. Verifikasi Pengajuan PKL">
+    <mxGraphModel dx="723" dy="907" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_verif_pkl_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Hubin / Admin" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_n_start" parent="diag_verif_pkl_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_act_buka_verif" parent="diag_verif_pkl_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Data Pengajuan PKL" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_act_pilih_siswa" parent="diag_verif_pkl_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Memilih Data Siswa &amp;amp; Meninjau Berkas" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_act_keputusan" parent="diag_verif_pkl_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menentukan Keputusan (Setujui / Tolak)" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_act_show_list_pkl" parent="diag_verif_pkl_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Daftar Pengajuan Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_dec_status" parent="diag_verif_pkl_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Persetujuan&lt;br&gt;Hubin?" vertex="1">
+          <mxGeometry height="80" width="130" x="120" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="Gs7AoLz8XQJF1YJH8yWe-3" edge="1" parent="diag_verif_pkl_lane_sys" source="diag_verif_pkl_act_tolak" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;fontSize=14;" target="diag_verif_pkl_act_notif_hubin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_act_tolak" parent="diag_verif_pkl_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Update Status &#39;Ditolak&#39; &amp;amp; Simpan Catatan" vertex="1">
+          <mxGeometry height="50" width="150" x="25" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="Gs7AoLz8XQJF1YJH8yWe-2" edge="1" parent="diag_verif_pkl_lane_sys" source="diag_verif_pkl_act_setuju" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;fontSize=14;" target="diag_verif_pkl_act_notif_hubin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_act_setuju" parent="diag_verif_pkl_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Update Status &#39;Disetujui&#39; &amp;amp; Kurangi Kuota DUDI" vertex="1">
+          <mxGeometry height="50" width="150" x="195" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_act_notif_hubin" parent="diag_verif_pkl_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Kirim Notifikasi Status ke Dashboard Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_n_end" parent="diag_verif_pkl_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_edge_1" edge="1" parent="1" source="diag_verif_pkl_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_verif_pkl_act_buka_verif">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_edge_2" edge="1" parent="1" source="diag_verif_pkl_act_buka_verif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_verif_pkl_act_show_list_pkl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_edge_3" edge="1" parent="1" source="diag_verif_pkl_act_show_list_pkl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_verif_pkl_act_pilih_siswa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="240" />
+              <mxPoint x="230" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_verif_pkl_edge_4" edge="1" parent="1" source="diag_verif_pkl_act_pilih_siswa" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_verif_pkl_act_keputusan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_edge_5" edge="1" parent="1" source="diag_verif_pkl_act_keputusan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_verif_pkl_dec_status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_edge_6" edge="1" parent="1" source="diag_verif_pkl_dec_status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_verif_pkl_act_tolak" value="Tolak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_edge_7" edge="1" parent="1" source="diag_verif_pkl_dec_status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_verif_pkl_act_setuju" value="Setujui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_verif_pkl_edge_10" edge="1" parent="1" source="diag_verif_pkl_act_notif_hubin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_verif_pkl_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_assign_pembimbing" name="5. Plotting Guru Pembimbing">
+    <mxGraphModel dx="1012" dy="1270" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_assign_pembimbing_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Hubin / Admin" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_n_start" parent="diag_assign_pembimbing_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_act_buka_plot" parent="diag_assign_pembimbing_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Plotting Pembimbing" vertex="1">
+          <mxGeometry height="50" width="190" x="-265" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_act_pilih_plot" parent="diag_assign_pembimbing_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Memilih Siswa &amp;amp; Guru Pembimbing" vertex="1">
+          <mxGeometry height="50" width="190" x="-265" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_act_save_plot_btn" parent="diag_assign_pembimbing_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menekan Tombol Simpan Penugasan" vertex="1">
+          <mxGeometry height="50" width="190" x="-265" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_act_show_plot" parent="diag_assign_pembimbing_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Daftar Siswa Disetujui &amp;amp; List Guru" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_act_save_plot" parent="diag_assign_pembimbing_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menyimpan Relasi Pembimbing ke Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_act_update_dash_guru" parent="diag_assign_pembimbing_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Memperbarui Daftar Siswa Bimbingan di Portal Guru" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_n_end" parent="diag_assign_pembimbing_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_edge_2" edge="1" parent="diag_assign_pembimbing_lane_sys" source="diag_assign_pembimbing_act_buka_plot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_assign_pembimbing_act_show_plot">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_edge_3" edge="1" parent="diag_assign_pembimbing_lane_sys" source="diag_assign_pembimbing_act_show_plot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="diag_assign_pembimbing_act_pilih_plot">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="185" y="290" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_edge_4" edge="1" parent="diag_assign_pembimbing_lane_sys" source="diag_assign_pembimbing_act_pilih_plot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_assign_pembimbing_act_save_plot_btn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_edge_5" edge="1" parent="diag_assign_pembimbing_lane_sys" source="diag_assign_pembimbing_act_save_plot_btn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_assign_pembimbing_act_save_plot">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_edge_6" edge="1" parent="diag_assign_pembimbing_lane_sys" source="diag_assign_pembimbing_act_save_plot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_assign_pembimbing_act_update_dash_guru">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_edge_7" edge="1" parent="diag_assign_pembimbing_lane_sys" source="diag_assign_pembimbing_act_update_dash_guru" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_assign_pembimbing_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_assign_pembimbing_edge_1" edge="1" parent="1" source="diag_assign_pembimbing_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_assign_pembimbing_act_buka_plot">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_idcard" name="6. Cetak ID Card PKL QR Code">
+    <mxGraphModel dx="719" dy="907" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_idcard_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Siswa / Hubin" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_n_start" parent="diag_idcard_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_act_buka_idcard" parent="diag_idcard_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Cetak ID Card" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_act_unduh_idcard" parent="diag_idcard_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Mengunduh / Mencetak ID Card PDF" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_dec_status_card" parent="diag_idcard_lane_user" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Status PKL&lt;br&gt;Sudah Disetujui?" vertex="1">
+          <mxGeometry height="80" width="140" x="455" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_act_gen_qr" parent="diag_idcard_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Generate QR Code Data Verifikasi PKL" vertex="1">
+          <mxGeometry height="50" width="190" x="430" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_edge_2" edge="1" parent="diag_idcard_lane_user" source="diag_idcard_act_buka_idcard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_idcard_dec_status_card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_edge_4" edge="1" parent="diag_idcard_lane_user" source="diag_idcard_dec_status_card" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_idcard_act_gen_qr" value="Ya">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="190" />
+              <mxPoint x="650" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_idcard_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_act_err_card" parent="diag_idcard_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Notifikasi &#39;Belum Disetujui/Ditolak&#39;" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_act_render_pdf" parent="diag_idcard_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Render Template ID Card Resmi ke PDF" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_n_end" parent="diag_idcard_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_edge_5" edge="1" parent="diag_idcard_lane_sys" source="diag_idcard_act_err_card" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="diag_idcard_n_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="330" y="305" />
+              <mxPoint x="330" y="660" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_idcard_edge_1" edge="1" parent="1" source="diag_idcard_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_idcard_act_buka_idcard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_edge_3" edge="1" parent="1" source="diag_idcard_dec_status_card" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_idcard_act_err_card" value="Tidak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_idcard_edge_6" edge="1" parent="1" source="diag_idcard_act_gen_qr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_idcard_act_render_pdf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="K4avcvxiEQm2UZMw4yGx-1" edge="1" parent="1" source="diag_idcard_act_render_pdf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;strokeWidth=2;" target="diag_idcard_act_unduh_idcard">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="550" />
+              <mxPoint x="230" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_idcard_edge_8" edge="1" parent="1" source="diag_idcard_act_unduh_idcard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="diag_idcard_n_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_presensi_masuk" name="7. Presensi Masuk GPS &amp; Foto">
+    <mxGraphModel dx="1006" dy="1270" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_presensi_masuk_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Siswa" vertex="1">
+          <mxGeometry height="920" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_n_start" parent="diag_presensi_masuk_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_act_buka_pres_in" parent="diag_presensi_masuk_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Presensi Masuk" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_act_selfie_in" parent="diag_presensi_masuk_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Mengambil Foto Selfie &amp;amp; Koordinat GPS" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_act_submit_in" parent="diag_presensi_masuk_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menekan Tombol Kirim Presensi" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="920" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_act_init_cam" parent="diag_presensi_masuk_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Mengaktifkan Kamera &amp;amp; Deteksi Lokasi GPS" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_dec_gps_in" parent="diag_presensi_masuk_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=12;fontColor=#000000;align=center;" value="Apakah Berada di&lt;br&gt;Radius DUDI?" vertex="1">
+          <mxGeometry height="80" width="140" x="110" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_act_err_gps" parent="diag_presensi_masuk_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menolak Presensi / Tandai Status &#39;Luar Radius&#39;" vertex="1">
+          <mxGeometry height="50" width="190" x="85" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_dec_time_in" parent="diag_presensi_masuk_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Cek Jam Masuk&lt;br&gt;(Tepat Waktu?)" vertex="1">
+          <mxGeometry height="80" width="130" x="115" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="8l7LO47B0E_t74JamtD7-1" edge="1" parent="diag_presensi_masuk_lane_sys" source="diag_presensi_masuk_act_status_ontime" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeWidth=2;fontSize=14;" target="diag_presensi_masuk_act_save_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_act_status_ontime" parent="diag_presensi_masuk_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Set Status &#39;Hadir Tepat Waktu&#39;" vertex="1">
+          <mxGeometry height="50" width="150" x="20" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="8l7LO47B0E_t74JamtD7-4" edge="1" parent="diag_presensi_masuk_lane_sys" source="diag_presensi_masuk_act_status_late" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;fontSize=14;" target="diag_presensi_masuk_act_save_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_act_status_late" parent="diag_presensi_masuk_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Set Status &#39;Terlambat&#39;" vertex="1">
+          <mxGeometry height="50" width="150" x="190" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_act_save_in" parent="diag_presensi_masuk_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Simpan Foto, Koordinat, Jam &amp;amp; Status" vertex="1">
+          <mxGeometry height="50" width="190" x="85" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_n_end" parent="diag_presensi_masuk_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="165" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_9" edge="1" parent="diag_presensi_masuk_lane_sys" source="diag_presensi_masuk_dec_time_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_act_status_ontime" value="Ya">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_10" edge="1" parent="diag_presensi_masuk_lane_sys" source="diag_presensi_masuk_dec_time_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_act_status_late" value="Terlambat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_13" edge="1" parent="diag_presensi_masuk_lane_sys" source="diag_presensi_masuk_act_save_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_1" edge="1" parent="1" source="diag_presensi_masuk_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_act_buka_pres_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_2" edge="1" parent="1" source="diag_presensi_masuk_act_buka_pres_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_act_init_cam">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_3" edge="1" parent="1" source="diag_presensi_masuk_act_init_cam" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_act_selfie_in">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="240" />
+              <mxPoint x="230" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_4" edge="1" parent="1" source="diag_presensi_masuk_act_selfie_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_act_submit_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_5" edge="1" parent="1" source="diag_presensi_masuk_act_submit_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_dec_gps_in">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="380" />
+              <mxPoint x="490" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_6" edge="1" parent="1" source="diag_presensi_masuk_dec_gps_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_act_err_gps" value="Tidak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_7" edge="1" parent="1" source="diag_presensi_masuk_dec_gps_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="diag_presensi_masuk_dec_time_in" value="Ya">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710.03" y="380" />
+              <mxPoint x="710.03" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_presensi_masuk_edge_8" edge="1" parent="1" source="diag_presensi_masuk_act_err_gps" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_masuk_act_selfie_in">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="90.09" y="515" />
+              <mxPoint x="90.09" y="300.09" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_presensi_pulang" name="8. Presensi Pulang GPS &amp; Foto">
+    <mxGraphModel dx="838" dy="1058" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_presensi_pulang_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Siswa" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_n_start" parent="diag_presensi_pulang_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_act_buka_pres_out" parent="diag_presensi_pulang_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Presensi Pulang" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_act_selfie_out" parent="diag_presensi_pulang_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Ambil Foto Pulang &amp;amp; Validasi Lokasi" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_act_submit_out" parent="diag_presensi_pulang_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menekan Tombol Kirim Presensi Pulang" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_6" edge="1" parent="diag_presensi_pulang_lane_user" source="diag_presensi_pulang_act_selfie_out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_act_submit_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_dec_check_in" parent="diag_presensi_pulang_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Sudah Presensi&lt;br&gt;Masuk Hari Ini?" vertex="1">
+          <mxGeometry height="80" width="140" x="115" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_act_err_in_first" parent="diag_presensi_pulang_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Pesan: &#39;Harap Presensi Masuk Terlebih Dahulu&#39;" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_act_cam_out" parent="diag_presensi_pulang_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Aktifkan Kamera &amp;amp; Baca Lokasi GPS" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_act_save_out" parent="diag_presensi_pulang_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Simpan Jam Pulang &amp;amp; Hitung Total Jam Kerja" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_n_end" parent="diag_presensi_pulang_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_1" edge="1" parent="1" source="diag_presensi_pulang_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_act_buka_pres_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_2" edge="1" parent="1" source="diag_presensi_pulang_act_buka_pres_out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_dec_check_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_3" edge="1" parent="1" source="diag_presensi_pulang_dec_check_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_act_err_in_first" value="Belum">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_4" edge="1" parent="1" source="diag_presensi_pulang_dec_check_in" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_act_cam_out" value="Sudah">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="180" />
+              <mxPoint x="710" y="370" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_5" edge="1" parent="1" source="diag_presensi_pulang_act_cam_out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_act_selfie_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585.06" y="430.06" />
+              <mxPoint x="230" y="430.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_7" edge="1" parent="1" source="diag_presensi_pulang_act_submit_out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_act_save_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_8" edge="1" parent="1" source="diag_presensi_pulang_act_save_out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_presensi_pulang_edge_9" edge="1" parent="1" source="diag_presensi_pulang_act_err_in_first" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_presensi_pulang_n_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="295" />
+              <mxPoint x="740" y="745" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_monitor_presensi" name="9. Monitoring &amp; Audit Presensi">
+    <mxGraphModel dx="838" dy="1058" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_monitor_presensi_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=0;fontSize=14;fontColor=#000000;align=center;" value="Guru Pembimbing / Hubin" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_n_start" parent="diag_monitor_presensi_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_act_buka_mon" parent="diag_monitor_presensi_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Membuka Menu Monitoring Presensi" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_act_filter_mon" parent="diag_monitor_presensi_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Filter Tanggal / Kelas / Siswa Bimbingan" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_act_click_audit" parent="diag_monitor_presensi_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Klik Detail &amp;amp; Audit Lokasi GPS" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_act_show_rekap_pres" parent="diag_monitor_presensi_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Menampilkan Tabel Presensi Harian" vertex="1">
+          <mxGeometry height="50" width="190" x="430" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_edge_2" edge="1" parent="diag_monitor_presensi_lane_user" source="diag_monitor_presensi_act_buka_mon" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_monitor_presensi_act_show_rekap_pres">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_edge_3" edge="1" parent="diag_monitor_presensi_lane_user" source="diag_monitor_presensi_act_show_rekap_pres" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_monitor_presensi_act_filter_mon">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="525.06" y="255.06" />
+              <mxPoint x="170" y="255.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=0;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_n_end" parent="diag_monitor_presensi_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;fontStyle=0" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_act_render_map" parent="diag_monitor_presensi_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Menampilkan Peta Titik GPS Siswa vs Radius DUDI" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_edge_7" edge="1" parent="diag_monitor_presensi_lane_sys" source="diag_monitor_presensi_act_render_map" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_monitor_presensi_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_act_load_filtered" parent="diag_monitor_presensi_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;fontStyle=0" value="Memuat Data Sesuai Parameter Filter" vertex="1">
+          <mxGeometry height="50" width="190" x="100" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_edge_1" edge="1" parent="1" source="diag_monitor_presensi_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_monitor_presensi_act_buka_mon">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_edge_6" edge="1" parent="1" source="diag_monitor_presensi_act_click_audit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_monitor_presensi_act_render_map">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_edge_4" edge="1" parent="1" source="diag_monitor_presensi_act_filter_mon" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_monitor_presensi_act_load_filtered">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_monitor_presensi_edge_5" edge="1" parent="1" source="diag_monitor_presensi_act_load_filtered" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;fontStyle=0" target="diag_monitor_presensi_act_click_audit">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="450" />
+              <mxPoint x="230" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_isi_logbook" name="10. Pengisian Logbook Harian">
+    <mxGraphModel dx="719" dy="907" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_isi_logbook_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=13;fontColor=#000000;align=center;" value="Siswa" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_n_start" parent="diag_isi_logbook_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=13;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_act_buka_log" parent="diag_isi_logbook_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=13;fontColor=#000000;align=center;" value="Membuka Menu Logbook Harian" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_act_isi_log_form" parent="diag_isi_logbook_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=13;fontColor=#000000;align=center;" value="Isi Tanggal, Uraian Kerja &amp;amp; Upload Foto" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_act_submit_log" parent="diag_isi_logbook_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=13;fontColor=#000000;align=center;" value="Menekan Tombol Kirim Logbook" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=13;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_act_show_log_form" parent="diag_isi_logbook_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=13;fontColor=#000000;align=center;" value="Menampilkan Form Pengisian Jurnal" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_dec_valid_log" parent="diag_isi_logbook_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=13;fontColor=#000000;align=center;" value="Form &amp;amp; Foto&lt;br&gt;Dokumentasi&amp;nbsp;&lt;div&gt;Lengkap?&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="140" x="115" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_act_err_log" parent="diag_isi_logbook_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=13;fontColor=#000000;align=center;" value="Pesan: &#39;Lengkapi Uraian &amp;amp; Wajib Unggah Foto&#39;" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_act_save_log" parent="diag_isi_logbook_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=13;fontColor=#000000;align=center;" value="Upload Foto &amp;amp; Simpan Status &#39;Menunggu Review&#39;" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_act_show_log_list" parent="diag_isi_logbook_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=13;fontColor=#000000;align=center;" value="Memperbarui Riwayat Logbook Harian Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_n_end" parent="diag_isi_logbook_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=13;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_6" edge="1" parent="diag_isi_logbook_lane_sys" source="diag_isi_logbook_dec_valid_log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="diag_isi_logbook_act_err_log" value="Tidak">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="400" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_9" edge="1" parent="diag_isi_logbook_lane_sys" source="diag_isi_logbook_act_save_log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_isi_logbook_act_show_log_list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_10" edge="1" parent="diag_isi_logbook_lane_sys" source="diag_isi_logbook_act_show_log_list" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_isi_logbook_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_1" edge="1" parent="1" source="diag_isi_logbook_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_isi_logbook_act_buka_log">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_2" edge="1" parent="1" source="diag_isi_logbook_act_buka_log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_isi_logbook_act_show_log_form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_3" edge="1" parent="1" source="diag_isi_logbook_act_show_log_form" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_isi_logbook_act_isi_log_form">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="250" />
+              <mxPoint x="230" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_4" edge="1" parent="1" source="diag_isi_logbook_act_isi_log_form" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_isi_logbook_act_submit_log">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_5" edge="1" parent="1" source="diag_isi_logbook_act_submit_log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="diag_isi_logbook_dec_valid_log">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="380" />
+              <mxPoint x="470" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_7" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_isi_logbook_act_save_log" value="Ya">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="709.97" y="380" />
+              <mxPoint x="709.97" y="605.03" />
+            </Array>
+            <mxPoint x="660" y="380" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_isi_logbook_edge_8" edge="1" parent="1" source="diag_isi_logbook_act_err_log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=13;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_isi_logbook_act_isi_log_form">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="90" y="505" />
+              <mxPoint x="90" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_review_logbook" name="11. Review &amp; Catatan Logbook">
+    <mxGraphModel dx="719" dy="907" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_review_logbook_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Guru Pembimbing" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_n_start" parent="diag_review_logbook_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_act_buka_rev_log" parent="diag_review_logbook_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Logbook Siswa Bimbingan" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_act_pilih_jurnal" parent="diag_review_logbook_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Memilih Jurnal Harian untuk Diperiksa" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_act_beri_catatan" parent="diag_review_logbook_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Input Catatan / Koreksi &amp;amp; Ubah Status" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_act_show_rev_list" parent="diag_review_logbook_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Daftar&amp;nbsp;&lt;div&gt;Logbook Siswa&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="190" x="430" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_act_show_jurnal_detail" parent="diag_review_logbook_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Deskripsi Aktivitas &amp;amp; Foto Bukti" vertex="1">
+          <mxGeometry height="50" width="190" x="430" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_edge_2" edge="1" parent="diag_review_logbook_lane_user" source="diag_review_logbook_act_buka_rev_log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_review_logbook_act_show_rev_list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_edge_3" edge="1" parent="diag_review_logbook_lane_user" source="diag_review_logbook_act_show_rev_list" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_review_logbook_act_pilih_jurnal">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="525.06" y="270.06" />
+              <mxPoint x="170" y="270.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_review_logbook_edge_4" edge="1" parent="diag_review_logbook_lane_user" source="diag_review_logbook_act_pilih_jurnal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_review_logbook_act_show_jurnal_detail">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_edge_5" edge="1" parent="diag_review_logbook_lane_user" source="diag_review_logbook_act_show_jurnal_detail" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_review_logbook_act_beri_catatan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="525.06" y="400.06" />
+              <mxPoint x="170.12" y="400.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_review_logbook_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_n_end" parent="diag_review_logbook_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_act_update_siswa_log" parent="diag_review_logbook_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Memperbarui Catatan Pembimbing di Sisi Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_edge_8" edge="1" parent="diag_review_logbook_lane_sys" source="diag_review_logbook_act_update_siswa_log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_review_logbook_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_act_save_review" parent="diag_review_logbook_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menyimpan Status &#39;Disetujui / Revisi&#39; &amp;amp; Catatan" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_edge_7" edge="1" parent="diag_review_logbook_lane_sys" source="diag_review_logbook_act_save_review" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_review_logbook_act_update_siswa_log">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_edge_1" edge="1" parent="1" source="diag_review_logbook_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_review_logbook_act_buka_rev_log">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_review_logbook_edge_6" edge="1" parent="1" source="diag_review_logbook_act_beri_catatan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_review_logbook_act_save_review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_master_dudi" name="12. Manajemen DUDI &amp; Radius GPS">
+    <mxGraphModel dx="838" dy="1058" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_master_dudi_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Hubin / Admin" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_n_start" parent="diag_master_dudi_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_act_buka_dudi_menu" parent="diag_master_dudi_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Data Perusahaan (DUDI)" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_act_input_dudi" parent="diag_master_dudi_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Input Nama, Alamat, Kuota &amp;amp; Pin GPS (Lat, Long, Radius)" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_act_submit_dudi" parent="diag_master_dudi_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menekan Tombol Simpan DUDI" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_act_show_dudi_list" parent="diag_master_dudi_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Tabel DUDI &amp;amp; Form Input" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_dec_valid_coord" parent="diag_master_dudi_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=12;fontColor=#000000;align=center;" value="Validasi Koordinat &amp;amp;&lt;br&gt;Format Angka?" vertex="1">
+          <mxGeometry height="100" width="155" x="107.5" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_act_err_dudi" parent="diag_master_dudi_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Pesan Kesalahan Form" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_act_save_dudi_db" parent="diag_master_dudi_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menyimpan Data DUDI &amp;amp; Radius Geofencing" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_n_end" parent="diag_master_dudi_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_1" edge="1" parent="1" source="diag_master_dudi_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_act_buka_dudi_menu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_2" edge="1" parent="1" source="diag_master_dudi_act_buka_dudi_menu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_act_show_dudi_list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_3" edge="1" parent="1" source="diag_master_dudi_act_show_dudi_list" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_act_input_dudi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="240" />
+              <mxPoint x="230" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_4" edge="1" parent="1" source="diag_master_dudi_act_input_dudi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_act_submit_dudi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_5" edge="1" parent="1" source="diag_master_dudi_act_submit_dudi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_dec_valid_coord">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="400" />
+              <mxPoint x="500" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_6" edge="1" parent="1" source="diag_master_dudi_dec_valid_coord" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_act_err_dudi" value="Tidak Valid">
+          <mxGeometry relative="1" x="-0.2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_7" edge="1" parent="1" source="diag_master_dudi_dec_valid_coord" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_act_save_dudi_db" value="Valid">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="400.06" />
+              <mxPoint x="710" y="630.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_8" edge="1" parent="1" source="diag_master_dudi_act_err_dudi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_act_input_dudi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="585" y="530" />
+              <mxPoint x="90" y="530" />
+              <mxPoint x="90" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_master_dudi_edge_9" edge="1" parent="1" source="diag_master_dudi_act_save_dudi_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_master_dudi_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_import_export" name="13. Import &amp; Export Data Pengguna">
+    <mxGraphModel dx="1006" dy="1270" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_import_export_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Hubin / Admin" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_n_start" parent="diag_import_export_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_act_buka_user_menu" parent="diag_import_export_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Kelola Siswa / Guru" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_act_pilih_aksi" parent="diag_import_export_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Memilih Opsi Import atau Export Excel" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_act_upload_excel" parent="diag_import_export_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Upload File Spreadsheet Template Excel" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="410" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_dec_pilih_exp_imp" parent="diag_import_export_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Pilih Aksi?" vertex="1">
+          <mxGeometry height="80" width="130" x="120" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_act_proc_export" parent="diag_import_export_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Generate &amp;amp; Unduh File Excel" vertex="1">
+          <mxGeometry height="50" width="150" x="190" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_dec_valid_excel" parent="diag_import_export_lane_sys" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Format Kolom &amp;amp;&lt;br&gt;Data Valid?" vertex="1">
+          <mxGeometry height="80" width="140" x="115" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_act_err_import" parent="diag_import_export_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Tampilkan Log Error Baris Tidak Sesuai" vertex="1">
+          <mxGeometry height="50" width="150" x="25" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_act_proc_import" parent="diag_import_export_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Batch Insert ke&amp;nbsp;&lt;div&gt;DB &amp;amp; Tampilkan Rekap Sukses&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="150" x="195" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_n_end" parent="diag_import_export_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_edge_1" edge="1" parent="1" source="diag_import_export_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_act_buka_user_menu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_edge_2" edge="1" parent="1" source="diag_import_export_act_buka_user_menu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_dec_pilih_exp_imp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_edge_3" edge="1" parent="1" source="diag_import_export_dec_pilih_exp_imp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_act_proc_export" value="Export">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670.05" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_import_export_edge_4" edge="1" parent="1" source="diag_import_export_dec_pilih_exp_imp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="diag_import_export_act_pilih_aksi" value="Import">
+          <mxGeometry relative="1" x="-0.5853" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="585" y="240.03" />
+              <mxPoint x="230.09" y="240.09" />
+            </Array>
+            <mxPoint x="590" y="240" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_import_export_edge_5" edge="1" parent="1" source="diag_import_export_act_pilih_aksi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_act_upload_excel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_edge_6" edge="1" parent="1" source="diag_import_export_act_upload_excel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_dec_valid_excel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_edge_7" edge="1" parent="1" source="diag_import_export_dec_valid_excel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_act_err_import" value="Tidak Valid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_edge_8" edge="1" parent="1" source="diag_import_export_dec_valid_excel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_act_proc_import" value="Valid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_import_export_edge_9" edge="1" parent="1" source="diag_import_export_act_proc_export" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_n_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="759.97" y="300" />
+              <mxPoint x="759.97" y="665.03" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_import_export_edge_10" edge="1" parent="1" source="diag_import_export_act_err_import" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_n_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="499.97" y="590" />
+              <mxPoint x="585" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_import_export_edge_11" edge="1" parent="1" source="diag_import_export_act_proc_import" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_import_export_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_penilaian" name="14. Penilaian Kinerja Siswa">
+    <mxGraphModel dx="817" dy="1058" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_penilaian_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Guru Pembimbing" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_n_start" parent="diag_penilaian_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;fontSize=14;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_act_buka_nilai" parent="diag_penilaian_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Penilaian Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_act_pilih_siswa_nilai" parent="diag_penilaian_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Pilih Siswa &amp;amp; Tinjau Rekap Presensi/Logbook" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_act_input_skor" parent="diag_penilaian_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Input Skor Aspek Teknis, Sikap &amp;amp; Laporan" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_act_show_rekap_stat" parent="diag_penilaian_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Form Penilaian &amp;amp; Statistik Siswa" vertex="1">
+          <mxGeometry height="50" width="190" x="430" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_edge_2" edge="1" parent="diag_penilaian_lane_user" source="diag_penilaian_act_buka_nilai" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_penilaian_act_show_rekap_stat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_edge_3" edge="1" parent="diag_penilaian_lane_user" source="diag_penilaian_act_show_rekap_stat" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_penilaian_act_pilih_siswa_nilai">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="525" y="255.07" />
+              <mxPoint x="170.07" y="255.07" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_penilaian_edge_4" edge="1" parent="diag_penilaian_lane_user" source="diag_penilaian_act_pilih_siswa_nilai" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_penilaian_act_input_skor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_n_end" parent="diag_penilaian_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_act_konversi_grade" parent="diag_penilaian_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Konversi Nilai ke Huruf Mutu (A/B/C/D) &amp;amp; Simpan DB" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_edge_7" edge="1" parent="diag_penilaian_lane_sys" source="diag_penilaian_act_konversi_grade" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_penilaian_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_act_hitung_otomatis" parent="diag_penilaian_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Kalkulasi Nilai Akhir Otomatis (Nilai - Penalti)" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_edge_6" edge="1" parent="diag_penilaian_lane_sys" source="diag_penilaian_act_hitung_otomatis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_penilaian_act_konversi_grade">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_edge_1" edge="1" parent="1" source="diag_penilaian_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_penilaian_act_buka_nilai">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_penilaian_edge_5" edge="1" parent="1" source="diag_penilaian_act_input_skor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_penilaian_act_hitung_otomatis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diag_cetak_laporan" name="15. Cetak Laporan Rekapitulasi">
+    <mxGraphModel dx="1633" dy="2117" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="diag_cetak_laporan_lane_user" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Hubin / Guru Pembimbing" vertex="1">
+          <mxGeometry height="820" width="340" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_n_start" parent="diag_cetak_laporan_lane_user" style="ellipse;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="155" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_act_buka_lap" parent="diag_cetak_laporan_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Membuka Menu Laporan Rekapitulasi" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_act_pilih_param_lap" parent="diag_cetak_laporan_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Pilih Periode / Jurusan &amp;amp; Format (PDF/Excel)" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_act_click_cetak_lap" parent="diag_cetak_laporan_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menekan Tombol Cetak / Export" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_act_show_filter_lap" parent="diag_cetak_laporan_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Menampilkan Opsi&amp;nbsp;&lt;div&gt;Filter Laporan&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="190" x="430" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_act_query_lap" parent="diag_cetak_laporan_lane_user" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Mengambil Seluruh Data Terkait dari Database" vertex="1">
+          <mxGeometry height="50" width="190" x="430" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_edge_2" edge="1" parent="diag_cetak_laporan_lane_user" source="diag_cetak_laporan_act_buka_lap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_cetak_laporan_act_show_filter_lap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_edge_3" edge="1" parent="diag_cetak_laporan_lane_user" source="diag_cetak_laporan_act_show_filter_lap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_cetak_laporan_act_pilih_param_lap">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="525" y="270" />
+              <mxPoint x="170" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_edge_4" edge="1" parent="diag_cetak_laporan_lane_user" source="diag_cetak_laporan_act_pilih_param_lap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_cetak_laporan_act_click_cetak_lap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_edge_5" edge="1" parent="diag_cetak_laporan_lane_user" source="diag_cetak_laporan_act_click_cetak_lap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_cetak_laporan_act_query_lap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_lane_sys" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=35;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontStyle=1;fontSize=14;fontColor=#000000;align=center;" value="Sistem" vertex="1">
+          <mxGeometry height="820" width="370" x="400" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_n_end" parent="diag_cetak_laporan_lane_sys" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;strokeWidth=2;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="170" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_act_render_dokumen" parent="diag_cetak_laporan_lane_sys" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;strokeColor=#000000;strokeWidth=2;fillColor=#FFFFFF;fontSize=14;fontColor=#000000;align=center;" value="Render Format Dokumen Resmi Siap Cetak" vertex="1">
+          <mxGeometry height="50" width="190" x="90" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_edge_7" edge="1" parent="diag_cetak_laporan_lane_sys" source="diag_cetak_laporan_act_render_dokumen" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_cetak_laporan_n_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_edge_1" edge="1" parent="1" source="diag_cetak_laporan_n_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_cetak_laporan_act_buka_lap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="diag_cetak_laporan_edge_6" edge="1" parent="1" source="diag_cetak_laporan_act_query_lap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=14;fontColor=#000000;labelBackgroundColor=#FFFFFF;" target="diag_cetak_laporan_act_render_dokumen">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

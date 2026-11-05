@@ -102,12 +102,7 @@
                                placeholder="Masukkan Jurusan" value="<?php echo isset($biodata->siswa_jurusan) ? $biodata->siswa_jurusan : ''; ?>">
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="siswa_asal_sekolah" class="form-label">Sekolah</label>
-                        <input type="text" class="form-control" id="siswa_asal_sekolah" name="siswa_asal_sekolah" 
-                               placeholder="Masukkan Asal Sekolah" value="<?php echo isset($biodata->siswa_asal_sekolah) ? $biodata->siswa_asal_sekolah : ''; ?>">
-                    </div>
-                    
+
                     <div class="mb-3">
                         <label for="siswa_telepon" class="form-label">Telepon Siswa</label>
                         <input type="text" class="form-control" id="siswa_telepon" name="siswa_telepon" 
@@ -195,13 +190,16 @@
                         <?php if($user->foto_profil): ?>
                             <div class="mb-3">
                                 <label class="form-label">Foto Saat Ini:</label><br>
-                                <img src="<?php echo base_url('uploads/profil/'.$user->foto_profil); ?>" 
+                                  <img id="foto-profil-preview" src="<?php echo base_url('uploads/profil/'.$user->foto_profil); ?>" 
                                      alt="Foto Profil" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
                             </div>
                         <?php endif; ?>
                         
                         <input type="file" class="form-control" id="foto_profil" name="foto_profil" 
                                accept="image/*">
+                        <?php if(!$user->foto_profil): ?>
+                            <img id="foto-profil-preview" src="" alt="Pratinjau Foto Profil" class="img-thumbnail mt-2 d-none" style="max-width: 200px; max-height: 200px;">
+                        <?php endif; ?>
                         <div class="form-text">Format: JPG, PNG, GIF. Ukuran maksimal: 2MB</div>
                     </div>
                 </div>
@@ -215,3 +213,32 @@
         </div>
     </div>
 </form>
+
+<script>
+(function () {
+    var input = document.getElementById('foto_profil');
+    var preview = document.getElementById('foto-profil-preview');
+    if (!input || !preview) return;
+
+    input.addEventListener('change', function () {
+        var file = this.files && this.files[0];
+        if (!file) return;
+        if (!file.type.match(/^image\//)) {
+            this.value = '';
+            window.alert('Pilih file gambar yang valid.');
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            this.value = '';
+            window.alert('Ukuran foto maksimal 2 MB.');
+            return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            preview.src = event.target.result;
+            preview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    });
+})();
+</script>

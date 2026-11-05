@@ -60,6 +60,13 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="fw-bold bg-light">Username Login</td>
+                            <td>
+                                <input type="text" class="form-control" name="username" value="<?php echo set_value('username', isset($pembimbing->username) ? $pembimbing->username : '') ?>" pattern="[A-Za-z0-9_]+" placeholder="Username Portal Pembimbing">
+                                <small class="text-muted">Password lama tetap digunakan. Untuk mengganti password, gunakan menu pengelolaan akun.</small>
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="fw-bold bg-light">Tempat Tugas</td>
                             <td>
                                 <select class="form-control" name="tempat_tugas" required>

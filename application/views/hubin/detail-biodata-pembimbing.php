@@ -27,6 +27,14 @@
                         <td><?php echo $biodata->pembimbing_nama ?></td>
                     </tr>
                     <tr>
+                        <td class="fw-bold bg-light">Username Login</td>
+                        <td><?php echo isset($biodata->username) && !empty($biodata->username) ? htmlspecialchars($biodata->username) : '-' ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-light">Password Login</td>
+                        <td><code><?php echo isset($biodata->password) && !empty($biodata->password) ? htmlspecialchars($biodata->password) : '-' ?></code></td>
+                    </tr>
+                    <tr>
                         <td class="fw-bold bg-light">NIP</td>
                         <td><?php echo $biodata->pembimbing_nip ? $biodata->pembimbing_nip : '-' ?></td>
                     </tr>
@@ -120,6 +128,14 @@
                         <tr>
                             <td width="30%" class="fw-bold">Nama Pembimbing</td>
                             <td><?php echo $biodata->pembimbing_nama ?></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Username Login</td>
+                            <td><?php echo isset($biodata->username) && !empty($biodata->username) ? htmlspecialchars($biodata->username) : '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Password Login</td>
+                            <td><?php echo isset($biodata->password) && !empty($biodata->password) ? htmlspecialchars($biodata->password) : '-' ?></td>
                         </tr>
                         <tr>
                             <td class="fw-bold">NIP</td>

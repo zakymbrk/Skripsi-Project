@@ -49,6 +49,20 @@ $getpembimbing = $this->M_pembimbing->get_pembimbing_paginated($config['per_page
     </div>
 <?php } ?>
 
+<?php if(!empty($this->session->flashdata('new_user_username'))): ?>
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Informasi Akun Pembimbing Baru</h5>
+        <hr>
+        <p class="mb-2"><strong>Akun pembimbing berhasil dibuat!</strong></p>
+        <p class="mb-1"><strong>Nama:</strong> <?php echo $this->session->flashdata('new_user_nama'); ?></p>
+        <p class="mb-1"><strong>Username:</strong> <code><?php echo $this->session->flashdata('new_user_username'); ?></code></p>
+        <p class="mb-0"><strong>Password:</strong> <code><?php echo $this->session->flashdata('new_user_password'); ?></code></p>
+        <hr>
+        <p class="mb-0 small"><i class="fas fa-exclamation-triangle me-1"></i>Harap catat dan berikan informasi akun ini kepada guru pembimbing yang bersangkutan untuk login ke Portal Pembimbing.</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
 <?php if(!empty($this->session->flashdata('error_message'))){ ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="fas fa-exclamation-circle me-2"></i>
@@ -73,6 +87,10 @@ $getpembimbing = $this->M_pembimbing->get_pembimbing_paginated($config['per_page
             </form>
         </div>
         <div class="d-flex align-items-center gap-2">
+            <!-- Import Button -->
+            <a href="<?php echo base_url('hubin/view/import-pembimbing') ?>" class="btn btn-info btn-sm text-white">
+                <i class="fas fa-file-import me-1"></i> Import Pembimbing
+            </a>
             <!-- Export Button -->
             <a href="<?php echo base_url('export_excel/export_data_pembimbing') ?>" class="btn btn-success btn-sm" id="export-all-btn">
                 <i class="fas fa-file-excel"></i> Export Data

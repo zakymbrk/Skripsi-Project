@@ -38,32 +38,26 @@ $userdata = $this->session->userdata('userdata');
             <div class="col-md-6">
                 <div class="card border-primary">
                     <div class="card-header bg-primary text-white">
-                        <h6 class="mb-0"><i class="fas fa-download me-2"></i>Export Semua Data</h6>
+                        <h6 class="mb-0"><i class="fas fa-download me-2"></i>Export Biodata Lengkap</h6>
                     </div>
                     <div class="card-body text-center">
-                        <p>Download semua data siswa ke dalam file Excel</p>
-                        <a href="<?php echo base_url('export_excel/export_data_siswa_template') ?>" class="btn btn-success btn-lg">
-                            <i class="fas fa-file-excel me-2"></i>Export ke XLSX
+                        <p class="text-muted">Download seluruh data siswa beserta biodata lengkap, data akun, DUDI, dan pembimbing ke dalam file Excel (.xlsx).</p>
+                        <a href="<?php echo base_url('export_excel/export_data_siswa') ?>" class="btn btn-primary btn-lg">
+                            <i class="fas fa-file-excel me-2"></i>Export Data Lengkap
                         </a>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-6">
-                <div class="card border-info">
-                    <div class="card-header bg-info text-white">
-                        <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i>Butuh Bantuan?</h6>
+                <div class="card border-success">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0"><i class="fas fa-file-download me-2"></i>Download Template Import</h6>
                     </div>
-                    <div class="card-body">
-                        <ul class="mb-0">
-                            <li>File export dapat digunakan sebagai template import</li>
-                            <li>Edit data sesuai kebutuhan</li>
-                            <li>Gunakan fitur Import untuk mengupload kembali</li>
-                            <li>Pastikan format data sesuai dengan template</li>
-                        </ul>
-                        <hr>
-                        <a href="<?php echo base_url('hubin/view/import-siswa') ?>" class="btn btn-outline-primary">
-                            <i class="fas fa-upload me-2"></i>Ke Halaman Import
+                    <div class="card-body text-center">
+                        <p class="text-muted">Download template Excel (8 kolom standar) untuk keperluan import data siswa baru.</p>
+                        <a href="<?php echo base_url('export_excel/export_data_siswa_template') ?>" class="btn btn-success btn-lg">
+                            <i class="fas fa-file-excel me-2"></i>Download Template
                         </a>
                     </div>
                 </div>

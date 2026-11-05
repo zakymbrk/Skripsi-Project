@@ -1,0 +1,359 @@
+DAFTAR PEMANGGILAN CLASS RULE_BASED_VALIDATION
+SISTEM INFORMASI PKL - SIPKL
+
+======================================================================
+1. IDENTITAS CLASS
+======================================================================
+
+File class:
+application/libraries/Rule_based_validation.php
+
+Deklarasi class:
+application/libraries/Rule_based_validation.php baris 28
+
+Kode:
+class Rule_based_validation {
+
+Library CodeIgniter dimuat dengan:
+$this->load->library('rule_based_validation');
+
+Setelah dimuat, object class dipanggil melalui property:
+$this->rule_based_validation
+
+Pada view laporan Hubin, object dipanggil melalui:
+$CI->rule_based_validation
+
+Catatan:
+Nomor baris mengikuti kondisi file saat dokumen ini dibuat. Jika kode
+bertambah atau berkurang, nomor baris dapat berubah.
+
+======================================================================
+2. RINGKASAN SELURUH PEMANGGILAN
+======================================================================
+
+Jumlah lokasi pemuatan library:
+- 7 lokasi pada application/controllers/Siswa.php
+- 1 lokasi pada application/controllers/Guru.php
+- 1 lokasi pada application/views/hubin/laporan-monitoring.php
+
+Jumlah pemanggilan method class:
+- Siswa.php: validasi kelayakan, presensi, GPS, logbook, dan nilai.
+- Guru.php: sinkronisasi nilai siswa bimbingan.
+- laporan-monitoring.php: sinkronisasi nilai seluruh siswa Hubin.
+
+======================================================================
+3. PEMANGGILAN PADA CONTROLLER SISWA
+======================================================================
+
+File:
+application/controllers/Siswa.php
+
+3.1 Sinkronisasi harian saat siswa membuka aplikasi
+
+Baris 41:
+$this->load->library('rule_based_validation');
+
+Baris 44:
+$this->rule_based_validation->sync_penilaian_siswa($siswa_harian->siswa_id);
+
+Keterangan:
+Library dimuat saat constructor Siswa berjalan. Jika data siswa ditemukan,
+sistem menjalankan sinkronisasi nilai. Proses ini juga menandai hari PKL
+yang sudah lewat tanpa presensi sebagai alpha dan memberikan pengurangan
+5 poin per kejadian.
+
+3.2 Validasi halaman presensi dan logbook
+
+Baris 92:
+$this->load->library('rule_based_validation');
+
+Baris 94:
+$check = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+
+Keterangan:
+Memeriksa apakah siswa memiliki data yang valid, status pengajuan sudah
+disetujui, dan hari ini masih berada dalam periode PKL.
+
+3.3 Sinkronisasi nilai pada halaman rekap siswa
+
+Baris 184:
+$this->load->library('rule_based_validation');
+
+Baris 187:
+$this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+
+Keterangan:
+Menghitung ulang nilai kehadiran, logbook, keterlambatan, alpha, penalti,
+dan nilai akhir sebelum halaman rekap ditampilkan.
+
+3.4 Presensi masuk
+
+Method controller:
+Siswa::do_presensi_masuk()
+
+Baris 1077:
+$this->load->library('rule_based_validation');
+
+Baris 1081:
+$eligibility = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+
+Keterangan:
+Memastikan siswa memiliki hak untuk melakukan presensi.
+
+Baris 1107:
+$pre_rule = $this->rule_based_validation->validate_presensi_masuk(...);
+
+Keterangan:
+Validasi awal sebelum upload foto. Memeriksa kelengkapan data, presensi
+ganda, dan lokasi GPS.
+
+Baris 1150:
+$rule_check = $this->rule_based_validation->validate_presensi_masuk(...);
+
+Keterangan:
+Validasi lengkap setelah foto presensi berhasil diunggah.
+
+Baris 1169:
+$geo_audit = $this->rule_based_validation->validate_geolocation(...);
+
+Keterangan:
+Menghitung dan menyimpan audit lokasi siswa terhadap lokasi DUDI.
+
+Baris 1194:
+$this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+
+Keterangan:
+Memperbarui rekap nilai setelah presensi masuk berhasil disimpan.
+
+3.5 Presensi pulang
+
+Method controller:
+Siswa::do_presensi_pulang()
+
+Baris 1215:
+$this->load->library('rule_based_validation');
+
+Baris 1219:
+$eligibility = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+
+Keterangan:
+Memastikan siswa berhak melakukan presensi pulang.
+
+Baris 1243:
+$pre_rule = $this->rule_based_validation->validate_presensi_pulang(...);
+
+Keterangan:
+Validasi awal bahwa presensi masuk sudah ada dan presensi pulang belum
+pernah dilakukan.
+
+Baris 1286:
+$rule_check = $this->rule_based_validation->validate_presensi_pulang(...);
+
+Keterangan:
+Validasi lengkap setelah foto pulang diproses, termasuk pemeriksaan GPS.
+
+Baris 1317:
+$this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+
+Keterangan:
+Memperbarui nilai setelah presensi pulang berhasil disimpan.
+
+3.6 Update lokasi realtime
+
+Method controller:
+Siswa::update_lokasi_realtime()
+
+Baris 1331:
+$this->load->library('rule_based_validation');
+
+Baris 1333:
+$eligibility = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+
+Keterangan:
+Memeriksa kelayakan siswa sebelum lokasi realtime diproses.
+
+Baris 1359:
+$geo_audit = $this->rule_based_validation->validate_geolocation(...);
+
+Keterangan:
+Memvalidasi koordinat terkini dan memperbarui audit lokasi pada presensi
+aktif siswa.
+
+3.7 Logbook harian
+
+Method controller:
+Siswa::do_tambah_logbook()
+
+Baris 1391:
+$this->load->library('rule_based_validation');
+
+Baris 1395:
+$eligibility = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+
+Keterangan:
+Memastikan siswa berhak mengisi logbook.
+
+Baris 1426:
+$geo_check = $this->rule_based_validation->validate_geolocation(...);
+
+Keterangan:
+Memastikan siswa berada di dalam radius DUDI saat mengirim logbook.
+
+Baris 1436:
+$pre_rule = $this->rule_based_validation->validate_logbook(...);
+
+Keterangan:
+Validasi awal sebelum upload dokumentasi logbook.
+
+Baris 1477:
+$rule_check = $this->rule_based_validation->validate_logbook(...);
+
+Keterangan:
+Validasi lengkap setelah dokumentasi logbook berhasil diunggah.
+
+Baris 1512:
+$this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+
+Keterangan:
+Memperbarui nilai siswa setelah logbook berhasil disimpan.
+
+======================================================================
+4. PEMANGGILAN PADA CONTROLLER GURU
+======================================================================
+
+File:
+application/controllers/Guru.php
+
+Baris 149:
+$this->load->library('rule_based_validation');
+
+Baris 151:
+$this->rule_based_validation->sync_penilaian_siswa($sb->siswa_id);
+
+Keterangan:
+Pada laporan bimbingan, sistem melakukan sinkronisasi nilai untuk setiap
+siswa yang berada di bawah bimbingan guru tersebut.
+
+Tujuan:
+- Memperbarui jumlah hadir.
+- Memperbarui jumlah alpha.
+- Memperbarui jumlah terlambat.
+- Memperbarui jumlah logbook valid/tidak valid.
+- Menghitung penalti 5 poin.
+- Menghasilkan nilai akhir siswa.
+
+======================================================================
+5. PEMANGGILAN PADA VIEW LAPORAN HUBIN
+======================================================================
+
+File:
+application/views/hubin/laporan-monitoring.php
+
+Baris 5:
+$CI->load->library('rule_based_validation');
+
+Baris 13:
+$CI->rule_based_validation->sync_penilaian_siswa($st->siswa_id);
+
+Keterangan:
+Sebelum laporan monitoring global Hubin ditampilkan, sistem melakukan
+sinkronisasi nilai untuk seluruh siswa.
+
+======================================================================
+6. METHOD YANG TERSEDIA DI DALAM CLASS
+======================================================================
+
+File:
+application/libraries/Rule_based_validation.php
+
+Baris 47:
+calculate_distance()
+Menghitung jarak dua koordinat GPS menggunakan formula Haversine.
+
+Baris 68:
+validate_geolocation()
+Memvalidasi lokasi siswa terhadap radius lokasi DUDI.
+
+Baris 170:
+validate_presensi_masuk()
+Memvalidasi presensi masuk, data duplikat, parameter, dan lokasi.
+
+Baris 216:
+validate_presensi_pulang()
+Memvalidasi prasyarat presensi masuk, presensi pulang ganda, dan lokasi.
+
+Baris 276:
+validate_logbook()
+Memvalidasi presensi harian, duplikasi logbook, deskripsi, dan dokumentasi.
+
+Baris 342:
+normalize_pkl_schedule()
+Menormalisasi tanggal mulai, tanggal selesai, dan periode PKL.
+
+Baris 393:
+validate_siswa_eligibility()
+Memvalidasi status pengajuan dan kelayakan siswa untuk monitoring.
+
+Baris 446:
+validate_status_harian()
+Memeriksa gabungan status presensi dan logbook harian.
+
+Baris 519:
+sync_penilaian_siswa()
+Menghitung dan menyimpan rekap nilai serta penalti siswa.
+
+Method internal:
+mark_missing_attendance()
+
+Keterangan:
+Method ini dipanggil dari sync_penilaian_siswa(). Fungsinya membuat record
+alpha untuk tanggal PKL yang sudah terlewati sampai hari kemarin apabila
+siswa tidak memiliki record presensi. Hari ini tidak langsung dibuat alpha.
+
+======================================================================
+7. RINGKASAN ALUR PEMANGGILAN
+======================================================================
+
+Siswa membuka aplikasi:
+Siswa.php:41 -> load library
+Siswa.php:44 -> sync_penilaian_siswa()
+
+Siswa membuka presensi/logbook:
+Siswa.php:92 -> load library
+Siswa.php:94 -> validate_siswa_eligibility()
+
+Siswa melakukan presensi masuk:
+Siswa.php:1077 -> load library
+Siswa.php:1081 -> validate_siswa_eligibility()
+Siswa.php:1107 -> validate_presensi_masuk()
+Siswa.php:1150 -> validate_presensi_masuk()
+Siswa.php:1169 -> validate_geolocation()
+Siswa.php:1194 -> sync_penilaian_siswa()
+
+Siswa melakukan presensi pulang:
+Siswa.php:1215 -> load library
+Siswa.php:1219 -> validate_siswa_eligibility()
+Siswa.php:1243 -> validate_presensi_pulang()
+Siswa.php:1286 -> validate_presensi_pulang()
+Siswa.php:1317 -> sync_penilaian_siswa()
+
+Siswa memperbarui lokasi:
+Siswa.php:1331 -> load library
+Siswa.php:1333 -> validate_siswa_eligibility()
+Siswa.php:1359 -> validate_geolocation()
+
+Siswa mengirim logbook:
+Siswa.php:1391 -> load library
+Siswa.php:1395 -> validate_siswa_eligibility()
+Siswa.php:1426 -> validate_geolocation()
+Siswa.php:1436 -> validate_logbook()
+Siswa.php:1477 -> validate_logbook()
+Siswa.php:1512 -> sync_penilaian_siswa()
+
+Guru membuka laporan:
+Guru.php:149 -> load library
+Guru.php:151 -> sync_penilaian_siswa()
+
+Hubin membuka laporan monitoring:
+laporan-monitoring.php:5 -> load library
+laporan-monitoring.php:13 -> sync_penilaian_siswa()

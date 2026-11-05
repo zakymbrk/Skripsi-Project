@@ -40,6 +40,86 @@ class M_dudi extends CI_Model {
         return $this->db->insert($this->table, $data);
     }
 
+    function normalisasi_status_mitra($value)
+    {
+        $status = strtolower(trim((string) $value));
+        if ($status === 'mitra' || $status === '1' || $status === 'ya' || $status === 'true' || $status === 'y') {
+            return ['is_mitra' => 1, 'status_kerjasama' => 'mitra'];
+        }
+
+        return ['is_mitra' => 0, 'status_kerjasama' => 'non_mitra'];
+    }
+
+    function import_dudi_batch($rows)
+    {
+        $inserted = 0;
+        $updated = 0;
+        $errors = [];
+
+        foreach ($rows as $index => $row) {
+            if (empty($row)) {
+                continue;
+            }
+
+            $nama = isset($row['dudi_nama']) ? trim((string) $row['dudi_nama']) : '';
+            if ($nama === '') {
+                $errors[] = 'Baris ' . ($index + 2) . ': Nama DUDI kosong.';
+                continue;
+            }
+
+            $alamat = isset($row['dudi_alamat']) ? trim((string) $row['dudi_alamat']) : '';
+            $telepon = isset($row['dudi_telepon']) ? trim((string) $row['dudi_telepon']) : null;
+            $email = isset($row['dudi_email']) ? trim((string) $row['dudi_email']) : null;
+            $pic = isset($row['dudi_pic']) ? trim((string) $row['dudi_pic']) : null;
+            $nip_pic = isset($row['dudi_nip_pic']) ? trim((string) $row['dudi_nip_pic']) : null;
+            $instruktur = isset($row['dudi_instruktur']) ? trim((string) $row['dudi_instruktur']) : null;
+            $nip_instruktur = isset($row['dudi_nip_instruktur']) ? trim((string) $row['dudi_nip_instruktur']) : null;
+            $latitude = isset($row['latitude']) ? trim((string) $row['latitude']) : null;
+            $longitude = isset($row['longitude']) ? trim((string) $row['longitude']) : null;
+            $radius = isset($row['radius']) ? trim((string) $row['radius']) : 100;
+            $status = isset($row['status_kerjasama']) ? trim((string) $row['status_kerjasama']) : (isset($row['is_mitra']) ? $row['is_mitra'] : 'mitra');
+
+            $status_data = $this->normalisasi_status_mitra($status);
+
+            $data = [
+                'dudi_nama' => $nama,
+                'dudi_alamat' => $alamat,
+                'dudi_telepon' => $telepon !== '' ? $telepon : null,
+                'dudi_email' => $email !== '' ? $email : null,
+                'dudi_pic' => $pic !== '' ? $pic : null,
+                'dudi_nip_pic' => $nip_pic !== '' ? $nip_pic : null,
+                'dudi_instruktur' => $instruktur !== '' ? $instruktur : null,
+                'dudi_nip_instruktur' => $nip_instruktur !== '' ? $nip_instruktur : null,
+                'latitude' => $latitude !== '' && $latitude !== null ? (float) $latitude : null,
+                'longitude' => $longitude !== '' && $longitude !== null ? (float) $longitude : null,
+                'radius' => is_numeric($radius) ? (int) $radius : 100,
+                'is_mitra' => $status_data['is_mitra'],
+                'status_kerjasama' => $status_data['status_kerjasama'],
+                'sumber_data' => 'sekolah',
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+            $existing = $this->get_dudi_by_nama($nama);
+            if ($existing) {
+                $this->db->where('dudi_code', $existing->dudi_code);
+                $this->db->update($this->table, $data);
+                $updated++;
+                continue;
+            }
+
+            $data['dudi_code'] = $this->generateRandomString(30);
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $this->db->insert($this->table, $data);
+            $inserted++;
+        }
+
+        return [
+            'inserted' => $inserted,
+            'updated' => $updated,
+            'errors' => $errors
+        ];
+    }
+
     function get_all_dudi()
     {
         $this->db->order_by('dudi_nama', 'ASC');

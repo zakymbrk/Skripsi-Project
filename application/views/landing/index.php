@@ -811,6 +811,9 @@
                 </div>
                 <div class="col-md-4 mb-4">
                     <h5 class="footer-title" style="color: white !important;">Tautan Penting</h5>
+                    <a href="<?php echo base_url('login/siswa'); ?>" class="footer-link" style="color: white !important;">Login Siswa</a>
+                    <a href="<?php echo base_url('login/pembimbing'); ?>" class="footer-link" style="color: white !important;">Login Pembimbing</a>
+                    <a href="<?php echo base_url('login/hubin'); ?>" class="footer-link" style="color: white !important;">Login Hubin</a>
                     <a href="https://smk.itikurih-hibarna.sch.id/" target="_blank" class="footer-link" style="color: white !important;">Website Sekolah</a>
                     <a href="mailto:smk@itikurih-hibarna.sch.id" class="footer-link" style="color: white !important;">Email Sekolah</a>
                     <a href="tel:0225957900" class="footer-link" style="color: white !important;">Telepon Sekolah</a>

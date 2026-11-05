@@ -2,31 +2,28 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
-<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
-
-<h4>An uncaught Exception was encountered</h4>
-
-<p>Type: <?php echo get_class($exception); ?></p>
-<p>Message: <?php echo $message; ?></p>
-<p>Filename: <?php echo $exception->getFile(); ?></p>
-<p>Line Number: <?php echo $exception->getLine(); ?></p>
-
-<?php if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE === TRUE): ?>
-
-	<p>Backtrace:</p>
-	<?php foreach ($exception->getTrace() as $error): ?>
-
-		<?php if (isset($error['file']) && strpos($error['file'], realpath(BASEPATH)) !== 0): ?>
-
-			<p style="margin-left:10px">
-			File: <?php echo $error['file']; ?><br />
-			Line: <?php echo $error['line']; ?><br />
-			Function: <?php echo $error['function']; ?>
-			</p>
-		<?php endif ?>
-
-	<?php endforeach ?>
-
-<?php endif ?>
-
-</div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Terjadi Kesalahan - SiPKL</title>
+<style>
+	* { box-sizing: border-box; }
+	body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; background: #f2f4f0; color: #263b33; font: 16px/1.6 'Segoe UI', Arial, sans-serif; }
+	main { width: min(100%, 520px); padding: 32px; background: #fff; border: 1px solid #dfe5df; border-top: 4px solid #c7953e; }
+	h1 { margin: 0 0 12px; font-size: 1.35rem; }
+	p { margin: 0 0 12px; color: #52645a; }
+	a { display: inline-block; margin-top: 8px; padding: 9px 15px; background: #24483b; color: #fff; text-decoration: none; border-radius: 4px; }
+</style>
+</head>
+<body>
+	<main role="alert">
+		<h1>Terjadi kesalahan</h1>
+		<p>Permintaan Anda belum dapat diselesaikan. Silakan coba kembali.</p>
+		<p>Jika masalah berlanjut, hubungi administrator sekolah.</p>
+		<a href="<?php echo function_exists('base_url') ? base_url() : '/'; ?>">Kembali ke halaman utama</a>
+	</main>
+</body>
+</html>

@@ -1,0 +1,334 @@
+DOKUMENTASI DATA PROJECT SIPKL
+================================
+
+Nama aplikasi : SiPKL - Sistem Informasi Praktek Kerja Lapangan
+Sekolah       : SMK ITIKURIH HIBARNA Ciparay
+Framework     : CodeIgniter 3
+Database      : MySQL/MariaDB - db_sipkl
+Versi         : 3.1 (fitur import pembimbing dan penilaian logbook)
+Tanggal catat : 21 Agustus 2026
+
+1. INFORMASI SEKOLAH
+--------------------
+Nama    : SMK ITIKURIH HIBARNA Ciparay
+Alamat  : Jalan Raya Laswi No. 782 Ciparay Kab. Bandung 40381
+Telepon : 022-5957900
+Email   : smk@itikurih-hibarna.sch.id
+
+2. AKUN DATA AWAL
+-----------------
+Peran                  Username   Password   Level
+Hubin/Administrator    admin      password   1
+Hubin/Staff            hubin      password   1
+Pembimbing             guru_1     password   2
+Siswa                  siswa      password   3
+
+Catatan: password pada database disimpan dalam bentuk hash bcrypt.
+
+3. URL APLIKASI
+---------------
+Siswa       : http://localhost/sipkl/
+Hubin       : http://localhost/sipkl/login/hubin
+Pembimbing  : http://localhost/sipkl/login/pembimbing
+
+4. STRUKTUR FOLDER UTAMA
+------------------------
+application/config       Konfigurasi aplikasi dan database
+application/controllers   Controller peran dan proses aplikasi
+application/models        Model akses data database
+application/libraries     Library QR dan Rule-Based Validation
+application/views        Tampilan Hubin, Pembimbing, dan Siswa
+assets                    CSS, gambar, dan asset frontend
+uploads                    File profil, presensi, logbook, pengajuan, dan import
+system                    Core CodeIgniter
+vendor                    Dependency Composer
+
+File penting:
+- db_sipkl.sql             Dump struktur dan data awal database
+- application/config/database.php
+- application/config/routes.php
+- application/libraries/Rule_based_validation.php
+- application/libraries/Qr_generator.php
+- application/controllers/Auth.php
+- application/controllers/Hubin.php
+- application/controllers/Guru.php
+- application/controllers/Siswa.php
+- application/controllers/Export_excel.php
+- application/controllers/Database_sync.php
+
+5. TABEL DATABASE
+-----------------
+TB_GROUP
+- group_id, group_name, created_at, updated_at
+- Level 1 = Hubin, level 2 = Pembimbing, level 3 = Siswa
+
+TB_USER
+- id, user_code, username, password, nama_lengkap
+- email, telepon, alamat, tempat_lahir, tanggal_lahir
+- jenis_kelamin, nip_nim, foto_profil, level, is_active
+- created_at, updated_at
+
+TB_PEMBIMBING
+- pembimbing_id, pembimbing_code, user_id
+- pembimbing_nama, pembimbing_nip, pembimbing_telepon
+- pembimbing_email, pembimbing_alamat, tempat_lahir, tanggal_lahir
+- jenis_kelamin, pendidikan_terakhir, jabatan, jurusan_keahlian
+- tahun_masuk, status_kepegawaian, tempat_tugas
+- is_active, created_at, updated_at
+
+TB_DUDI
+- dudi_id, dudi_code, dudi_nama, dudi_alamat, dudi_telepon
+- dudi_email, dudi_pic, dudi_nip_pic
+- dudi_instruktur, dudi_nip_instruktur
+- latitude, longitude, radius
+- status_kerjasama, is_mitra, sumber_data
+- created_at, updated_at
+
+Keterangan TB_DUDI:
+- latitude/longitude adalah koordinat kantor DUDI.
+- radius adalah toleransi presensi dalam meter.
+- status_kerjasama: mitra, non_mitra, pengajuan.
+- sumber_data: sekolah atau siswa.
+
+TB_SISWA
+- siswa_id, siswa_code, user_id, dudi_id, pembimbing_id
+- siswa_nama, siswa_kelas, siswa_jurusan, siswa_nis, siswa_nisn
+- siswa_telepon, siswa_alamat, siswa_tempat_lahir
+- siswa_tanggal_lahir, siswa_jk, siswa_asal_sekolah
+- status_pengajuan, tanggal_mulai, tanggal_selesai, lama_pelaksanaan
+- surat_permohonan, surat_balasan, periode
+- other_dudi_nama, other_dudi_alamat, other_dudi_telepon
+- other_dudi_email, other_dudi_pic, other_dudi_nip_pic
+- other_dudi_instruktur, other_dudi_nip_instruktur
+- other_dudi_latitude, other_dudi_longitude
+- mentor_assignment_notified, is_active, created_at, updated_at
+
+Status pengajuan siswa:
+- draft       : data belum dikirim lengkap
+- menunggu    : menunggu pemeriksaan Hubin
+- disetujui   : dapat melakukan presensi dan logbook
+- ditolak     : perlu diperbaiki atau diajukan ulang
+- selesai     : PKL selesai dan nilai siswa dapat dilihat
+
+TB_PENGELOMPOKAN
+- id, pembimbing_id, siswa_id
+- tanggal_assign, created_at, updated_at
+- Relasi penempatan siswa dengan pembimbing.
+
+TB_PENGUMUMAN
+- pengumuman_id, judul, isi, gambar, created_by
+- is_active, created_at, updated_at
+
+TB_PRESENSI
+- presensi_id, siswa_id, tanggal
+- jam_masuk, foto_masuk, keterangan_masuk
+- jam_pulang, foto_pulang, keterangan_pulang
+- status_kehadiran, status_validasi, alasan_penolakan
+- latitude_siswa, longitude_siswa
+- latitude_dudi, longitude_dudi
+- jarak, radius, status_lokasi
+- created_at, updated_at
+
+TB_LOGBOOK
+- logbook_id, siswa_id, tanggal
+- deskripsi_kegiatan, kendala_pembelajaran, foto_kegiatan
+- catatan_pembimbing, nilai_pembimbing
+- status_validasi, alasan_penolakan
+- created_at, updated_at
+
+TB_PENILAIAN
+- penilaian_id, siswa_id, pembimbing_id
+- total_kehadiran, total_logbook_valid, total_logbook_tidak_valid
+- total_pengurangan_nilai
+- nilai_kehadiran, nilai_logbook, nilai_disiplin, nilai_akhir
+- catatan_evaluasi, created_at, updated_at
+
+6. RELASI DATA UTAMA
+--------------------
+- tb_group -> tb_user.level
+- tb_user -> tb_pembimbing.user_id
+- tb_user -> tb_siswa.user_id
+- tb_dudi -> tb_siswa.dudi_id
+- tb_pembimbing -> tb_siswa.pembimbing_id
+- tb_pembimbing/tb_siswa -> tb_pengelompokan
+- tb_user -> tb_pengumuman.created_by
+- tb_siswa -> tb_presensi.siswa_id
+- tb_siswa -> tb_logbook.siswa_id
+- tb_siswa -> tb_penilaian.siswa_id
+- tb_pembimbing -> tb_penilaian.pembimbing_id
+
+7. FITUR SISWA
+--------------
+- Mengisi dan mengirim pengajuan PKL.
+- Memilih kelas, periode, DUDI, telepon, dan alamat.
+- Memantau status pengajuan.
+- Mengunggah surat permohonan/pernyataan dalam format JPG, PNG, GIF, PDF,
+  DOC, DOCX, XLS, XLSX, PPT, atau PPTX maksimal 5 MB.
+- Presensi masuk dan pulang memakai GPS, foto, dan geolocation.
+- Mengisi satu logbook setiap hari setelah melakukan presensi masuk, dengan
+  dokumentasi JPG, PNG, GIF, PDF, DOC, DOCX, XLS, XLSX, PPT, atau PPTX.
+- Melihat catatan pembimbing pada logbook.
+- Mencetak ID Card dengan QR Code setelah disetujui.
+- Mengelola profil dan password.
+- Melihat nilai dan rincian rekap hanya setelah status PKL selesai.
+
+8. FITUR PERUSAHAAN TIDAK TERDAFTAR
+------------------------------------
+Jika siswa memilih "Lainnya (Perusahaan tidak terdaftar)":
+- Mengisi nama dan data lengkap perusahaan.
+- Menekan tombol "Ambil Lokasi" pada form pengajuan.
+- Browser mengambil latitude dan longitude perusahaan.
+- Latitude wajib berada pada -90 sampai 90.
+- Longitude wajib berada pada -180 sampai 180.
+- Koordinat disimpan pada tb_siswa.other_dudi_latitude dan
+  tb_siswa.other_dudi_longitude.
+- Hubin dapat melihat koordinat saat melakukan review.
+- Saat disetujui, koordinat dipindahkan ke tb_dudi.latitude dan
+  tb_dudi.longitude.
+- Koordinat tersebut dapat digunakan untuk validasi presensi berikutnya.
+
+9. FITUR PEMBIMBING
+-------------------
+- Login melalui /login/pembimbing.
+- Melihat siswa bimbingan sendiri.
+- Monitoring presensi dan lokasi siswa.
+- Monitoring logbook dan foto kegiatan.
+- Memberi catatan/evaluasi logbook.
+- Memberi nilai logbook per kegiatan pada skala 0 sampai 100.
+- Melihat nilai yang sudah diberikan dan logbook yang belum dinilai.
+- Melihat rekapitulasi penilaian.
+- Mencetak laporan bimbingan.
+
+10. FITUR HUBIN/ADMIN
+---------------------
+- Mengelola user siswa, pembimbing, dan Hubin.
+- Mengelola DUDI serta koordinat GPS dan radius.
+- Memeriksa, menyetujui, atau menolak pengajuan.
+- Menyetujui perusahaan baru sebagai mitra/non-mitra.
+- Menetapkan pembimbing siswa.
+- Monitoring presensi dan logbook semua siswa.
+- Mengontrol rekapitulasi nilai.
+- Mencetak laporan monitoring dan penilaian.
+- Membuat pengumuman.
+- Import siswa dan pembimbing dari Excel/CSV.
+- Export data siswa dan pembimbing ke XLSX/CSV.
+
+11. PERHITUNGAN NILAI TERBARU
+-----------------------------
+Nilai Kehadiran = max(0, 100 - ((total bolos + total terlambat) x 5))
+
+Nilai Logbook:
+- Jika ada logbook valid yang sudah dinilai pembimbing,
+  nilai logbook = rata-rata nilai_pembimbing.
+- Jika belum ada nilai pembimbing,
+  nilai logbook = max(0, 100 - (logbook tidak valid x 5)).
+
+Nilai Akhir = (Nilai Kehadiran x 0.40) + (Nilai Logbook x 0.60)
+
+Catatan konsekuensi:
+- Bolos/alpha mengurangi nilai 5% atau 5 poin per kejadian.
+- Terlambat dihitung jika presensi masuk setelah pukul 08:00 dan mengurangi
+  nilai 5% atau 5 poin per kejadian.
+- Rincian jumlah bolos, terlambat, dan total pengurangan dapat dikontrol oleh
+  Pembimbing dan Hubin melalui laporan.
+
+Nilai pembimbing disimpan per logbook pada tb_logbook.nilai_pembimbing.
+Nilai rekap disinkronkan oleh Rule_based_validation::sync_penilaian_siswa().
+
+12. RULE-BASED VALIDATION
+-------------------------
+RBV-001  Presensi masuk belum ada pada tanggal tersebut dan siswa disetujui
+RBV-002  Presensi pulang setelah atau sama dengan jam masuk
+RBV-003  Parameter presensi lengkap
+RBV-004  Foto presensi wajib untuk status hadir
+RBV-005  Format foto dan ukuran maksimal 2048 KB
+RBV-006  Jarak GPS dalam radius DUDI
+RBV-007  Maksimal satu logbook per siswa per tanggal
+RBV-008  Deskripsi logbook minimal 20 karakter
+RBV-009  Foto logbook wajib
+RBV-010  Parameter logbook lengkap
+RBV-011  Tanggal logbook tidak boleh masa depan
+RBV-012  Jam masuk antara 05:00 sampai 23:59
+RBV-013  Jam pulang setelah jam masuk
+RBV-014  Siswa harus tercatat hadir saat logbook dibuat
+RBV-015  Hak akses monitoring sesuai level dan status pengajuan
+RBV-016  Sinkronisasi nilai dan penalti otomatis
+
+13. FOLDER UPLOAD
+-----------------
+- uploads/profil/
+- uploads/import/
+- uploads/presensi/
+- uploads/logbook/
+- uploads/pengajuan/
+- uploads/pengumuman/
+- uploads/idcard/
+- uploads/lampiran/
+- uploads/laporan/
+- uploads/surat_permohonan/
+
+14. IMPORT DAN EXPORT
+--------------------
+Import siswa:
+Nama Siswa, NIS, NISN, Jenis Kelamin, Kelas, Jurusan, Username, Password
+
+Import pembimbing:
+Nama, NIP, Jenis Kelamin, Email, Telepon, Alamat, Tempat Lahir,
+Tanggal Lahir, Pendidikan Terakhir, Jabatan, Jurusan Keahlian,
+Status Kepegawaian, Tempat Tugas, Username, Password
+
+Export tersedia untuk data siswa dan pembimbing dalam XLSX/CSV.
+
+15. KEBUTUHAN SISTEM
+--------------------
+- PHP 7.4 atau lebih baru; pengujian menggunakan PHP 8.2.
+- MySQL/MariaDB 5.6 atau lebih baru.
+- Apache dengan mod_rewrite aktif.
+- Composer.
+- Ekstensi PHP Zip/ZipArchive untuk PhpSpreadsheet.
+
+Instalasi dependency:
+composer install
+
+Database utama:
+db_sipkl.sql
+
+Jika database lama belum memiliki kolom perusahaan lain:
+ALTER TABLE tb_siswa
+  ADD COLUMN other_dudi_latitude DECIMAL(10,8) DEFAULT NULL,
+  ADD COLUMN other_dudi_longitude DECIMAL(11,8) DEFAULT NULL;
+
+Jika database lama belum memiliki nilai pembimbing:
+ALTER TABLE tb_logbook
+  ADD COLUMN nilai_pembimbing DECIMAL(5,2) DEFAULT NULL
+  AFTER catatan_pembimbing;
+
+16. RIWAYAT PERUBAHAN TERBARU
+-----------------------------
+- Penambahan latitude dan longitude pada pengajuan siswa untuk DUDI yang
+  belum terdaftar atau belum bekerja sama dengan sekolah.
+- Penambahan pengambilan lokasi melalui Browser Geolocation API.
+- Penambahan validasi rentang latitude dan longitude di server.
+- Penyalinan koordinat perusahaan baru ke data tb_dudi saat disetujui Hubin.
+- Perbaikan kompatibilitas database lama melalui Database_sync.
+- Pembatasan tampilan nilai siswa sampai status pengajuan menjadi selesai.
+- Rincian nilai siswa tidak ditampilkan sebelum PKL selesai.
+- Penambahan input nilai pembimbing 0-100 pada review logbook.
+- Penambahan kolom tb_logbook.nilai_pembimbing.
+- Nilai logbook menggunakan rata-rata nilai dari pembimbing.
+- Nilai akhir menggunakan bobot kehadiran 40% dan logbook 60%.
+- Pembimbing dapat melihat dan mencetak laporan bimbingan.
+- Hubin dapat mengontrol dan mencetak rekapitulasi monitoring.
+
+17. CATATAN KEAMANAN
+--------------------
+- Hak akses pembimbing dibatasi pada siswa bimbingannya.
+- Siswa hanya dapat melihat data miliknya sendiri.
+- Password disimpan menggunakan bcrypt.
+- Validasi data dilakukan server-side.
+- Validasi geolocation presensi dilakukan server-side menggunakan formula
+  Haversine.
+- File upload dibatasi berdasarkan tipe dan ukuran.
+
+Dokumen ini dibuat berdasarkan struktur project dan implementasi kode
+SiPKL yang tersedia pada 21 Agustus 2026.

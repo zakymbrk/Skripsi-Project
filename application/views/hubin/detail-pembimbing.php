@@ -64,6 +64,14 @@ if(isset($pembimbing_code)){
                         <td><?php echo $pembimbing->pembimbing_nama ?></td>
                     </tr>
                     <tr>
+                        <td class="fw-bold bg-light">Username Login</td>
+                        <td><?php echo isset($pembimbing->username) && !empty($pembimbing->username) ? htmlspecialchars($pembimbing->username) : '-' ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-light">Password Login</td>
+                        <td><code><?php echo isset($pembimbing->password) && !empty($pembimbing->password) ? htmlspecialchars($pembimbing->password) : '-' ?></code></td>
+                    </tr>
+                    <tr>
                         <td class="fw-bold bg-light">NIP</td>
                         <td><?php echo isset($pembimbing->pembimbing_nip) && !empty($pembimbing->pembimbing_nip) ? $pembimbing->pembimbing_nip : '-' ?></td>
                     </tr>

@@ -37,7 +37,9 @@ class Auth extends CI_Controller {
 				case 1: // Hubin
 					safe_redirect('hubin', 'view', 'home');
 					break;
-				case 2: // Siswa
+				case 2: // Pembimbing
+					safe_redirect('guru', 'view', 'home');
+					break;
 				case 3: // Siswa
 					safe_redirect('siswa', 'view', 'home');
 					break;
@@ -63,6 +65,19 @@ class Auth extends CI_Controller {
 		$this->load->view('authentication/login-siswa');
 	}
 	
+	public function login_pembimbing()
+	{
+		if($this->session->userdata('userdata')){
+			$userdata = $this->session->userdata('userdata');
+			if($userdata['level'] == 2){
+				safe_redirect('guru', 'view', 'home');
+			} else {
+				$this->session->unset_userdata('userdata');
+			}
+		}
+		$this->load->view('authentication/login-pembimbing');
+	}
+
 	public function login_hubin()
 	{
 		if($this->session->userdata('userdata')){
@@ -107,12 +122,16 @@ class Auth extends CI_Controller {
 					),
 				);
 
+				$this->session->sess_regenerate(TRUE);
 				$this->session->set_userdata($user_login);
 				
 				// Redirect langsung ke dashboard sesuai level dengan fungsi aman
 				switch($cekk->level){
 					case 1: // Hubin
 						safe_redirect('hubin', 'view', 'home');
+						break;
+					case 2: // Pembimbing
+						safe_redirect('guru', 'view', 'home');
 						break;
 					case 3: // Siswa
 						safe_redirect('siswa', 'view', 'home');
@@ -151,7 +170,7 @@ class Auth extends CI_Controller {
 			
 			$cekk = $this->Login->cek_login($data_login);
 	
-			if($cekk && ($cekk->level == 2 || $cekk->level == 3)){ // For students (both level 2 and 3)
+			if($cekk && $cekk->level == 3){ // Hanya siswa (level 3)
 				$user_login = array(
 					'userdata'	=> array(
 						'id'			=> $cekk->id,
@@ -163,6 +182,7 @@ class Auth extends CI_Controller {
 					),
 				);
 
+				$this->session->sess_regenerate(TRUE);
 				$this->session->set_userdata($user_login);
 				safe_redirect('siswa', 'view', 'home');
 				
@@ -175,7 +195,51 @@ class Auth extends CI_Controller {
 			$this->load->view('authentication/login-siswa');
 		}
 	}
-	
+
+	public function do_login_pembimbing()
+	{
+		$status = true;
+		$this->form_validation->set_rules('username', 'Username', 'required');
+		$this->form_validation->set_rules('password', 'Password', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$status = false;
+		}
+
+		if($status){
+			$this->load->model('Login');
+			$data_login = array(
+				'username'	=> $this->input->post('username'),
+				'password'	=> $this->input->post('password')
+			);
+
+			$cekk = $this->Login->cek_login($data_login);
+
+			if($cekk && $cekk->level == 2){
+				$user_login = array(
+					'userdata'	=> array(
+						'id'			=> $cekk->id,
+						'username'		=> $cekk->username,
+						'nama_lengkap'	=> $cekk->nama_lengkap,
+						'level'			=> $cekk->level,
+						'group_name'	=> $cekk->group_name,
+						'foto_profil'	=> isset($cekk->foto_profil) ? $cekk->foto_profil : null
+					),
+				);
+
+				$this->session->sess_regenerate(TRUE);
+				$this->session->set_userdata($user_login);
+				safe_redirect('guru', 'view', 'home');
+
+			}else{
+				$this->session->set_flashdata('message', '<div class="alert alert-warning">Username atau Password salah, atau Anda bukan guru pembimbing</div>');
+				$this->load->view('authentication/login-pembimbing');
+			}
+
+		}else{
+			$this->load->view('authentication/login-pembimbing');
+		}
+	}
+
 	public function do_login_hubin()
 	{
 		$status = true;
@@ -206,6 +270,7 @@ class Auth extends CI_Controller {
 					),
 				);
 
+				$this->session->sess_regenerate(TRUE);
 				$this->session->set_userdata($user_login);
 				safe_redirect('hubin', 'view', 'home');
 				
@@ -221,8 +286,9 @@ class Auth extends CI_Controller {
 
 	function logout()
 	{
-		$this->session->unset_userdata('userdata');
-		safe_redirect('auth', 'index');
+		// Hancurkan seluruh session agar tombol Back tidak bisa mengakses dashboard
+		$this->session->sess_destroy();
+		redirect('auth/index');
 	}
 
 	function information()

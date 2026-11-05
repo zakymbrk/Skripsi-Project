@@ -5,11 +5,43 @@ class Siswa extends CI_Controller {
 
     public function __construct()
     {
+        date_default_timezone_set('Asia/Jakarta');
         parent::__construct();
         if(!$this->session->userdata('userdata')){
-            redirect('auth/');
-        }elseif($this->session->userdata('userdata')['level'] != 2 && $this->session->userdata('userdata')['level'] != 3){
-            redirect('auth/');
+            redirect('auth/login_siswa');
+        } elseif($this->session->userdata('userdata')['level'] != 3){
+            // Hanya level 3 (Siswa) yang boleh mengakses controller ini
+            // Level 1 (Hubin) dan Level 2 (Pembimbing) TIDAK boleh masuk ke sini
+            $this->session->set_flashdata('error_message', 'Akses ditolak. Halaman ini hanya untuk siswa.');
+            redirect('auth/index');
+        }
+
+        // Validasi keberadaan user_id di database untuk mencegah sesi usang / foreign key 1452
+        $userdata = $this->session->userdata('userdata');
+        if($userdata && isset($userdata['id'])){
+            $this->db->where('id', $userdata['id']);
+            $this->db->where('is_active', 1);
+            $user_exists = $this->db->get('tb_user')->row();
+            if(!$user_exists){
+                $this->session->unset_userdata('userdata');
+                $this->session->set_flashdata('message', '<div class="alert alert-warning">Sesi Anda telah kedaluwarsa atau akun tidak ditemukan di database. Silakan login kembali.</div>');
+                redirect('auth/login_siswa');
+            }
+        }
+        // Load essential models
+        $this->load->model('M_user');
+        $this->load->model('M_siswa');
+        $this->load->model('M_presensi');
+        $this->load->model('M_logbook');
+        $this->load->model('M_pengelompokan');
+        $this->load->model('M_penilaian');
+        $this->load->model('M_pembimbing');
+
+        // Sinkronisasi harian menandai hari PKL yang terlewat sebagai alpha.
+        $this->load->library('rule_based_validation');
+        $siswa_harian = get_siswa_by_user_id($userdata['id']);
+        if ($siswa_harian) {
+            $this->rule_based_validation->sync_penilaian_siswa($siswa_harian->siswa_id);
         }
     }
     
@@ -55,8 +87,145 @@ class Siswa extends CI_Controller {
             }
             // Allow access if student has been rejected or has draft, or no record exists yet
             $data['content'] = 'siswa/buat-pengajuan';
-        } else if(!file_exists(APPPATH . 'views/siswa/' . $page . '.php')){
-            $data['content'] = '404';
+        } else if($page == 'presensi' || $page == 'logbook') {
+            // Validasi eligibilitas siswa (RBV-015)
+            $this->load->library('rule_based_validation');
+            $userdata = $this->session->userdata('userdata');
+            $check = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+            
+            if(!$check['is_allowed']) {
+                $this->session->set_flashdata('error_message', $check['message']);
+                redirect('siswa/view/home');
+                return;
+            }
+            if($page == 'logbook') {
+                $presensi_hari_ini = $this->db
+                    ->where('siswa_id', $check['siswa']->siswa_id)
+                    ->where('tanggal', date('Y-m-d'))
+                    ->get('tb_presensi')->row();
+                if(!$presensi_hari_ini || empty($presensi_hari_ini->jam_masuk) || empty($presensi_hari_ini->jam_pulang)) {
+                    $this->session->set_flashdata('error_message', 'Logbook harian dapat diakses setelah presensi masuk dan pulang selesai.');
+                    redirect('siswa/view/home');
+                    return;
+                }
+            }
+            $data['siswa'] = $check['siswa'];
+            $data['content'] = 'siswa/' . $page;
+
+        } else if($page == 'riwayat-presensi') {
+            // Riwayat presensi — hanya milik siswa sendiri (anti-IDOR)
+            $userdata = $this->session->userdata('userdata');
+            $siswa = get_siswa_by_user_id($userdata['id']);
+            if(!$siswa) {
+                $this->session->set_flashdata('error_message', 'Data siswa tidak ditemukan.');
+                redirect('siswa/view/home');
+                return;
+            }
+            if($siswa->status_pengajuan != 'selesai') {
+                $this->session->set_flashdata('error_message', 'Nilai dan rekapitulasi hanya dapat dilihat setelah PKL selesai.');
+                redirect('siswa/view/home');
+                return;
+            }
+            $this->load->model('M_presensi');
+            $data['siswa']           = $siswa;
+            $data['riwayat_presensi'] = $this->M_presensi->get_riwayat_presensi_siswa($siswa->siswa_id, 100);
+            $data['statistik']       = $this->M_presensi->get_statistik_presensi_siswa($siswa->siswa_id);
+            $data['content']         = 'siswa/riwayat-presensi';
+
+        } else if($page == 'riwayat-logbook') {
+            // Riwayat logbook — hanya milik siswa sendiri (anti-IDOR)
+            $userdata = $this->session->userdata('userdata');
+            $siswa = get_siswa_by_user_id($userdata['id']);
+            if(!$siswa) {
+                $this->session->set_flashdata('error_message', 'Data siswa tidak ditemukan.');
+                redirect('siswa/view/home');
+                return;
+            }
+            $this->load->model('M_logbook');
+            $data['siswa']           = $siswa;
+            $data['riwayat_logbook'] = $this->M_logbook->get_riwayat_logbook_siswa($siswa->siswa_id, 100);
+            $data['statistik_lb']    = $this->M_logbook->get_statistik_logbook_siswa($siswa->siswa_id);
+            $data['content']         = 'siswa/riwayat-logbook';
+
+        } else if($page == 'catatan-pembimbing') {
+            // Catatan pembimbing — hanya milik siswa sendiri (anti-IDOR)
+            $userdata = $this->session->userdata('userdata');
+            $siswa = get_siswa_by_user_id($userdata['id']);
+            if(!$siswa) {
+                $this->session->set_flashdata('error_message', 'Data siswa tidak ditemukan.');
+                redirect('siswa/view/home');
+                return;
+            }
+            $this->load->model('M_logbook');
+            $this->load->model('M_pengelompokan');
+            $data['siswa']            = $siswa;
+            $data['logbook_list']     = $this->M_logbook->get_riwayat_logbook_siswa($siswa->siswa_id, 100);
+            $data['pembimbing_info']  = $this->M_pengelompokan->get_pembimbing_by_siswa($siswa->siswa_id);
+            $data['content']          = 'siswa/catatan-pembimbing';
+
+        } else if($page == 'rekap' || $page == 'nilai' || $page == 'statistik-nilai') {
+            // Rekap & Nilai — hanya data siswa sendiri (anti-IDOR)
+            $userdata = $this->session->userdata('userdata');
+            $siswa = get_siswa_by_user_id($userdata['id']);
+            if(!$siswa) {
+                $this->session->set_flashdata('error_message', 'Data siswa tidak ditemukan.');
+                redirect('siswa/view/home');
+                return;
+            }
+            if($siswa->status_pengajuan != 'selesai') {
+                $this->session->set_flashdata('error_message', 'Nilai dan rekapitulasi hanya dapat dilihat setelah PKL selesai.');
+                redirect('siswa/view/home');
+                return;
+            }
+            $this->load->model('M_presensi');
+            $this->load->model('M_logbook');
+            $this->load->model('M_penilaian');
+            $this->load->model('M_pengelompokan');
+            $this->load->library('rule_based_validation');
+
+            // Sync nilai terbaru
+            $this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+
+            // Ambil data DUDI
+            $dudi = null;
+            if($siswa->dudi_id) {
+                $this->db->where('dudi_id', $siswa->dudi_id);
+                $dudi = $this->db->get('tb_dudi')->row();
+            }
+
+            // Ambil data Pembimbing
+            $pembimbing_info = $this->M_pengelompokan->get_pembimbing_by_siswa($siswa->siswa_id);
+
+            $data['siswa']            = $siswa;
+            $data['dudi']             = $dudi;
+            $data['pembimbing_info']  = $pembimbing_info;
+            $data['statistik_pre']    = $this->M_presensi->get_statistik_presensi_siswa($siswa->siswa_id);
+            $data['statistik_lb']     = $this->M_logbook->get_statistik_logbook_siswa($siswa->siswa_id);
+            $data['penilaian']        = $this->M_penilaian->get_penilaian_by_siswa($siswa->siswa_id);
+            $data['riwayat_presensi'] = $this->M_presensi->get_riwayat_presensi_siswa($siswa->siswa_id, 20);
+            $data['riwayat_logbook']  = $this->M_logbook->get_riwayat_logbook_siswa($siswa->siswa_id, 20);
+            $data['content']          = 'siswa/rekap';
+
+
+        } else if($page == 'penempatan') {
+            // Data penempatan — hanya milik siswa sendiri (anti-IDOR)
+            $userdata = $this->session->userdata('userdata');
+            $siswa = get_siswa_by_user_id($userdata['id']);
+            if(!$siswa) {
+                $this->session->set_flashdata('error_message', 'Data siswa tidak ditemukan.');
+                redirect('siswa/view/home');
+                return;
+            }
+            $this->load->model('M_pengelompokan');
+            $dudi = null;
+            if($siswa->dudi_id) {
+                $this->db->where('dudi_id', $siswa->dudi_id);
+                $dudi = $this->db->get('tb_dudi')->row();
+            }
+            $data['siswa']           = $siswa;
+            $data['dudi']            = $dudi;
+            $data['pembimbing_info'] = $this->M_pengelompokan->get_pembimbing_by_siswa($siswa->siswa_id);
+            $data['content']         = 'siswa/penempatan';
         }else{
             // Use simplified home page
             if($page == 'home'){
@@ -272,6 +441,14 @@ class Siswa extends CI_Controller {
     {
         $status = true;
         $userdata = $this->session->userdata('userdata');
+
+        // Support existing installations that have not run the schema update yet.
+        if(!$this->db->field_exists('other_dudi_latitude', 'tb_siswa')) {
+            $this->db->query('ALTER TABLE `tb_siswa` ADD COLUMN `other_dudi_latitude` DECIMAL(10,8) DEFAULT NULL');
+        }
+        if(!$this->db->field_exists('other_dudi_longitude', 'tb_siswa')) {
+            $this->db->query('ALTER TABLE `tb_siswa` ADD COLUMN `other_dudi_longitude` DECIMAL(11,8) DEFAULT NULL');
+        }
         
         $this->form_validation->set_rules('siswa_kelas', 'Kelas', 'required');
         $this->form_validation->set_rules('siswa_telepon', 'Telepon', 'required|callback_valid_phone_number');
@@ -283,6 +460,8 @@ class Siswa extends CI_Controller {
         $dudi_id = $this->input->post('dudi_id');
         if($dudi_id == 'other'){
             $this->form_validation->set_rules('other_dudi_nama', 'Nama Perusahaan Lainnya', 'required');
+            $this->form_validation->set_rules('other_dudi_latitude', 'Latitude Perusahaan', 'required|decimal|callback_valid_latitude');
+            $this->form_validation->set_rules('other_dudi_longitude', 'Longitude Perusahaan', 'required|decimal|callback_valid_longitude');
         }
         
         if ($this->form_validation->run() == FALSE) {
@@ -325,6 +504,8 @@ class Siswa extends CI_Controller {
                 $data['other_dudi_nip_pic'] = $this->input->post('other_dudi_nip_pic');
                 $data['other_dudi_instruktur'] = $this->input->post('other_dudi_instruktur');
                 $data['other_dudi_nip_instruktur'] = $this->input->post('other_dudi_nip_instruktur');
+                $data['other_dudi_latitude'] = $this->input->post('other_dudi_latitude');
+                $data['other_dudi_longitude'] = $this->input->post('other_dudi_longitude');
             } else {
                 // Jika memilih perusahaan yang sudah ada
                 $data['dudi_id'] = $dudi_id;
@@ -333,7 +514,7 @@ class Siswa extends CI_Controller {
             // Handle upload surat permohonan/pernyataan
             if(!empty($_FILES['surat_permohonan']['name'])){
                 $config['upload_path'] = './uploads/pengajuan/';
-                $config['allowed_types'] = 'jpg|jpeg|png|gif|pdf';
+                $config['allowed_types'] = 'jpg|jpeg|png|gif|pdf|doc|docx|xls|xlsx|ppt|pptx';
                 $config['max_size'] = 5120; // 5MB
                 $config['file_name'] = 'surat_permohonan_'.$userdata['id'].'_'.time();
                 
@@ -357,6 +538,13 @@ class Siswa extends CI_Controller {
                 }
             }
             
+            // Sinkronkan juga telepon dan alamat ke tb_user
+            $this->M_user->update_user_by_id(array(
+                'telepon'    => $this->input->post('siswa_telepon'),
+                'alamat'     => $this->input->post('siswa_alamat'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ), $userdata['id']);
+
             if($cek_siswa && $cek_siswa->status_pengajuan != 'disetujui'){
                 // Update existing - bisa ajukan ulang jika ditolak atau draft
                 log_message('debug', 'Pengajuan PKL: Updating existing record');
@@ -364,11 +552,20 @@ class Siswa extends CI_Controller {
                 $this->session->set_flashdata('message', 'Pengajuan PKL berhasil diperbarui dan dikirim');
             } else {
                 // Create new - untuk pengajuan pertama atau ajukan ulang setelah disetujui
-                log_message('debug', 'Pengajuan PKL: Creating new record');
+                // Validasi bahwa user_id benar-benar ada di tb_user
+                $this->db->where('id', $userdata['id']);
+                $user_db = $this->db->get('tb_user')->row();
+                if(!$user_db){
+                    $this->session->unset_userdata('userdata');
+                    $this->session->set_flashdata('message', '<div class="alert alert-warning">Akun pengguna tidak ditemukan. Silakan login kembali.</div>');
+                    redirect('auth/login_siswa');
+                    return;
+                }
+                
                 $data['user_id'] = $userdata['id'];
-                $data['siswa_nama'] = $userdata['nama_lengkap'];
+                $data['siswa_nama'] = $user_db->nama_lengkap ?: $userdata['nama_lengkap'];
                 $data['siswa_code'] = $code;
-                $data['siswa_nis'] = isset($userdata['nip_nim']) ? $userdata['nip_nim'] : null; // Add NIS from user profile if available
+                $data['siswa_nis'] = !empty($user_db->nip_nim) ? $user_db->nip_nim : (isset($userdata['nip_nim']) ? $userdata['nip_nim'] : null);
                 unset($data['updated_at']); // Remove updated_at for new record
                 $this->M_siswa->tambah_data_siswa($data);
                 $this->session->set_flashdata('message', 'Pengajuan PKL baru berhasil dibuat dan dikirim');
@@ -390,6 +587,26 @@ class Siswa extends CI_Controller {
             $this->form_validation->set_message('valid_phone_number', 'Format {field} tidak valid. Gunakan hanya angka dan karakter seperti spasi, tanda hubung, kurung, plus, atau titik.');
             return FALSE;
         }
+    }
+
+    public function valid_latitude($latitude)
+    {
+        if(is_numeric($latitude) && $latitude >= -90 && $latitude <= 90) {
+            return TRUE;
+        }
+
+        $this->form_validation->set_message('valid_latitude', 'Latitude harus berada di antara -90 dan 90.');
+        return FALSE;
+    }
+
+    public function valid_longitude($longitude)
+    {
+        if(is_numeric($longitude) && $longitude >= -180 && $longitude <= 180) {
+            return TRUE;
+        }
+
+        $this->form_validation->set_message('valid_longitude', 'Longitude harus berada di antara -180 dan 180.');
+        return FALSE;
     }
 
     // Test method for file upload debugging
@@ -510,34 +727,27 @@ class Siswa extends CI_Controller {
             }
         }
 
-        if($status){
+         if($status){
             // Update user data
             $jenis_kelamin = $this->input->post('jenis_kelamin');
-            log_message('debug', 'Jenis kelamin from POST: ' . $jenis_kelamin);
-            log_message('debug', 'POST data: ' . print_r($this->input->post(), true));
             
-            // Convert 'L'/'P' to 'Laki-laki'/'Perempuan' to match database ENUM
+            // Convert 'L'/'P' to 'Laki-laki'/'Perempuan' to match database ENUM in tb_user
             if ($jenis_kelamin === 'L') {
                 $jenis_kelamin = 'Laki-laki';
-                log_message('debug', 'Converted L to Laki-laki');
             } elseif ($jenis_kelamin === 'P') {
                 $jenis_kelamin = 'Perempuan';
-                log_message('debug', 'Converted P to Perempuan');
-            } else {
-                log_message('debug', 'No conversion needed or empty value');
             }
             
-            log_message('debug', 'Jenis kelamin after conversion: ' . $jenis_kelamin);
-            
             $user_update = array(
-                'nama_lengkap' => $this->input->post('nama_lengkap'),
-                'tempat_lahir' => $this->input->post('tempat_lahir'),
-                'tanggal_lahir' => $this->input->post('tanggal_lahir'),
+                'nama_lengkap'  => $this->input->post('nama_lengkap'),
+                'tempat_lahir'  => $this->input->post('tempat_lahir'),
+                'tanggal_lahir' => $this->input->post('tanggal_lahir') ? $this->input->post('tanggal_lahir') : NULL,
                 'jenis_kelamin' => $jenis_kelamin,
-                'alamat' => $this->input->post('alamat'),
-                'email' => $this->input->post('email'),
-                'telepon' => $this->input->post('telepon'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'alamat'        => $this->input->post('alamat'),
+                'email'         => $this->input->post('email'),
+                'telepon'       => $this->input->post('telepon'),
+                'nip_nim'       => $this->input->post('siswa_nis') ? $this->input->post('siswa_nis') : NULL,
+                'updated_at'    => date('Y-m-d H:i:s')
             );
 
             // Handle upload foto
@@ -547,7 +757,7 @@ class Siswa extends CI_Controller {
                 $config['allowed_types'] = 'jpg|jpeg|png|gif';
                 $config['max_size'] = 2048; // 2MB
                 $config['file_name'] = 'profil_'.$user_code.'_'.time();
-                $config['overwrite'] = FALSE; // Changed to FALSE to prevent conflicts
+                $config['overwrite'] = FALSE;
                 
                 // Buat folder jika belum ada
                 if(!is_dir($config['upload_path'])){
@@ -557,78 +767,70 @@ class Siswa extends CI_Controller {
                 $this->load->library('upload', $config);
                 
                 if($this->upload->do_upload('foto_profil')){
-                    log_message('debug', 'File upload successful');
                     $upload_data = $this->upload->data();
-                    log_message('debug', 'Upload data: ' . print_r($upload_data, true));
                     // Hapus foto lama jika ada
                     if(isset($user->foto_profil) && $user->foto_profil && file_exists('./uploads/profil/'.$user->foto_profil)){
                         unlink('./uploads/profil/'.$user->foto_profil);
                     }
                     $user_update['foto_profil'] = $upload_data['file_name'];
-                    $this->session->set_flashdata('message', 'Profile dan foto berhasil diupdate');
                 } else {
                     $error = $this->upload->display_errors('', '');
                     log_message('debug', 'File upload failed: ' . $error);
                     $this->session->set_flashdata('error_message', 'Gagal upload foto: '.$error);
-                    // Continue with profile update even if photo upload fails
                 }
             }
 
             // Update user table
-            log_message('debug', 'Updating user with data: ' . print_r($user_update, true));
-            $update_result = $this->M_user->update_user_by_id($user_update, $user_code);
-            log_message('debug', 'Update result: ' . ($update_result ? 'success' : 'failed'));
+            $this->M_user->update_user_by_id($user_update, $user_code);
             
+            // Format JK untuk tb_siswa ('L' atau 'P')
+            $siswa_jk = NULL;
+            if ($jenis_kelamin === 'Laki-laki' || $jenis_kelamin === 'L') {
+                $siswa_jk = 'L';
+            } elseif ($jenis_kelamin === 'Perempuan' || $jenis_kelamin === 'P') {
+                $siswa_jk = 'P';
+            }
+
             // Get student data
             $this->db->where('user_id', $user_code);
             $siswa = $this->db->get('tb_siswa')->row();
             
+            $siswa_payload = array(
+                'siswa_nama'          => $this->input->post('nama_lengkap'),
+                'siswa_nis'           => $this->input->post('siswa_nis') ? $this->input->post('siswa_nis') : NULL,
+                'siswa_nisn'          => $this->input->post('siswa_nisn') ? $this->input->post('siswa_nisn') : NULL,
+                'siswa_kelas'         => $this->input->post('siswa_kelas'),
+                'siswa_jurusan'       => $this->input->post('siswa_jurusan'),
+                'siswa_tempat_lahir'  => $this->input->post('tempat_lahir'),
+                'siswa_tanggal_lahir' => $this->input->post('tanggal_lahir') ? $this->input->post('tanggal_lahir') : NULL,
+                'siswa_jk'            => $siswa_jk,
+                'siswa_telepon'       => $this->input->post('telepon'),
+                'siswa_alamat'        => $this->input->post('alamat'),
+                'updated_at'          => date('Y-m-d H:i:s')
+            );
+
             if($siswa){
-                // Update student data
-                $siswa_update = array(
-                    'siswa_nama' => $this->input->post('nama_lengkap'), // Sync with user name
-                    'siswa_nis' => $this->input->post('siswa_nis'),
-                    'siswa_kelas' => $this->input->post('siswa_kelas'),
-                    'siswa_jurusan' => $this->input->post('siswa_jurusan')
-                );
-                
-                // Filter empty values
-                $siswa_update = array_filter($siswa_update, function($value) {
-                    return $value !== '' && $value !== null;
-                });
-                
-                $siswa_result = $this->M_siswa->update_siswa_by_user_id($siswa_update, $user_code);
-                
+                $siswa_result = $this->M_siswa->update_siswa_by_user_id($siswa_payload, $user_code);
                 if($siswa_result === false) {
-                    $this->session->set_flashdata('error_message', 'Gagal mengupdate data siswa. Pastikan NIS tidak duplikat dengan siswa lain.');
+                    $this->session->set_flashdata('error_message', 'Gagal mengupdate data siswa. Pastikan NIS/NISN tidak duplikat.');
                     redirect('siswa/view/profile');
                     return;
                 }
             } else {
-                // Create new student record if not exists
-                $siswa_data = array(
-                    'siswa_nama' => $this->input->post('nama_lengkap'), // Sync with user name
-                    'siswa_nis' => $this->input->post('siswa_nis'),
-                    'siswa_kelas' => $this->input->post('siswa_kelas'),
-                    'siswa_jurusan' => $this->input->post('siswa_jurusan'),
-                    'user_id' => $user_code,
-                    'siswa_code' => 'siswa_' . time() . '_' . rand(1000, 9999)
-                );
+                $siswa_payload['user_id'] = $user_code;
+                $siswa_payload['siswa_code'] = 'siswa_' . time() . '_' . rand(1000, 9999);
+                $siswa_payload['status_pengajuan'] = 'draft';
+                $siswa_payload['is_active'] = 1;
+                $siswa_payload['created_at'] = date('Y-m-d H:i:s');
                 
-                // Filter empty values
-                $siswa_data = array_filter($siswa_data, function($value) {
-                    return $value !== '' && $value !== null;
-                });
-                
-                $siswa_create_result = $this->M_siswa->tambah_data_siswa($siswa_data);
-                
+                $siswa_create_result = $this->M_siswa->tambah_data_siswa($siswa_payload);
                 if($siswa_create_result === false) {
-                    $this->session->set_flashdata('error_message', 'Gagal membuat data siswa. Pastikan NIS tidak duplikat dengan siswa lain.');
+                    $this->session->set_flashdata('error_message', 'Gagal membuat data siswa. Pastikan NIS/NISN tidak duplikat.');
                     redirect('siswa/view/profile');
                     return;
                 }
             }
-            
+
             // Get updated user data
             $updated_user = $this->M_user->get_user_by_id($user_code);
             
@@ -645,10 +847,7 @@ class Siswa extends CI_Controller {
             );
             $this->session->set_userdata($user_login);
             
-            // Only show general success message if no photo was uploaded
-            if(empty($_FILES['foto_profil']['name'])) {
-                $this->session->set_flashdata('message', 'Profile berhasil diupdate');
-            }
+            $this->session->set_flashdata('message', 'Biodata profil berhasil diperbarui');
             redirect('siswa/view/profile');
         } else {
             $data['user'] = $user;
@@ -698,7 +897,7 @@ class Siswa extends CI_Controller {
         }
 
         $data['content'] = 'siswa/change-password';
-        $this->load->view('template', $data, FALSE);
+        $this->load->view('template_siswa', $data, FALSE);
     }
 
     
@@ -864,32 +1063,517 @@ class Siswa extends CI_Controller {
             ->set_output(json_encode($response));
     }
     
-    // API endpoint to check pembimbing assignment status
-    function check_pembimbing_assignment()
+    // ==========================================
+    // MODUL PRESENSI SISWA (RULE-BASED VALIDATION)
+    // ==========================================
+
+    /**
+     * Submit Presensi Masuk Siswa
+     * Menerapkan Rule: RBV-001, RBV-003, RBV-004, RBV-005, RBV-006, RBV-012
+     */
+    public function do_presensi_masuk()
     {
-        $this->load->model('M_pengelompokan');
-        
         $userdata = $this->session->userdata('userdata');
-        $this->db->where('user_id', $userdata['id']);
-        $siswa = $this->db->get('tb_siswa')->row();
-        
-        $response = array('has_pembimbing' => false);
-        
-        if($siswa && $siswa->status_pengajuan == 'disetujui') {
-            $pembimbing = $this->M_pengelompokan->get_pembimbing_by_siswa($siswa->siswa_id);
-            if($pembimbing) {
-                $response = array(
-                    'has_pembimbing' => true,
-                    'pembimbing_nama' => isset($pembimbing->user_nama) && $pembimbing->user_nama ? 
-                                       $pembimbing->user_nama : 
-                                       (isset($pembimbing->pembimbing_nama) ? $pembimbing->pembimbing_nama : 'Pembimbing')
-                );
+        $this->load->library('rule_based_validation');
+        $this->load->model('M_presensi');
+
+        // Validasi hak akses & status siswa (RBV-015)
+        $eligibility = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+        if(!$eligibility['is_allowed']) {
+            $this->session->set_flashdata('error_message', $eligibility['message']);
+            redirect('siswa/view/home');
+            return;
+        }
+
+        $siswa = $eligibility['siswa'];
+        $tanggal = $this->input->post('tanggal') ? $this->input->post('tanggal') : date('Y-m-d');
+        if($tanggal !== date('Y-m-d')) {
+            $this->session->set_flashdata('error_message', 'Presensi masuk hanya dapat dilakukan untuk tanggal hari ini.');
+            redirect('siswa/view/home');
+            return;
+        }
+        $status_kehadiran = $this->input->post('status_kehadiran') ? $this->input->post('status_kehadiran') : 'hadir';
+        $keterangan_masuk = $this->input->post('keterangan_masuk');
+        $jam_masuk = date('H:i:s');
+        if (trim((string) $keterangan_masuk) === '') {
+            $keterangan_masuk = 'Presensi masuk ' . $siswa->siswa_nama . ' pada pukul ' . $jam_masuk . ' di tempat PKL.';
+        }
+
+        // Koordinat Geolocation dari peramban client
+        $latitude_siswa  = $this->input->post('latitude_siswa') !== '' ? $this->input->post('latitude_siswa') : null;
+        $longitude_siswa = $this->input->post('longitude_siswa') !== '' ? $this->input->post('longitude_siswa') : null;
+
+        // Pre-validation awal (duplikasi, parameter dasar, geolokasi & radius) sebelum I/O upload file
+        $pre_rule = $this->rule_based_validation->validate_presensi_masuk(
+            $siswa->siswa_id,
+            $tanggal,
+            ['status_kehadiran' => $status_kehadiran, 'jam_masuk' => $jam_masuk, 'keterangan_masuk' => $keterangan_masuk],
+            null,
+            $latitude_siswa,
+            $longitude_siswa
+        );
+
+        if (!$pre_rule['is_valid'] && $pre_rule['rule_id'] !== 'RBV-004') {
+            $this->session->set_flashdata('error_message', '[' . $pre_rule['rule_id'] . '] ' . $pre_rule['message']);
+            redirect('siswa/view/home');
+            return;
+        }
+
+        // Handle upload foto bukti presensi masuk
+        $foto_masuk_name = null;
+        $upload_path = FCPATH . 'uploads/presensi/';
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+
+        if (!empty($_FILES['foto_masuk']['name'])) {
+            $config['upload_path']   = $upload_path;
+            $config['allowed_types'] = 'jpg|jpeg|png';
+            $config['max_size']      = 2048; // 2MB
+            $config['file_name']     = 'masuk_' . $siswa->siswa_id . '_' . date('Ymd_His');
+            $config['overwrite']     = false;
+
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+
+            if ($this->upload->do_upload('foto_masuk')) {
+                $upload_data = $this->upload->data();
+                $foto_masuk_name = $upload_data['file_name'];
+            } else {
+                $this->session->set_flashdata('error_message', 'Gagal upload foto masuk: ' . $this->upload->display_errors('', ''));
+                redirect('siswa/view/home');
+                return;
             }
         }
-        
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($response));
+
+        // Eksekusi Validasi Lengkap Rule-Based Validation
+        $rule_check = $this->rule_based_validation->validate_presensi_masuk(
+            $siswa->siswa_id,
+            $tanggal,
+            ['status_kehadiran' => $status_kehadiran, 'jam_masuk' => $jam_masuk, 'keterangan_masuk' => $keterangan_masuk],
+            $foto_masuk_name,
+            $latitude_siswa,
+            $longitude_siswa
+        );
+
+        if (!$rule_check['is_valid']) {
+            if ($foto_masuk_name && file_exists($upload_path . $foto_masuk_name)) {
+                unlink($upload_path . $foto_masuk_name);
+            }
+            $this->session->set_flashdata('error_message', '[' . $rule_check['rule_id'] . '] ' . $rule_check['message']);
+            redirect('siswa/view/home');
+            return;
+        }
+
+        // Ambil data audit radius geolokasi
+        $geo_audit = $this->rule_based_validation->validate_geolocation($siswa->siswa_id, $latitude_siswa, $longitude_siswa, $status_kehadiran);
+
+        // Simpan Data Presensi Masuk beserta Audit Geolocation
+        $insert_data = [
+            'siswa_id'         => $siswa->siswa_id,
+            'tanggal'          => $tanggal,
+            'jam_masuk'        => $jam_masuk,
+            'foto_masuk'       => $foto_masuk_name,
+            'keterangan_masuk' => $keterangan_masuk,
+            'status_kehadiran' => $status_kehadiran,
+            'status_validasi'  => 'valid',
+            'alasan_penolakan' => null,
+            'latitude_siswa'   => $latitude_siswa,
+            'longitude_siswa'  => $longitude_siswa,
+            'latitude_dudi'    => isset($geo_audit['latitude_dudi']) ? $geo_audit['latitude_dudi'] : null,
+            'longitude_dudi'   => isset($geo_audit['longitude_dudi']) ? $geo_audit['longitude_dudi'] : null,
+            'jarak'            => isset($geo_audit['jarak']) ? $geo_audit['jarak'] : null,
+            'radius'           => isset($geo_audit['radius']) ? $geo_audit['radius'] : null,
+            'status_lokasi'    => isset($geo_audit['status_lokasi']) ? $geo_audit['status_lokasi'] : 'valid',
+            'created_at'       => date('Y-m-d H:i:s')
+        ];
+
+        $saved = $this->M_presensi->simpan_presensi_masuk($insert_data);
+        if ($saved) {
+            // Sinkronisasi modul penilaian & evaluasi siswa
+            $this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+
+            $pesan_sukses = 'Presensi masuk berhasil dicatat pada pukul ' . $jam_masuk . ' (Status: Valid).';
+            if (isset($geo_audit['jarak']) && $geo_audit['jarak'] !== null) {
+                $pesan_sukses .= ' Lokasi terverifikasi dalam radius ' . $geo_audit['radius'] . 'm (Jarak aktual: ' . round($geo_audit['jarak']) . 'm).';
+            }
+            $this->session->set_flashdata('message', $pesan_sukses);
+        } else {
+            $this->session->set_flashdata('error_message', 'Terjadi kesalahan sistem saat menyimpan presensi masuk.');
+        }
+
+        redirect('siswa/view/home');
     }
-    
+
+    /**
+     * Submit Presensi Pulang Siswa
+     * Menerapkan Rule: RBV-002, RBV-003, RBV-004, RBV-005, RBV-006, RBV-013
+     */
+    public function do_presensi_pulang()
+    {
+        $userdata = $this->session->userdata('userdata');
+        $this->load->library('rule_based_validation');
+        $this->load->model('M_presensi');
+
+        // Validasi hak akses & status siswa (RBV-015)
+        $eligibility = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+        if(!$eligibility['is_allowed']) {
+            $this->session->set_flashdata('error_message', $eligibility['message']);
+            redirect('siswa/view/home');
+            return;
+        }
+
+        $siswa = $eligibility['siswa'];
+        $tanggal = $this->input->post('tanggal') ? $this->input->post('tanggal') : date('Y-m-d');
+        if($tanggal !== date('Y-m-d')) {
+            $this->session->set_flashdata('error_message', 'Presensi pulang hanya dapat dilakukan untuk tanggal hari ini.');
+            redirect('siswa/view/home');
+            return;
+        }
+        $keterangan_pulang = $this->input->post('keterangan_pulang');
+        $jam_pulang = date('H:i:s');
+        if (trim((string) $keterangan_pulang) === '') {
+            $keterangan_pulang = 'Presensi pulang ' . $siswa->siswa_nama . ' pada pukul ' . $jam_pulang . ' setelah kegiatan PKL selesai.';
+        }
+
+        $latitude_siswa  = $this->input->post('latitude_siswa') !== '' ? $this->input->post('latitude_siswa') : null;
+        $longitude_siswa = $this->input->post('longitude_siswa') !== '' ? $this->input->post('longitude_siswa') : null;
+
+        // Pre-validation presensi pulang (RBV-002, RBV-006, RBV-013) sebelum upload
+        $pre_rule = $this->rule_based_validation->validate_presensi_pulang(
+            $siswa->siswa_id,
+            $tanggal,
+            ['jam_pulang' => $jam_pulang, 'keterangan_pulang' => $keterangan_pulang],
+            null,
+            $latitude_siswa,
+            $longitude_siswa
+        );
+
+        if (!$pre_rule['is_valid'] && $pre_rule['rule_id'] !== 'RBV-004') {
+            $this->session->set_flashdata('error_message', '[' . $pre_rule['rule_id'] . '] ' . $pre_rule['message']);
+            redirect('siswa/view/home');
+            return;
+        }
+
+        if ($pre_rule['is_valid'] && !empty($pre_rule['presensi_row'])) {
+            $baseline = $pre_rule['presensi_row'];
+            $integrity = $this->rule_based_validation->validate_location_integrity(
+                $latitude_siswa,
+                $longitude_siswa,
+                $baseline->latitude_siswa,
+                $baseline->longitude_siswa,
+                $baseline->updated_at
+            );
+            if (!$integrity['is_valid']) {
+                $this->db->where('presensi_id', $baseline->presensi_id)->update('tb_presensi', [
+                    'status_validasi' => 'tidak_valid',
+                    'status_lokasi' => 'tidak_valid',
+                    'alasan_penolakan' => $integrity['message'],
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+                $this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+                $this->session->set_flashdata('error_message', '[' . $integrity['rule_id'] . '] ' . $integrity['message']);
+                redirect('siswa/view/home');
+                return;
+            }
+        }
+
+        // Upload Foto Pulang
+        $foto_pulang_name = null;
+        $upload_path = FCPATH . 'uploads/presensi/';
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+
+        if (!empty($_FILES['foto_pulang']['name'])) {
+            $config['upload_path']   = $upload_path;
+            $config['allowed_types'] = 'jpg|jpeg|png';
+            $config['max_size']      = 2048; // 2MB
+            $config['file_name']     = 'pulang_' . $siswa->siswa_id . '_' . date('Ymd_His');
+            $config['overwrite']     = false;
+
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+
+            if ($this->upload->do_upload('foto_pulang')) {
+                $upload_data = $this->upload->data();
+                $foto_pulang_name = $upload_data['file_name'];
+            } else {
+                $this->session->set_flashdata('error_message', 'Gagal upload foto pulang: ' . $this->upload->display_errors('', ''));
+                redirect('siswa/view/home');
+                return;
+            }
+        }
+
+        // Eksekusi Algoritma Rule-Based Validation untuk Presensi Pulang
+        $rule_check = $this->rule_based_validation->validate_presensi_pulang(
+            $siswa->siswa_id,
+            $tanggal,
+            ['jam_pulang' => $jam_pulang, 'keterangan_pulang' => $keterangan_pulang],
+            $foto_pulang_name,
+            $latitude_siswa,
+            $longitude_siswa
+        );
+
+        if (!$rule_check['is_valid']) {
+            if ($foto_pulang_name && file_exists($upload_path . $foto_pulang_name)) {
+                unlink($upload_path . $foto_pulang_name);
+            }
+            $this->session->set_flashdata('error_message', '[' . $rule_check['rule_id'] . '] ' . $rule_check['message']);
+            redirect('siswa/view/home');
+            return;
+        }
+
+        $presensi_row = $rule_check['presensi_row'];
+
+        // Update Data Presensi Pulang
+        $update_data = [
+            'jam_pulang'        => $jam_pulang,
+            'foto_pulang'       => $foto_pulang_name,
+            'keterangan_pulang' => $keterangan_pulang,
+            'updated_at'        => date('Y-m-d H:i:s')
+        ];
+
+        $updated = $this->M_presensi->update_presensi_pulang($presensi_row->presensi_id, $update_data);
+        if ($updated) {
+            // Sinkronisasi nilai
+            $this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+            $this->session->set_flashdata('message', 'Presensi pulang berhasil dicatat pada pukul ' . $jam_pulang . ' (Presensi Harian Lengkap).');
+            $this->session->set_flashdata('show_logbook_link', true);
+        } else {
+            $this->session->set_flashdata('error_message', 'Presensi pulang untuk hari ini sudah dicatat dan tidak dapat diulang.');
+        }
+
+        redirect('siswa/view/home');
+    }
+
+    public function update_lokasi_realtime()
+    {
+        $this->output->set_content_type('application/json');
+        $userdata = $this->session->userdata('userdata');
+        $this->load->library('rule_based_validation');
+
+        $eligibility = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+        if (!$eligibility['is_allowed']) {
+            $this->output->set_output(json_encode(['success' => false, 'message' => $eligibility['message']]));
+            return;
+        }
+
+        $latitude = $this->input->post('latitude');
+        $longitude = $this->input->post('longitude');
+        if (!is_numeric($latitude) || !is_numeric($longitude) || $latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180) {
+            $this->output->set_output(json_encode(['success' => false, 'message' => 'Koordinat lokasi tidak valid.']));
+            return;
+        }
+
+        $siswa = $eligibility['siswa'];
+        $presensi = $this->db
+            ->where('siswa_id', $siswa->siswa_id)
+            ->where('tanggal', date('Y-m-d'))
+            ->where('jam_masuk IS NOT NULL', null, false)
+            ->where('jam_pulang IS NULL', null, false)
+            ->get('tb_presensi')->row();
+
+        if (!$presensi) {
+            $this->output->set_output(json_encode(['success' => false, 'message' => 'Sesi lokasi berakhir setelah presensi pulang.']));
+            return;
+        }
+
+        if ($presensi->status_validasi !== 'valid') {
+            $this->output->set_output(json_encode([
+                'success' => false,
+                'fake_gps' => $presensi->status_lokasi === 'tidak_valid',
+                'attendance_invalid' => true,
+                'message' => $presensi->alasan_penolakan ?: 'Presensi ini tidak sah. Hubungi guru pembimbing untuk klarifikasi.'
+            ]));
+            return;
+        }
+
+        $integrity = $this->rule_based_validation->validate_location_integrity(
+            $latitude,
+            $longitude,
+            $presensi->latitude_siswa,
+            $presensi->longitude_siswa,
+            $presensi->updated_at
+        );
+        if (!$integrity['is_valid']) {
+            $this->db->where('presensi_id', $presensi->presensi_id)->update('tb_presensi', [
+                'status_validasi' => 'tidak_valid',
+                'status_lokasi' => 'tidak_valid',
+                'alasan_penolakan' => $integrity['message'],
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            $this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+            $this->output->set_output(json_encode([
+                'success' => false,
+                'fake_gps' => $integrity['fake_gps'],
+                'attendance_invalid' => true,
+                'rule_id' => $integrity['rule_id'],
+                'message' => $integrity['message']
+            ]));
+            return;
+        }
+
+        $geo_audit = $this->rule_based_validation->validate_geolocation($siswa->siswa_id, $latitude, $longitude, 'hadir');
+        $this->db->where('presensi_id', $presensi->presensi_id)->update('tb_presensi', [
+            'latitude_siswa' => $latitude,
+            'longitude_siswa' => $longitude,
+            'latitude_dudi' => $geo_audit['latitude_dudi'],
+            'longitude_dudi' => $geo_audit['longitude_dudi'],
+            'jarak' => $geo_audit['jarak'],
+            'radius' => $geo_audit['radius'],
+            'status_lokasi' => $geo_audit['status_lokasi'],
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        $this->output->set_output(json_encode([
+            'success' => true,
+            'within_radius' => $geo_audit['is_valid'],
+            'distance' => $geo_audit['jarak'],
+            'radius' => $geo_audit['radius'],
+            'message' => $geo_audit['message']
+        ]));
+    }
+
+    // ==========================================
+    // MODUL LOGBOOK SISWA (RULE-BASED VALIDATION)
+    // ==========================================
+
+    /**
+     * Submit Logbook Kegiatan Harian Siswa
+     * Menerapkan Rule: RBV-007, RBV-008, RBV-009, RBV-010, RBV-011, RBV-014, RBV-016
+     */
+    public function do_tambah_logbook()
+    {
+        $userdata = $this->session->userdata('userdata');
+        $this->load->library('rule_based_validation');
+        $this->load->model('M_logbook');
+
+        // Validasi hak akses & status siswa (RBV-015)
+        $eligibility = $this->rule_based_validation->validate_siswa_eligibility($userdata['id']);
+        if(!$eligibility['is_allowed']) {
+            $this->session->set_flashdata('error_message', $eligibility['message']);
+            redirect('siswa/view/home');
+            return;
+        }
+
+        $siswa = $eligibility['siswa'];
+        $tanggal = $this->input->post('tanggal') ? $this->input->post('tanggal') : date('Y-m-d');
+        if($tanggal !== date('Y-m-d')) {
+            $this->session->set_flashdata('error_message', 'Logbook hanya dapat diisi untuk tanggal hari ini.');
+            redirect('siswa/view/home');
+            return;
+        }
+        $presensi_hari_ini = $this->db
+            ->where('siswa_id', $siswa->siswa_id)
+            ->where('tanggal', $tanggal)
+            ->get('tb_presensi')->row();
+        if(!$presensi_hari_ini || empty($presensi_hari_ini->jam_masuk) || empty($presensi_hari_ini->jam_pulang)) {
+            $this->session->set_flashdata('error_message', 'Logbook hanya dapat diisi setelah presensi masuk dan pulang selesai.');
+            redirect('siswa/view/home');
+            return;
+        }
+
+        $latitude_siswa = $this->input->post('latitude_siswa');
+        $longitude_siswa = $this->input->post('longitude_siswa');
+        if ($latitude_siswa === '' || $longitude_siswa === '' || $latitude_siswa === null || $longitude_siswa === null) {
+            $this->session->set_flashdata('error_message', 'Lokasi perangkat belum tersedia. Izinkan akses GPS lalu kirim ulang logbook.');
+            redirect('siswa/view/logbook');
+            return;
+        }
+        $geo_check = $this->rule_based_validation->validate_geolocation($siswa->siswa_id, $latitude_siswa, $longitude_siswa, 'hadir');
+        if (!$geo_check['is_valid']) {
+            $this->session->set_flashdata('error_message', 'Logbook hanya dapat diunggah saat berada di dalam radius tempat PKL. ' . $geo_check['message']);
+            redirect('siswa/view/logbook');
+            return;
+        }
+        $deskripsi_kegiatan = $this->input->post('deskripsi_kegiatan');
+        $kendala_pembelajaran = $this->input->post('kendala_pembelajaran');
+
+        // Pre-validation logbook (RBV-007, RBV-008, RBV-010) sebelum upload
+        $pre_rule = $this->rule_based_validation->validate_logbook(
+            $siswa->siswa_id,
+            $tanggal,
+            ['deskripsi_kegiatan' => $deskripsi_kegiatan, 'kendala_pembelajaran' => $kendala_pembelajaran],
+            null
+        );
+
+        if (!$pre_rule['is_valid'] && $pre_rule['rule_id'] !== 'RBV-009') {
+            $this->session->set_flashdata('error_message', '[' . $pre_rule['rule_id'] . '] ' . $pre_rule['message']);
+            redirect('siswa/view/logbook');
+            return;
+        }
+
+        // Upload Foto Dokumentasi Kegiatan (RBV-009)
+        $foto_kegiatan_name = null;
+        $upload_path = FCPATH . 'uploads/logbook/';
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+
+        if (!empty($_FILES['foto_kegiatan']['name'])) {
+            $config['upload_path']   = $upload_path;
+            $config['allowed_types'] = 'jpg|jpeg|png|gif|pdf|doc|docx|xls|xlsx|ppt|pptx';
+            $config['max_size']      = 5120; // 5MB
+            $config['file_name']     = 'logbook_' . $siswa->siswa_id . '_' . date('Ymd_His');
+            $config['overwrite']     = false;
+
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+
+            if ($this->upload->do_upload('foto_kegiatan')) {
+                $upload_data = $this->upload->data();
+                $foto_kegiatan_name = $upload_data['file_name'];
+            } else {
+                $this->session->set_flashdata('error_message', 'Gagal upload dokumentasi kegiatan: ' . $this->upload->display_errors('', ''));
+                redirect('siswa/view/logbook');
+                return;
+            }
+        }
+
+        // Eksekusi Algoritma Rule-Based Validation untuk Logbook
+        $rule_check = $this->rule_based_validation->validate_logbook(
+            $siswa->siswa_id,
+            $tanggal,
+            [
+                'deskripsi_kegiatan'   => $deskripsi_kegiatan,
+                'kendala_pembelajaran' => $kendala_pembelajaran
+            ],
+            $foto_kegiatan_name
+        );
+
+        if (!$rule_check['is_valid']) {
+            if ($foto_kegiatan_name && file_exists($upload_path . $foto_kegiatan_name)) {
+                unlink($upload_path . $foto_kegiatan_name);
+            }
+            $this->session->set_flashdata('error_message', '[' . $rule_check['rule_id'] . '] ' . $rule_check['message']);
+            redirect('siswa/view/logbook');
+            return;
+        }
+
+        // Simpan Data Logbook
+        $insert_data = [
+            'siswa_id'             => $siswa->siswa_id,
+            'tanggal'              => $tanggal,
+            'deskripsi_kegiatan'   => $deskripsi_kegiatan,
+            'kendala_pembelajaran' => $kendala_pembelajaran,
+            'foto_kegiatan'        => $foto_kegiatan_name,
+            'catatan_pembimbing'   => null,
+            'status_validasi'      => 'menunggu',
+            'alasan_penolakan'     => null,
+            'created_at'           => date('Y-m-d H:i:s')
+        ];
+
+        $saved = $this->M_logbook->simpan_logbook($insert_data);
+        if ($saved) {
+            // Sinkronisasi nilai & rekapitulasi evaluasi siswa
+            $this->rule_based_validation->sync_penilaian_siswa($siswa->siswa_id);
+            $this->session->set_flashdata('message', 'Logbook berhasil dikirim dan sedang menunggu validasi guru pembimbing.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Terjadi kesalahan sistem saat menyimpan logbook.');
+        }
+
+        redirect('siswa/view/logbook');
+    }
 }
+

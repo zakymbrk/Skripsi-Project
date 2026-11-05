@@ -1,4 +1,10 @@
-﻿<IfModule mod_rewrite.c>
+﻿Options -Indexes
+
+<FilesMatch "\.(php|phtml|phar|cgi|pl|py|sh)$">
+	Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

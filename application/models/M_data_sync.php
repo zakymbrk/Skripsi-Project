@@ -138,6 +138,7 @@ class M_data_sync extends CI_Model {
             $user_data['created_at'] = date('Y-m-d H:i:s');
             $user_data['updated_at'] = date('Y-m-d H:i:s');
             $user_data['level'] = 2; // Student level
+                $user_data['level'] = 3; // Student level
             $user_data['is_active'] = 1;
             
             $this->db->insert('tb_user', $user_data);

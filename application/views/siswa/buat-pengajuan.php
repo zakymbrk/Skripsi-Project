@@ -83,13 +83,14 @@ $dudi_list = $this->db->order_by('dudi_nama', 'ASC')->get('tb_dudi')->result();
                     <?php echo $d->dudi_nama ?>
                 </option>
                 <?php } ?>
-                <option value="other">Lainnya (Perusahaan tidak terdaftar)</option>
+                <option value="other" <?php echo ($siswa && $siswa->other_dudi_nama) ? 'selected' : ''; ?>>Lainnya (Perusahaan tidak terdaftar)</option>
             </select>
         </div>
         
         <div class="mb-3" id="otherDudiContainer" style="display: none;">
             <label class="form-label">Nama Perusahaan Lainnya <span class="text-danger">*</span></label>
             <input type="text" name="other_dudi_nama" class="form-control" 
+                     value="<?php echo set_value('other_dudi_nama', $siswa ? $siswa->other_dudi_nama : ''); ?>"
                    placeholder="Masukkan nama perusahaan tempat PKL" required>
             <small class="text-muted">Perusahaan ini akan diajukan untuk ditambahkan ke sistem</small>
             
@@ -143,14 +144,38 @@ $dudi_list = $this->db->order_by('dudi_nama', 'ASC')->get('tb_dudi')->result();
                                placeholder="NIP instruktur">
                     </div>
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Lokasi Perusahaan</label>
+                    <div class="row g-2">
+                        <div class="col-md-5">
+                            <label class="form-label small" for="otherDudiLatitude">Latitude</label>
+                            <input type="text" name="other_dudi_latitude" id="otherDudiLatitude" class="form-control"
+                                   value="<?php echo set_value('other_dudi_latitude', (!empty($siswa->other_dudi_latitude) ? $siswa->other_dudi_latitude : '')); ?>"
+                                   placeholder="Contoh: -6.912345" step="any" min="-90" max="90">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small" for="otherDudiLongitude">Longitude</label>
+                            <input type="text" name="other_dudi_longitude" id="otherDudiLongitude" class="form-control"
+                                   value="<?php echo set_value('other_dudi_longitude', (!empty($siswa->other_dudi_longitude) ? $siswa->other_dudi_longitude : '')); ?>"
+                                   placeholder="Contoh: 107.609122" step="any" min="-180" max="180">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" id="getOtherDudiLocation" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-location-crosshairs me-1"></i>Ambil Lokasi
+                            </button>
+                        </div>
+                    </div>
+                    <small id="otherDudiLocationStatus" class="text-muted">Bisa diisi manual atau klik tombol Ambil Lokasi untuk otomatis mengambil koordinat saat ini.</small>
+                </div>
             </div>
         </div>
         
         <div class="mb-3">
             <label class="form-label">Surat Permohonan/Pernyataan <span class="text-danger">*</span></label>
             <input type="file" name="surat_permohonan" class="form-control" 
-                   accept=".jpg,.jpeg,.png,.gif,.pdf" required>
-            <small class="text-muted">Upload surat permohonan atau surat pernyataan dari perusahaan (Format: JPG, PNG, GIF, PDF - Maksimal 5MB)</small>
+                   accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" required>
+            <small class="text-muted">Format: JPG, PNG, GIF, PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX - Maksimal 5MB</small>
             <?php if($siswa && $siswa->surat_permohonan && file_exists('./uploads/pengajuan/'.$siswa->surat_permohonan)){ ?>
             <div class="mt-2">
                 <small class="text-muted">File saat ini: </small>
@@ -184,14 +209,20 @@ $dudi_list = $this->db->order_by('dudi_nama', 'ASC')->get('tb_dudi')->result();
 </div>
 
 <script>
+const dudiSelect = document.getElementById('dudiSelect');
+const otherDudiContainer = document.getElementById('otherDudiContainer');
+const otherDudiInput = document.querySelector('input[name="other_dudi_nama"]');
+const latitudeInput = document.getElementById('otherDudiLatitude');
+const longitudeInput = document.getElementById('otherDudiLongitude');
+const locationStatus = document.getElementById('otherDudiLocationStatus');
+
 // Toggle tampilan field "Perusahaan Lainnya" berdasarkan pilihan dropdown
-document.getElementById('dudiSelect').addEventListener('change', function() {
-    const otherDudiContainer = document.getElementById('otherDudiContainer');
-    const otherDudiInput = document.querySelector('input[name="other_dudi_nama"]');
-    
+dudiSelect.addEventListener('change', function() {
     if(this.value === 'other') {
         otherDudiContainer.style.display = 'block';
         otherDudiInput.required = true;
+        latitudeInput.required = true;
+        longitudeInput.required = true;
         // Make all additional fields not required initially
         const additionalInputs = otherDudiContainer.querySelectorAll('input, textarea');
         additionalInputs.forEach(input => {
@@ -203,6 +234,11 @@ document.getElementById('dudiSelect').addEventListener('change', function() {
         otherDudiContainer.style.display = 'none';
         otherDudiInput.required = false;
         otherDudiInput.value = '';
+        latitudeInput.required = false;
+        longitudeInput.required = false;
+        latitudeInput.value = '';
+        longitudeInput.value = '';
+        locationStatus.textContent = 'Koordinat wajib diisi untuk perusahaan yang tidak terdaftar.';
         // Clear all additional fields
         const additionalInputs = otherDudiContainer.querySelectorAll('input, textarea');
         additionalInputs.forEach(input => {
@@ -214,11 +250,32 @@ document.getElementById('dudiSelect').addEventListener('change', function() {
 
 // Cek nilai awal saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
-    const dudiSelect = document.getElementById('dudiSelect');
     if(dudiSelect.value === 'other') {
-        document.getElementById('otherDudiContainer').style.display = 'block';
-        document.querySelector('input[name="other_dudi_nama"]').required = true;
+        otherDudiContainer.style.display = 'block';
+        otherDudiInput.required = true;
+        latitudeInput.required = true;
+        longitudeInput.required = true;
     }
+
+    document.getElementById('getOtherDudiLocation').addEventListener('click', function() {
+        if(!navigator.geolocation) {
+            locationStatus.textContent = 'Browser tidak mendukung pengambilan lokasi.';
+            locationStatus.className = 'text-danger';
+            return;
+        }
+
+        locationStatus.textContent = 'Mengambil lokasi...';
+        locationStatus.className = 'text-muted';
+        navigator.geolocation.getCurrentPosition(function(position) {
+            latitudeInput.value = position.coords.latitude.toFixed(8);
+            longitudeInput.value = position.coords.longitude.toFixed(8);
+            locationStatus.textContent = 'Lokasi berhasil diambil.';
+            locationStatus.className = 'text-success';
+        }, function() {
+            locationStatus.textContent = 'Lokasi tidak dapat diambil. Izinkan akses lokasi lalu coba lagi.';
+            locationStatus.className = 'text-danger';
+        }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+    });
 });
 </script>
 

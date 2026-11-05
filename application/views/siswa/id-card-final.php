@@ -35,10 +35,10 @@
     <!-- ID Card Design Following Your Template Exactly -->
     <style>
         :root {
-            --primary-purple: #6a3093;
-            --light-purple: #f3e5f5;
-            --accent-purple: #9c4dcc;
-            --text-color: #4a148c;
+            --primary-purple: #563b82;
+            --light-purple: #f0ebf7;
+            --accent-purple: #8064a8;
+            --text-color: #432e67;
         }
 
         body {

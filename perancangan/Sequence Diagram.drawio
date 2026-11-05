@@ -1,0 +1,230 @@
+<mxfile host="app.diagrams.net" modified="2026-08-20T08:25:00.000Z" agent="Gemini" version="21.0.0" type="device">
+  <diagram id="seq-diag-sipkl-styled" name="Sequence Diagram SiPKL">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TITLE -->
+        <mxCell id="title" value="1. Login Multi-Role — Hubin &amp; Guru Pembimbing" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="10" width="450" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- PARTICIPANTS & LIFELINES -->
+        
+        <!-- 1. Actor (Pengguna) -->
+        <mxCell id="actor_top" value="Pengguna&lt;br&gt;(Hubin / Guru)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeColor=#000000;strokeWidth=1.5;fillColor=none;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="60" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_bottom" value="Pengguna&lt;br&gt;(Hubin / Guru)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;strokeColor=#000000;strokeWidth=1.5;fillColor=none;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="860" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_user" value="" style="strokeColor=#000000;strokeWidth=1;dashed=1;html=1;endArrow=none;" edge="1" parent="1" source="actor_top" target="actor_bottom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. View (login-*.php) -->
+        <mxCell id="view_top" value="View&lt;br&gt;(login-*.php)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="200" y="70" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="view_bottom" value="View&lt;br&gt;(login-*.php)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="200" y="860" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_view" value="" style="strokeColor=#000000;strokeWidth=1;dashed=1;html=1;endArrow=none;" edge="1" parent="1" source="view_top" target="view_bottom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3. Controller (Auth.php) -->
+        <mxCell id="ctrl_top" value="Controller&lt;br&gt;(Auth.php)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="70" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ctrl_bottom" value="Controller&lt;br&gt;(Auth.php)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="860" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_ctrl" value="" style="strokeColor=#000000;strokeWidth=1;dashed=1;html=1;endArrow=none;" edge="1" parent="1" source="ctrl_top" target="ctrl_bottom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. Model (Login.php) -->
+        <mxCell id="modl_top" value="Model&lt;br&gt;(Login.php)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="600" y="70" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="modl_bottom" value="Model&lt;br&gt;(Login.php)" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="600" y="860" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_modl" value="" style="strokeColor=#000000;strokeWidth=1;dashed=1;html=1;endArrow=none;" edge="1" parent="1" source="modl_top" target="modl_bottom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. Database (tb_user & tb_group) -->
+        <mxCell id="db_top" value="Database&lt;br&gt;(tb_user &amp; tb_group)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="800" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="db_bottom" value="Database&lt;br&gt;(tb_user &amp; tb_group)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="800" y="850" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline_db" value="" style="strokeColor=#000000;strokeWidth=1;dashed=1;html=1;endArrow=none;" edge="1" parent="1" source="db_top" target="db_bottom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ACTIVATION BARS -->
+        <!-- View Activation -->
+        <mxCell id="act_view" value="" style="rounded=0;strokeColor=#000000;strokeWidth=1.2;fillColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="265" y="140" width="10" height="690" as="geometry" />
+        </mxCell>
+        <!-- Controller Activation -->
+        <mxCell id="act_ctrl" value="" style="rounded=0;strokeColor=#000000;strokeWidth=1.2;fillColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="465" y="220" width="10" height="520" as="geometry" />
+        </mxCell>
+        <!-- Model Activation -->
+        <mxCell id="act_modl" value="" style="rounded=0;strokeColor=#000000;strokeWidth=1.2;fillColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="665" y="310" width="10" height="130" as="geometry" />
+        </mxCell>
+        <!-- DB Activation -->
+        <mxCell id="act_db" value="" style="rounded=0;strokeColor=#000000;strokeWidth=1.2;fillColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="855" y="350" width="10" height="50" as="geometry" />
+        </mxCell>
+
+
+        <!-- MESSAGES -->
+        
+        <!-- 1. Akses Halaman -->
+        <mxCell id="msg_1" value="1. Akses /auth/login_hubin atau /auth/login_pembimbing" style="endArrow=block;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="65" y="150" as="sourcePoint" />
+            <mxPoint x="265" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Input Kredensial -->
+        <mxCell id="msg_2" value="2. Input Username/NIP &amp; Password → Klik Login" style="endArrow=block;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="65" y="190" as="sourcePoint" />
+            <mxPoint x="265" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. POST Login -->
+        <mxCell id="msg_3" value="3. POST /auth/do_login_...()" style="endArrow=block;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="275" y="230" as="sourcePoint" />
+            <mxPoint x="465" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Self Call: form_validation -->
+        <mxCell id="msg_4" value="4. form_validation-&gt;run()" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry x="0.125" y="10" relative="1" as="geometry">
+            <mxPoint x="475" y="250" as="sourcePoint" />
+            <mxPoint x="475" y="280" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="525" y="250" />
+              <mxPoint x="525" y="280" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Cek Login (Model) -->
+        <mxCell id="msg_5" value="5. cek_login($data_login)" style="endArrow=block;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="475" y="320" as="sourcePoint" />
+            <mxPoint x="665" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Query DB -->
+        <mxCell id="msg_6" value="6. SELECT * FROM tb_user JOIN tb_group WHERE username = ?" style="endArrow=block;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="675" y="360" as="sourcePoint" />
+            <mxPoint x="855" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Return Row (DB -> Model) -->
+        <mxCell id="msg_7" value="7. Kembalikan data user (atau null)" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="855" y="390" as="sourcePoint" />
+            <mxPoint x="675" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Return Row (Model -> Ctrl) -->
+        <mxCell id="msg_8" value="8. Kembalikan entitas user / false" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="665" y="430" as="sourcePoint" />
+            <mxPoint x="475" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Self Call: password_verify -->
+        <mxCell id="msg_9" value="9. Validasi password_verify() &amp; cek role" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry x="0.125" y="10" relative="1" as="geometry">
+            <mxPoint x="475" y="450" as="sourcePoint" />
+            <mxPoint x="475" y="480" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="525" y="450" />
+              <mxPoint x="525" y="480" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ALT FRAME START -->
+        <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;width=40;height=20;boundedLbl=1;verticalAlign=top;align=left;spacingLeft=5;strokeColor=#000000;strokeWidth=1.5;fillColor=none;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="130" y="500" width="420" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="alt_guard_1" value="[Jika Kredensial &amp; Level Sesuai]" style="text;html=1;align=left;verticalAlign=top;spacingLeft=5;fontSize=11;fontStyle=1;fontColor=#008000;" vertex="1" parent="1">
+          <mxGeometry x="175" y="500" width="250" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 10. Self Call: set_userdata -->
+        <mxCell id="msg_10" value="10. session-&gt;set_userdata('userdata', $user)" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry x="0.125" y="10" relative="1" as="geometry">
+            <mxPoint x="475" y="540" as="sourcePoint" />
+            <mxPoint x="475" y="570" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="525" y="540" />
+              <mxPoint x="525" y="570" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 11. Redirect Success -->
+        <mxCell id="msg_11" value="11. Redirect ke hubin/view/home atau guru/view/home" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="465" y="610" as="sourcePoint" />
+            <mxPoint x="275" y="610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ALT DIVIDER -->
+        <mxCell id="alt_divider" value="" style="line;strokeWidth=1.5;dashed=1;html=1;strokeColor=#000000;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="650" width="420" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="alt_guard_2" value="[Jika Username/Password Salah atau Level Tidak Sesuai]" style="text;html=1;align=left;verticalAlign=top;spacingLeft=5;fontSize=11;fontStyle=1;fontColor=#FF0000;" vertex="1" parent="1">
+          <mxGeometry x="135" y="660" width="350" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 12. Return Error -->
+        <mxCell id="msg_12" value="12. Set flashdata error &amp; redirect kembali ke /login" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="465" y="710" as="sourcePoint" />
+            <mxPoint x="275" y="710" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <!-- ALT FRAME END -->
+
+        <!-- 13. Tampilkan Hasil (View -> User) -->
+        <mxCell id="msg_13" value="13. Tampilkan halaman dashboard atau pesan error" style="endArrow=open;dashed=1;endSize=8;strokeColor=#000000;strokeWidth=1.5;html=1;verticalAlign=bottom;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="265" y="810" as="sourcePoint" />
+            <mxPoint x="65" y="810" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

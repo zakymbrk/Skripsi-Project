@@ -1,0 +1,383 @@
+DOKUMENTASI LOGIKA SISTEM
+RULE-BASED VALIDATION (RBV)
+SISTEM INFORMASI PKL - SIPKL
+
+======================================================================
+1. LOKASI UTAMA ALGORITMA
+======================================================================
+
+File engine utama:
+application/libraries/Rule_based_validation.php
+
+Nama class:
+Rule_based_validation
+
+Fungsi utama class:
+- Mengatur validasi presensi masuk.
+- Mengatur validasi presensi pulang.
+- Mengatur validasi logbook harian.
+- Memvalidasi kelayakan siswa untuk mengakses monitoring PKL.
+- Memvalidasi lokasi GPS siswa terhadap lokasi DUDI.
+- Menghitung jarak GPS menggunakan formula Haversine.
+- Memvalidasi status harian presensi dan logbook.
+- Menghitung dan menyinkronkan nilai siswa.
+
+Engine ini menggunakan database CodeIgniter melalui objek:
+$this->CI->db
+
+Tabel database yang digunakan secara utama:
+- tb_user
+- tb_siswa
+- tb_dudi
+- tb_presensi
+- tb_logbook
+- tb_penilaian
+
+======================================================================
+2. DAFTAR ATURAN RULE-BASED VALIDATION
+======================================================================
+
+RBV-001 - Duplikasi presensi masuk
+Satu siswa hanya boleh melakukan presensi masuk satu kali pada tanggal
+sama. Pemeriksaan dilakukan berdasarkan siswa_id dan tanggal pada tabel
+tb_presensi.
+
+RBV-002 - Prasyarat presensi pulang
+Presensi pulang hanya dapat dilakukan apabila siswa sudah memiliki
+presensi masuk pada tanggal yang sama.
+
+RBV-003 - Kelengkapan parameter presensi
+siswa_id dan tanggal wajib tersedia sebelum proses validasi presensi.
+
+RBV-004 - Foto bukti presensi
+Foto presensi digunakan sebagai bukti kehadiran fisik. Pemeriksaan
+ketersediaan file dilakukan melalui parameter foto pada validasi presensi
+dan proses upload di controller Siswa.
+
+RBV-005 - Penolakan data tidak valid
+Data yang melanggar aturan sistem ditolak dan dikembalikan dengan rule_id
+serta pesan alasan penolakan.
+
+RBV-006 - Validasi geolocation dan radius DUDI
+Koordinat siswa dibandingkan dengan koordinat DUDI. Presensi ditolak
+apabila jarak siswa lebih besar daripada radius toleransi DUDI.
+
+RBV-007 - Duplikasi logbook
+Satu siswa hanya dapat mempunyai satu logbook untuk satu tanggal.
+
+RBV-008 - Validasi deskripsi kegiatan
+Deskripsi kegiatan tidak boleh kosong dan minimal memiliki 20 karakter.
+
+RBV-009 - Dokumentasi kegiatan logbook
+File dokumentasi kegiatan wajib diunggah sebelum logbook disimpan.
+
+RBV-010 - Kelengkapan data logbook
+Identitas siswa dan tanggal logbook wajib tersedia. Rule ini juga dipakai
+ketika logbook belum tersedia atau tidak valid pada status harian.
+
+RBV-011 - Alasan penolakan yang jelas
+Hasil validasi mengembalikan rule_id dan message sehingga alasan data
+ditolak dapat ditampilkan kepada pengguna.
+
+RBV-012 - Pencegahan presensi masuk ganda
+Pemeriksaan aplikasi dan constraint database digunakan untuk mencegah
+lebih dari satu presensi masuk pada siswa dan tanggal yang sama.
+
+RBV-013 - Pencegahan presensi pulang ganda
+Presensi pulang ditolak apabila jam_pulang pada record tanggal tersebut
+sudah terisi.
+
+RBV-014 - Integritas presensi dan logbook
+Logbook hanya dapat dibuat setelah presensi masuk dan presensi pulang
+pada tanggal yang sama selesai.
+
+RBV-015 - Kelayakan siswa
+Siswa harus memiliki data siswa, status_pengajuan disetujui, dan tanggal
+hari ini harus berada dalam periode PKL.
+
+RBV-016 - Sinkronisasi nilai dan penalti
+Nilai dihitung dari presensi dan logbook. Logbook tidak valid serta alpha
+atau keterlambatan menimbulkan pengurangan nilai sebesar 5 poin per
+kejadian sesuai implementasi engine.
+
+Ketidakhadiran otomatis:
+Pada saat sync_penilaian_siswa() dijalankan, sistem memeriksa setiap
+tanggal PKL yang sudah selesai sampai hari kemarin. Jika tidak ditemukan
+record pada tb_presensi, sistem membuat record status_kehadiran alpha.
+Hari ini tidak langsung ditandai alpha agar siswa masih dapat melakukan
+presensi. Record alpha yang sudah ada tidak dibuat ulang.
+
+======================================================================
+3. METHOD ALGORITMA PADA ENGINE
+======================================================================
+
+File: application/libraries/Rule_based_validation.php
+
+3.1 calculate_distance()
+Tujuan:
+Menghitung jarak dua koordinat menggunakan formula Haversine.
+
+Input:
+- latitude siswa
+- longitude siswa
+- latitude DUDI
+- longitude DUDI
+
+Output:
+Jarak dalam meter.
+
+Digunakan oleh:
+validate_geolocation()
+
+3.2 validate_geolocation()
+Tujuan:
+Memvalidasi lokasi siswa terhadap lokasi DUDI.
+
+Proses:
+1. Status izin atau sakit tidak wajib diverifikasi GPS.
+2. Data DUDI diambil dari tb_siswa dan tb_dudi.
+3. Radius default 100 meter digunakan jika radius DUDI kosong.
+4. Koordinat siswa wajib tersedia untuk status hadir.
+5. Jarak dihitung dengan calculate_distance().
+6. Jika jarak lebih besar dari radius, validasi ditolak dengan RBV-006.
+7. Jika jarak masih berada dalam radius, lokasi dinyatakan valid.
+
+3.3 validate_presensi_masuk()
+Tujuan:
+Memvalidasi presensi masuk siswa.
+
+Proses:
+1. Memastikan siswa_id dan tanggal tersedia (RBV-003).
+2. Memeriksa presensi masuk yang sudah ada pada tanggal tersebut
+   (RBV-001 dan RBV-012).
+3. Jika status hadir, menjalankan validate_geolocation() (RBV-006).
+4. Mengembalikan status valid atau alasan penolakan.
+
+3.4 validate_presensi_pulang()
+Tujuan:
+Memvalidasi presensi pulang siswa.
+
+Proses:
+1. Memastikan siswa_id dan tanggal tersedia (RBV-003).
+2. Memastikan presensi masuk sudah ada (RBV-002).
+3. Memastikan presensi pulang belum pernah dilakukan (RBV-013).
+4. Memvalidasi lokasi pulang dengan validate_geolocation() (RBV-006).
+5. Mengembalikan record presensi yang akan diperbarui jika valid.
+
+3.5 validate_logbook()
+Tujuan:
+Memvalidasi logbook kegiatan harian.
+
+Proses:
+1. Memastikan siswa_id dan tanggal tersedia (RBV-010).
+2. Memastikan presensi masuk dan pulang sudah lengkap (RBV-014).
+3. Memastikan logbook pada tanggal tersebut belum ada (RBV-007).
+4. Memastikan deskripsi minimal 20 karakter (RBV-008).
+5. Memastikan file dokumentasi tersedia (RBV-009).
+6. Mengembalikan status valid atau alasan penolakan.
+
+3.6 normalize_pkl_schedule()
+Tujuan:
+Menormalisasi tanggal mulai, tanggal selesai, dan lama periode PKL.
+
+Hasil normalisasi:
+- Periode standar ditetapkan sekitar 90 hari.
+- Tanggal yang tidak valid diperbaiki ke nilai yang dapat digunakan.
+- Data tb_siswa diperbarui jika jadwal berubah.
+
+3.7 validate_siswa_eligibility()
+Tujuan:
+Memastikan siswa berhak memakai fitur monitoring PKL.
+
+Syarat utama:
+- Data siswa ditemukan.
+- status_pengajuan bernilai disetujui.
+- Tanggal hari ini berada dalam tanggal_mulai dan tanggal_selesai.
+
+3.8 validate_status_harian()
+Tujuan:
+Menggabungkan pemeriksaan presensi dan logbook pada suatu tanggal.
+
+Pemeriksaan:
+- Presensi masuk tersedia.
+- Presensi tidak berstatus tidak_valid.
+- Logbook tersedia.
+- Logbook tidak berstatus tidak_valid.
+
+3.9 sync_penilaian_siswa()
+Tujuan:
+Menghitung dan menyimpan rekap nilai siswa pada tb_penilaian.
+
+Sebelum menghitung nilai, method ini memanggil proses internal
+mark_missing_attendance() untuk membuat alpha otomatis pada tanggal PKL
+yang sudah terlewati tanpa record presensi.
+
+Komponen perhitungan:
+- Total hadir.
+- Total alpha.
+- Total terlambat.
+- Total logbook valid.
+- Total logbook tidak valid.
+- Pengurangan nilai logbook tidak valid.
+- Pengurangan nilai alpha dan terlambat.
+- Nilai kehadiran.
+- Nilai logbook.
+- Nilai akhir.
+
+Bobot nilai akhir:
+- Nilai kehadiran: 40 persen.
+- Nilai logbook: 60 persen.
+
+======================================================================
+4. PEMANGGILAN ALGORITMA PADA CONTROLLER SISWA
+======================================================================
+
+File:
+application/controllers/Siswa.php
+
+4.1 Constructor dan halaman monitoring
+Library dimuat menggunakan:
+$this->load->library('rule_based_validation');
+
+Kelayakan siswa dipanggil menggunakan:
+$this->rule_based_validation->validate_siswa_eligibility(...);
+
+Pemanggilan ini digunakan sebelum siswa mengakses presensi dan logbook.
+
+4.2 do_presensi_masuk()
+Method engine yang dipanggil:
+- validate_siswa_eligibility()
+- validate_presensi_masuk() - validasi awal
+- validate_presensi_masuk() - validasi lengkap setelah upload
+- validate_geolocation() - audit lokasi
+- sync_penilaian_siswa() - sinkronisasi nilai setelah tersimpan
+
+Alur:
+Form presensi masuk -> validasi siswa -> validasi duplikasi dan parameter
+-> validasi GPS -> upload foto -> validasi lengkap -> simpan presensi
+-> sinkronisasi nilai.
+
+4.3 do_presensi_pulang()
+Method engine yang dipanggil:
+- validate_siswa_eligibility()
+- validate_presensi_pulang() - validasi awal
+- validate_presensi_pulang() - validasi lengkap setelah upload
+- sync_penilaian_siswa()
+
+Alur:
+Form presensi pulang -> cek presensi masuk -> cek duplikasi pulang
+-> validasi GPS -> upload foto -> update presensi -> sinkronisasi nilai.
+
+4.4 update_lokasi_realtime()
+Method engine yang dipanggil:
+- validate_siswa_eligibility()
+- validate_geolocation()
+
+Alur:
+Browser mengirim koordinat -> koordinat divalidasi -> presensi aktif dicari
+-> jarak GPS dihitung -> audit lokasi disimpan ke tb_presensi.
+
+4.5 do_tambah_logbook()
+Method engine yang dipanggil:
+- validate_siswa_eligibility()
+- validate_geolocation()
+- validate_logbook() - validasi awal
+- validate_logbook() - validasi lengkap setelah upload
+- sync_penilaian_siswa()
+
+Alur:
+Form logbook -> cek kelayakan siswa -> cek presensi masuk/pulang
+-> validasi GPS -> validasi duplikasi dan deskripsi -> upload dokumentasi
+-> validasi lengkap -> simpan logbook -> sinkronisasi nilai.
+
+======================================================================
+5. PEMANGGILAN ALGORITMA PADA CONTROLLER GURU
+======================================================================
+
+File:
+application/controllers/Guru.php
+
+Pada halaman laporan bimbingan, library dimuat menggunakan:
+$this->load->library('rule_based_validation');
+
+Untuk setiap siswa bimbingan, method berikut dipanggil:
+$this->rule_based_validation->sync_penilaian_siswa($sb->siswa_id);
+
+Tujuan:
+Memastikan nilai dan penalti siswa bimbingan telah dihitung ulang sebelum
+laporan ditampilkan.
+
+======================================================================
+6. PEMANGGILAN ALGORITMA PADA VIEW LAPORAN HUBIN
+======================================================================
+
+File:
+application/views/hubin/laporan-monitoring.php
+
+Library dimuat menggunakan:
+$CI->load->library('rule_based_validation');
+
+Untuk seluruh siswa:
+$CI->rule_based_validation->sync_penilaian_siswa($st->siswa_id);
+
+Tujuan:
+Menghitung ulang data penilaian sebelum laporan monitoring global Hubin
+ditampilkan.
+
+======================================================================
+7. RINGKASAN ALUR SISTEM
+======================================================================
+
+SISWA LOGIN
+    |
+    v
+validate_siswa_eligibility()
+    |
+    +--> Tidak disetujui / di luar periode -> akses ditolak
+    |
+    +--> Disetujui dan periode aktif
+              |
+              +--> Presensi masuk
+              |       validate_presensi_masuk()
+              |       validate_geolocation()
+              |       Upload foto
+              |       Simpan tb_presensi
+              |
+              +--> Presensi pulang
+              |       validate_presensi_pulang()
+              |       validate_geolocation()
+              |       Upload foto
+              |       Update tb_presensi
+              |
+              +--> Logbook
+                      validate_logbook()
+                      Validasi deskripsi dan dokumentasi
+                      Simpan tb_logbook
+
+Sinkronisasi juga dipanggil saat controller Siswa mulai berjalan, sehingga
+ketika siswa membuka aplikasi pada hari berikutnya, hari PKL sebelumnya
+yang tidak memiliki presensi langsung ditandai alpha. Pemanggilan setelah
+presensi atau logbook tersimpan tetap dilakukan untuk memperbarui nilai.
+
+Setelah presensi/logbook tersimpan:
+        sync_penilaian_siswa()
+                |
+                v
+        Simpan rekap ke tb_penilaian
+
+======================================================================
+8. CATATAN TEKNIS
+======================================================================
+
+- Nama file library harus tetap Rule_based_validation.php agar sesuai
+  dengan nama class dan pemanggilan CodeIgniter.
+- Nama property yang digunakan CodeIgniter adalah rule_based_validation.
+- Hasil validasi umumnya berupa array dengan kunci is_valid, rule_id,
+  message, dan data tambahan sesuai kebutuhan method.
+- RBV merupakan validasi deterministik berbasis kondisi dan data database,
+  bukan machine learning atau AI.
+- Pemeriksaan upload file dilakukan oleh controller Siswa, sedangkan
+  Rule_based_validation memeriksa apakah file telah tersedia sebagai
+  parameter validasi.
+- Perhitungan jarak lokasi menggunakan formula Haversine dengan radius
+  bumi 6.371.000 meter.

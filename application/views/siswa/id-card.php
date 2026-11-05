@@ -48,8 +48,8 @@ $foto_profil = isset($siswa->foto_profil_url) ? $siswa->foto_profil_url : base_u
         /* Critical rendering styles */
         body{font-family:Arial,sans-serif;margin:0;padding:20px;background-color:#f5f5f5}
         .id-card-container{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
-        .id-card,.id-card-back{width:350px;height:580px;background:linear-gradient(135deg,#6a1b9a,#4a148c);color:white;border-radius:15px;padding:20px;box-shadow:0 10px 20px rgba(0,0,0,0.2);position:relative;overflow:hidden}
-        .id-card-back{background:linear-gradient(135deg,#4a148c,#6a1b9a)}
+        .id-card,.id-card-back{width:350px;height:580px;background-color:#563b82;color:white;border-radius:8px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.16);position:relative;overflow:hidden}
+        .id-card-back{background-color:#432e67}
         .header{text-align:center;padding:15px 0;background-color:rgba(255,255,255,0.1);border-radius:10px;margin-bottom:20px}
         .photo-section{text-align:center;margin:20px 0}
         .photo{width:120px;height:150px;border:3px solid white;border-radius:10px;overflow:hidden;margin:0 auto;background-color:white}
@@ -58,10 +58,10 @@ $foto_profil = isset($siswa->foto_profil_url) ? $siswa->foto_profil_url : base_u
         .label{font-size:14px;color:#e1bee7;margin-bottom:5px;display:block}
         .value{font-size:16px;font-weight:bold;margin-bottom:15px;color:white}
         .back-info{margin-top:30px}
-        .qr-code-container{width:160px;height:160px;background-color:white;margin:20px auto;position:relative;border-radius:10px;padding:10px}.qr-code-img{width:100%;height:100%;border-radius:8px}.qr-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;overflow:hidden;border:3px solid white;box-shadow:0 0 0 2px #6a1b9a}.profile-overlay{width:100%;height:100%;object-fit:cover}
+        .qr-code-container{width:160px;height:160px;background-color:white;margin:20px auto;position:relative;border-radius:8px;padding:10px}.qr-code-img{width:100%;height:100%;border-radius:6px}.qr-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;overflow:hidden;border:3px solid white;box-shadow:0 0 0 2px #563b82}.profile-overlay{width:100%;height:100%;object-fit:cover}
         .contact-info{margin-top:20px;font-size:12px;text-align:center}
-        .print-btn{display:block;margin:20px auto;padding:12px 30px;background-color:#6a1b9a;color:white;border:none;border-radius:25px;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;width:200px}
-        .print-btn:hover{background-color:#4a148c}
+        .print-btn{display:block;margin:20px auto;padding:12px 30px;background-color:#563b82;color:white;border:none;border-radius:6px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;text-align:center;width:200px}
+        .print-btn:hover{background-color:#432e67}
         @media print {
             body {
                 background-color: white;
@@ -124,9 +124,9 @@ $foto_profil = isset($siswa->foto_profil_url) ? $siswa->foto_profil_url : base_u
         .id-card, .id-card-back {
             width: 72mm;
             height: 107mm;
-            background: linear-gradient(135deg, #6a1b9a, #4a148c);
+            background-color: #563b82;
             color: white;
-            border-radius: 15px;
+            border-radius: 8px;
             padding: 10px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             position: relative;
@@ -135,7 +135,7 @@ $foto_profil = isset($siswa->foto_profil_url) ? $siswa->foto_profil_url : base_u
         }
         
         .id-card-back {
-            background: linear-gradient(135deg, #4a148c, #6a1b9a);
+            background-color: #432e67;
         }
         
         .header {
@@ -227,7 +227,7 @@ $foto_profil = isset($siswa->foto_profil_url) ? $siswa->foto_profil_url : base_u
             display: block;
             margin: 20px auto;
             padding: 12px 30px;
-            background-color: #6a1b9a;
+            background-color: #563b82;
             color: white;
             border: none;
             border-radius: 25px;
@@ -240,7 +240,7 @@ $foto_profil = isset($siswa->foto_profil_url) ? $siswa->foto_profil_url : base_u
         }
         
         .print-btn:hover {
-            background-color: #4a148c;
+            background-color: #432e67;
         }
         
     </style>

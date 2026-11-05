@@ -70,12 +70,38 @@ class M_pembimbing extends CI_Model {
 
     function delete_pembimbing($pembimbing_code)
     {
-        $result = true;
+        $this->db->where('pembimbing_code', $pembimbing_code);
+        $pembimbing = $this->db->get('tb_pembimbing')->row();
+
+        if (!$pembimbing) {
+            return false;
+        }
+
+        $pembimbing_id = (int) $pembimbing->pembimbing_id;
+        $user_id = isset($pembimbing->user_id) ? (int) $pembimbing->user_id : null;
+
+        $this->db->trans_start();
+
+        $this->db->where('pembimbing_id', $pembimbing_id);
+        $this->db->delete('tb_pengelompokan');
+
+        $this->db->where('pembimbing_id', $pembimbing_id);
+        $this->db->delete('tb_penilaian');
+
+        $this->db->where('pembimbing_id', $pembimbing_id);
+        $this->db->update('tb_siswa', ['pembimbing_id' => null]);
 
         $this->db->where('pembimbing_code', $pembimbing_code);
         $this->db->delete('tb_pembimbing');
 
-        return $result;
+        if ($user_id) {
+            $this->db->where('id', $user_id);
+            $this->db->delete('tb_user');
+        }
+
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
     }
 
     function get_all_pembimbing()
@@ -99,9 +125,9 @@ class M_pembimbing extends CI_Model {
     // New function to get pembimbing with full biodata (tanpa user)
     function get_pembimbing_with_biodata($pembimbing_code)
     {
-        $this->db->select('tb_pembimbing.*');
+        $this->db->select('tb_pembimbing.*, tb_user.username, tb_user.password, tb_user.nama_lengkap, tb_user.email as user_email, tb_user.telepon as user_telepon, tb_user.alamat as user_alamat, tb_user.tempat_lahir as user_tempat_lahir, tb_user.tanggal_lahir as user_tanggal_lahir, tb_user.jenis_kelamin as user_jenis_kelamin, tb_user.nip_nim as user_nip_nim');
         $this->db->from('tb_pembimbing');
-        // Tidak lagi join dengan tb_user karena pembimbing tidak terhubung dengan user
+        $this->db->join('tb_user', 'tb_user.id = tb_pembimbing.user_id AND tb_user.level = 2', 'left');
         $this->db->where('tb_pembimbing.pembimbing_code', $pembimbing_code);
         return $this->db->get()->row();
     }
@@ -164,9 +190,9 @@ class M_pembimbing extends CI_Model {
      */
     function get_pembimbing_with_complete_biodata_by_pembimbing_id($pembimbing_id)
     {
-        $this->db->select('tb_pembimbing.*');
+        $this->db->select('tb_pembimbing.*, tb_user.username, tb_user.password, tb_user.nama_lengkap, tb_user.email as user_email, tb_user.telepon as user_telepon, tb_user.alamat as user_alamat, tb_user.tempat_lahir as user_tempat_lahir, tb_user.tanggal_lahir as user_tanggal_lahir, tb_user.jenis_kelamin as user_jenis_kelamin, tb_user.nip_nim as user_nip_nim');
         $this->db->from('tb_pembimbing');
-        // Tidak lagi join dengan tb_user karena pembimbing tidak terhubung dengan user
+        $this->db->join('tb_user', 'tb_user.id = tb_pembimbing.user_id AND tb_user.level = 2', 'left');
         $this->db->where('tb_pembimbing.pembimbing_id', $pembimbing_id);
         return $this->db->get()->row();
     }
@@ -218,8 +244,9 @@ class M_pembimbing extends CI_Model {
      */
     function get_pembimbing_paginated($limit, $offset, $search = '')
     {
-        $this->db->select('tb_pembimbing.*');
+        $this->db->select('tb_pembimbing.*, tb_user.username, tb_user.nama_lengkap, tb_user.email as user_email, tb_user.telepon as user_telepon, tb_user.alamat as user_alamat');
         $this->db->from('tb_pembimbing');
+        $this->db->join('tb_user', 'tb_user.id = tb_pembimbing.user_id AND tb_user.level = 2', 'left');
         
         if($search) {
             $this->db->like('tb_pembimbing.pembimbing_nama', $search);

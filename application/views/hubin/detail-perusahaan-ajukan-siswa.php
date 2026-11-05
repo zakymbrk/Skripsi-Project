@@ -116,6 +116,16 @@
                                 <td><?php echo $siswa->other_dudi_email ?></td>
                             </tr>
                             <?php endif; ?>
+
+                            <?php if($siswa->other_dudi_latitude !== null && $siswa->other_dudi_longitude !== null): ?>
+                            <tr>
+                                <td class="fw-bold bg-light">Koordinat GPS</td>
+                                <td>
+                                    Latitude: <?php echo $siswa->other_dudi_latitude ?><br>
+                                    Longitude: <?php echo $siswa->other_dudi_longitude ?>
+                                </td>
+                            </tr>
+                            <?php endif; ?>
                             
                             <?php if($siswa->other_dudi_pic): ?>
                             <tr>

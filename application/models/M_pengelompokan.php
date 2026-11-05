@@ -106,9 +106,10 @@ class M_pengelompokan extends CI_Model {
 
     function get_siswa_by_pembimbing($pembimbing_id)
     {
-        $this->db->select('tb_siswa.*, tb_pengelompokan.created_at as assigned_at');
+        $this->db->select('tb_siswa.*, tb_dudi.dudi_nama, tb_pengelompokan.created_at as assigned_at');
         $this->db->from('tb_pengelompokan');
         $this->db->join('tb_siswa', 'tb_siswa.siswa_id = tb_pengelompokan.siswa_id');
+        $this->db->join('tb_dudi', 'tb_dudi.dudi_id = tb_siswa.dudi_id', 'left');
         $this->db->where('tb_pengelompokan.pembimbing_id', $pembimbing_id);
         $this->db->order_by('tb_siswa.siswa_nama', 'ASC');
         return $this->db->get();

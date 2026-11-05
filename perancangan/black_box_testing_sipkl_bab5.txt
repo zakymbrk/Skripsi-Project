@@ -1,0 +1,564 @@
+DOKUMEN BLACK BOX TESTING SIPKL
+RANCANGAN PENGUJIAN BAB V
+
+Status pengujian seluruh skenario: Belum diuji
+Metode: Black Box Testing
+Ruang lingkup: Fitur pengembangan monitoring PKL, presensi, logbook, laporan, dan rekapitulasi.
+
+Catatan metodologis:
+Hasil Aktual dan Status sengaja ditulis "Belum diuji". Dokumen ini merupakan rancangan pengujian berdasarkan source code, bukan klaim bahwa pengujian runtime telah berhasil dilakukan.
+
+======================================================================
+1. RINGKASAN HASIL PENELUSURAN PROJECT
+======================================================================
+
+Aplikasi menggunakan CodeIgniter 3 dengan pembagian peran:
+1. Admin / Hubin: level 1
+2. Guru Pembimbing: level 2
+3. Siswa: level 3
+
+Alur umum implementasi:
+Controller -> Model/Library -> Database -> View
+
+Komponen utama yang ditemukan:
+- application/controllers/Siswa.php
+- application/controllers/Guru.php
+- application/controllers/Hubin.php
+- application/controllers/Auth.php
+- application/models/M_presensi.php
+- application/models/M_logbook.php
+- application/libraries/Rule_based_validation.php
+- application/views/siswa/
+- application/views/guru/
+- application/views/hubin/
+- application/config/routes.php
+- db_sipkl.sql
+
+Tabel database yang berkaitan dengan fitur penelitian:
+- tb_user
+- tb_siswa
+- tb_pembimbing
+- tb_pengelompokan
+- tb_dudi
+- tb_presensi
+- tb_logbook
+- tb_penilaian
+
+Rule-Based Validation terpusat pada:
+application/libraries/Rule_based_validation.php
+
+======================================================================
+2. DAFTAR FITUR DAN FILE RELEVAN
+======================================================================
+
+A. Admin / Hubin
+1. Monitoring presensi
+   Controller: Hubin.php
+   Model: M_presensi.php
+   View: monitoring-presensi.php
+   Method: get_all_presensi_global()
+
+2. Monitoring logbook
+   Controller: Hubin.php
+   Model: M_logbook.php
+   View: monitoring-logbook.php
+   Method: get_all_logbook_global()
+
+3. Laporan monitoring
+   View: laporan-monitoring.php
+   Data: tb_presensi, tb_logbook, tb_penilaian
+   Fitur: pencarian nama siswa, checkbox pemilihan siswa, cetak laporan
+
+B. Guru Pembimbing
+1. Dashboard siswa
+   Controller: Guru.php
+   View: dashboard.php
+   Method: Guru::view('home')
+
+2. Siswa bimbingan
+   Model: M_pengelompokan.php
+   Method: get_siswa_by_pembimbing()
+
+3. Monitoring presensi
+   Model: M_presensi.php
+   Method: get_presensi_by_pembimbing()
+
+4. Monitoring lokasi siswa
+   Controller: Guru.php
+   Method: api_lokasi_siswa()
+   JavaScript: fetch(), setInterval(..., 30000), Leaflet marker
+
+5. Monitoring logbook
+   Model: M_logbook.php
+   Method: get_logbook_by_pembimbing()
+
+6. Rekapitulasi dan cetak
+   View: laporan-bimbingan.php
+   Fungsi JavaScript: printDiv()
+
+C. Siswa
+1. Presensi masuk
+   Controller: Siswa.php
+   Method: do_presensi_masuk()
+
+2. Presensi pulang
+   Controller: Siswa.php
+   Method: do_presensi_pulang()
+
+3. Validasi radius lokasi
+   Library: Rule_based_validation.php
+   Method: validate_geolocation()
+
+4. Riwayat presensi
+   Model: M_presensi.php
+   Method: get_riwayat_presensi_siswa()
+
+5. Logbook harian
+   Controller: Siswa.php
+   Method: do_tambah_logbook()
+   Library: Rule_based_validation.php
+   Method: validate_logbook()
+
+======================================================================
+3. TABEL BLACK BOX PER FITUR
+======================================================================
+
+---------------------------------------------------------------------
+3.1 MONITORING PRESENSI ADMIN / HUBIN
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Menampilkan data presensi | Admin membuka halaman monitoring | Data presensi global ditampilkan | Belum diuji | Belum diuji | M_presensi.php::get_all_presensi_global() |
+| 2 | Filter berdasarkan tanggal | GET tanggal berisi tanggal valid | Hanya presensi pada tanggal tersebut ditampilkan | Belum diuji | Belum diuji | monitoring-presensi.php; get_all_presensi_global() |
+| 3 | Filter tanggal kosong | GET tanggal kosong | Seluruh data sesuai batas query ditampilkan | Belum diuji | Belum diuji | M_presensi.php::get_all_presensi_global() |
+| 4 | Tanggal tidak memiliki data | Tanggal valid tetapi tidak ada presensi | Tabel menampilkan kondisi data kosong | Belum diuji | Belum diuji | monitoring-presensi.php |
+| 5 | Filter status hadir | status_kehadiran=hadir | Data hadir ditampilkan | Belum diuji | Belum diuji | get_all_presensi_global() |
+| 6 | Filter status izin/sakit/alpha | Status sesuai pilihan view | Data sesuai status ditampilkan | Belum diuji | Belum diuji | monitoring-presensi.php; get_all_presensi_global() |
+| 7 | Nilai status tidak dikenal | GET status berisi nilai lain | Perilaku aktual perlu diamati karena model tidak membatasi nilai GET secara eksplisit | Belum diuji | Belum diuji | M_presensi.php::get_all_presensi_global() |
+| 8 | Pengurutan data | Terdapat beberapa tanggal dan jam masuk | Data diurutkan tanggal terbaru dan jam masuk terbaru | Belum diuji | Belum diuji | M_presensi.php::get_all_presensi_global() |
+| 9 | Melihat audit lokasi | Presensi memiliki koordinat dan jarak | Nama siswa, DUDI, koordinat, jarak, radius, dan status lokasi ditampilkan | Belum diuji | Belum diuji | M_presensi.php; monitoring-presensi.php |
+| 10 | Akses tanpa login | Session userdata tidak tersedia | Pengguna diarahkan ke halaman auth | Belum diuji | Belum diuji | Hubin.php::__construct() |
+| 11 | Akses oleh role selain Hubin | Session level bukan 1 | Pengguna diarahkan ke auth | Belum diuji | Belum diuji | Hubin.php::__construct() |
+
+---------------------------------------------------------------------
+3.2 MONITORING LOGBOOK ADMIN / HUBIN
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Menampilkan data logbook | Admin membuka monitoring logbook | Data logbook global ditampilkan | Belum diuji | Belum diuji | M_logbook.php::get_all_logbook_global() |
+| 2 | Filter berdasarkan tanggal | GET tanggal valid | Logbook tanggal tersebut ditampilkan | Belum diuji | Belum diuji | monitoring-logbook.php; get_all_logbook_global() |
+| 3 | Tanggal tidak memiliki logbook | Tanggal tanpa data | Tabel menampilkan kondisi kosong | Belum diuji | Belum diuji | monitoring-logbook.php |
+| 4 | Menampilkan identitas siswa | Logbook memiliki siswa terkait | Nama, kelas, tanggal, dan isi kegiatan tampil | Belum diuji | Belum diuji | M_logbook.php; monitoring-logbook.php |
+| 5 | Menampilkan DUDI dan pembimbing | Relasi siswa-DUDI-pembimbing tersedia | DUDI dan pembimbing ditampilkan | Belum diuji | Belum diuji | M_logbook.php::get_all_logbook_global() |
+| 6 | Menampilkan status logbook | Logbook valid/tidak valid | Status dan catatan evaluasi ditampilkan | Belum diuji | Belum diuji | monitoring-logbook.php |
+| 7 | Pengurutan data | Terdapat beberapa logbook | Data diurutkan tanggal dan waktu terbaru | Belum diuji | Belum diuji | M_logbook.php::get_all_logbook_global() |
+| 8 | Akses tanpa login | Session tidak tersedia | Pengguna diarahkan ke auth | Belum diuji | Belum diuji | Hubin.php::__construct() |
+| 9 | Akses role bukan Hubin | Session level bukan 1 | Pengguna diarahkan ke auth | Belum diuji | Belum diuji | Hubin.php::__construct() |
+
+---------------------------------------------------------------------
+3.3 LAPORAN MONITORING ADMIN / HUBIN
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Membuka laporan | Admin membuka laporan monitoring | Rekap presensi, logbook, dan penilaian ditampilkan | Belum diuji | Belum diuji | laporan-monitoring.php |
+| 2 | Mencari nama siswa | Ketik sebagian nama pada Cari Nama Siswa | Baris dengan nama yang cocok ditampilkan | Belum diuji | Belum diuji | laporan-monitoring.php; JavaScript input event |
+| 3 | Pencarian tanpa hasil | Kata kunci tidak cocok | Baris data disembunyikan | Belum diuji | Belum diuji | laporan-monitoring.php; JavaScript |
+| 4 | Memilih satu siswa | Checkbox siswa dicentang | Siswa tersebut dipilih untuk cetak | Belum diuji | Belum diuji | laporan-monitoring.php; student-print-check |
+| 5 | Memilih beberapa siswa | Beberapa checkbox dicentang | Semua siswa terpilih dipertahankan untuk cetak | Belum diuji | Belum diuji | laporan-monitoring.php; printDiv() |
+| 6 | Sinkronisasi checkbox | Siswa yang sama muncul di beberapa tabel | Checkbox siswa yang sama ikut berubah | Belum diuji | Belum diuji | laporan-monitoring.php; data-siswa-id |
+| 7 | Cetak tanpa pilihan | Tidak ada checkbox dicentang | Alert muncul dan proses cetak dibatalkan | Belum diuji | Belum diuji | laporan-monitoring.php::printDiv() |
+| 8 | Cetak laporan terpilih | Minimal satu siswa dicentang | Hanya baris siswa terpilih masuk area cetak | Belum diuji | Belum diuji | laporan-monitoring.php::printDiv() |
+| 9 | Kolom checkbox saat cetak | Proses cetak dijalankan | Elemen class no-print tidak dicetak | Belum diuji | Belum diuji | laporan-monitoring.php::printDiv() |
+| 10 | Data penilaian belum tersedia | tb_penilaian kosong | Pesan data penilaian belum tersedia ditampilkan | Belum diuji | Belum diuji | laporan-monitoring.php |
+| 11 | Akses role tidak sesuai | User bukan level 1 | Akses laporan ditolak/dialihkan | Belum diuji | Belum diuji | Hubin.php::__construct() |
+
+---------------------------------------------------------------------
+3.4 DASHBOARD DAN SISWA BIMBINGAN GURU
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Membuka dashboard guru | Guru level 2 login | Dashboard siswa bimbingan ditampilkan | Belum diuji | Belum diuji | Guru.php::view('home') |
+| 2 | Menampilkan daftar siswa | Guru memiliki siswa bimbingan | Hanya siswa berdasarkan pembimbing_id tampil | Belum diuji | Belum diuji | M_pengelompokan.php::get_siswa_by_pembimbing() |
+| 3 | Tidak ada siswa bimbingan | Relasi siswa-pembimbing kosong | Kondisi daftar kosong ditampilkan | Belum diuji | Belum diuji | Guru.php; dashboard.php |
+| 4 | Statistik dashboard | Data presensi dan logbook tersedia | Statistik presensi/logbook ditampilkan | Belum diuji | Belum diuji | Guru.php::view(); dashboard.php |
+| 5 | Siswa milik guru lain | Parameter siswa_id milik pembimbing lain | Akses ditolak | Belum diuji | Belum diuji | Guru.php::verify_siswa_bimbingan(); deny_pembimbing_siswa_access() |
+| 6 | Akses tanpa login | Session tidak tersedia | Pengguna diarahkan ke auth | Belum diuji | Belum diuji | Guru.php::__construct() |
+| 7 | Akses role bukan guru | Session level bukan 2 | Pengguna diarahkan ke auth | Belum diuji | Belum diuji | Guru.php::__construct() |
+
+---------------------------------------------------------------------
+3.5 MONITORING LOKASI SISWA
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Mengambil lokasi siswa aktif | Siswa disetujui, presensi masuk, belum pulang, koordinat tersedia | Lokasi siswa dikembalikan ke peta | Belum diuji | Belum diuji | Guru.php::api_lokasi_siswa() |
+| 2 | Siswa sudah presensi pulang | jam_pulang terisi | Siswa tidak lagi dianggap lokasi aktif | Belum diuji | Belum diuji | Guru.php::api_lokasi_siswa() |
+| 3 | Koordinat kosong | latitude/longitude tidak tersedia | Siswa tidak ditampilkan sebagai lokasi aktif | Belum diuji | Belum diuji | Guru.php::api_lokasi_siswa() |
+| 4 | Status belum disetujui | status pengajuan bukan disetujui | Siswa tidak ditampilkan | Belum diuji | Belum diuji | Guru.php::api_lokasi_siswa() |
+| 5 | Status online | updated_at kurang dari 120 detik | is_online bernilai aktif | Belum diuji | Belum diuji | Guru.php::api_lokasi_siswa() |
+| 6 | Status tidak aktif | updated_at lebih dari 120 detik | is_online bernilai tidak aktif | Belum diuji | Belum diuji | Guru.php::api_lokasi_siswa() |
+| 7 | Refresh lokasi guru | Halaman terbuka selama lebih dari 30 detik | Browser melakukan fetch ulang | Belum diuji | Belum diuji | monitoring-presensi.php; setInterval(refreshLocations, 30000) |
+| 8 | Tampilan marker | API mengembalikan koordinat | Marker Leaflet diperbarui | Belum diuji | Belum diuji | monitoring-presensi.php; Leaflet |
+| 9 | Pengiriman lokasi siswa | Browser siswa menjalankan watchPosition() | Koordinat dikirim ke endpoint server | Belum diuji | Belum diuji | template_siswa.php; Siswa.php::update_lokasi_realtime() |
+| 10 | Akses API tanpa login | Session guru tidak tersedia | Respons unauthorized | Belum diuji | Belum diuji | Guru.php::api_lokasi_siswa() |
+
+Catatan: implementasi ini termasuk near-real-time berbasis watchPosition dan polling 30 detik, bukan real-time streaming WebSocket.
+
+---------------------------------------------------------------------
+3.6 MONITORING LOGBOOK PEMBIMBING
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Menampilkan logbook bimbingan | Guru membuka monitoring logbook | Logbook siswa bimbingan ditampilkan | Belum diuji | Belum diuji | Guru.php; M_logbook.php::get_logbook_by_pembimbing() |
+| 2 | Filter tanggal | GET tanggal valid | Logbook tanggal tersebut ditampilkan | Belum diuji | Belum diuji | Guru.php; get_logbook_by_pembimbing() |
+| 3 | Filter siswa | GET siswa_id milik guru | Logbook siswa terpilih ditampilkan | Belum diuji | Belum diuji | Guru.php; get_logbook_by_pembimbing() |
+| 4 | Filter siswa milik guru lain | GET siswa_id bukan bimbingan | Akses ditolak | Belum diuji | Belum diuji | Guru.php::verify_siswa_bimbingan() |
+| 5 | Data tidak ditemukan | Filter tidak memiliki hasil | Tabel kondisi kosong ditampilkan | Belum diuji | Belum diuji | monitoring-logbook.php |
+| 6 | Memberi catatan | Catatan dan logbook valid | Catatan tersimpan | Belum diuji | Belum diuji | Guru.php::simpan_catatan_logbook(); M_logbook.php |
+| 7 | Nilai di luar rentang | Nilai kurang dari 0 atau lebih dari 100 | Input ditolak | Belum diuji | Belum diuji | Guru.php::simpan_catatan_logbook() |
+| 8 | Mengubah logbook guru lain | logbook_id bukan milik pembimbing | Update ditolak | Belum diuji | Belum diuji | M_logbook.php::update_catatan_pembimbing() |
+
+---------------------------------------------------------------------
+3.7 REKAPITULASI DAN CETAK GURU
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Membuka rekapitulasi | Guru login dan membuka laporan | Presensi, logbook, dan penilaian tampil | Belum diuji | Belum diuji | Guru.php; laporan-bimbingan.php |
+| 2 | Rekap semua siswa | siswa_id kosong | Data seluruh siswa bimbingan tampil | Belum diuji | Belum diuji | Guru.php::view('laporan-bimbingan') |
+| 3 | Rekap satu siswa | siswa_id valid milik guru | Hanya data siswa tersebut tampil | Belum diuji | Belum diuji | Guru.php; M_presensi.php; M_logbook.php |
+| 4 | Siswa bukan bimbingan | siswa_id bukan milik guru | Akses ditolak | Belum diuji | Belum diuji | Guru.php::verify_siswa_bimbingan() |
+| 5 | Cetak rekap | Klik tombol cetak | Area rekap dibuka pada dialog cetak browser | Belum diuji | Belum diuji | laporan-bimbingan.php::printDiv() |
+| 6 | Data kosong | Tidak terdapat presensi/logbook/nilai | Pesan kosong pada bagian terkait ditampilkan | Belum diuji | Belum diuji | laporan-bimbingan.php |
+
+---------------------------------------------------------------------
+3.8 PRESENSI SISWA
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Presensi masuk valid | Siswa disetujui, tanggal hari ini, data lengkap, GPS valid | Presensi masuk disimpan dengan status valid | Belum diuji | Belum diuji | Siswa.php::do_presensi_masuk() |
+| 2 | Siswa tidak eligible | Status draft/menunggu/ditolak atau data siswa tidak ada | Presensi ditolak | Belum diuji | Belum diuji | Rule_based_validation.php::validate_siswa_eligibility() |
+| 3 | Tanggal selain hari ini | Tanggal kemarin atau masa depan | Presensi ditolak | Belum diuji | Belum diuji | Siswa.php::do_presensi_masuk() |
+| 4 | Presensi masuk duplikat | Record presensi sudah memiliki jam_masuk | Presensi kedua ditolak RBV-001 | Belum diuji | Belum diuji | Rule_based_validation.php::validate_presensi_masuk() |
+| 5 | Data siswa/tanggal kosong | siswa_id atau tanggal kosong pada validator | Validasi gagal RBV-003 | Belum diuji | Belum diuji | Rule_based_validation.php::validate_presensi_masuk() |
+| 6 | Presensi pulang tanpa masuk | Tidak ada jam_masuk | Presensi pulang ditolak RBV-002 | Belum diuji | Belum diuji | Rule_based_validation.php::validate_presensi_pulang() |
+| 7 | Presensi pulang valid | Jam masuk tersedia, jam pulang kosong, GPS valid | jam_pulang diperbarui | Belum diuji | Belum diuji | Siswa.php::do_presensi_pulang(); M_presensi.php |
+| 8 | Presensi pulang kedua | jam_pulang sudah terisi | Presensi pulang ditolak RBV-013 | Belum diuji | Belum diuji | Rule_based_validation.php; M_presensi.php::update_presensi_pulang() |
+| 9 | Status izin/sakit | status_kehadiran izin atau sakit | Geolokasi tidak diwajibkan oleh validator | Belum diuji | Belum diuji | Rule_based_validation.php::validate_geolocation() |
+| 10 | Upload format salah | File bukan jpg/jpeg/png | Upload presensi gagal | Belum diuji | Belum diuji | Siswa.php::do_presensi_masuk(); do_presensi_pulang() |
+| 11 | Upload melebihi 2 MB | File presensi lebih besar dari batas | Upload ditolak | Belum diuji | Belum diuji | Siswa.php upload config |
+| 12 | Presensi tanpa foto | Foto tidak dikirim | Perlu diuji karena parameter foto diterima validator tetapi enforcement RBV-004 tidak ditemukan | Belum diuji | Belum diuji | Rule_based_validation.php; Siswa.php |
+| 13 | Akses role bukan siswa | User level bukan 3 | Akses ditolak/dialihkan | Belum diuji | Belum diuji | Siswa.php::__construct() |
+| 14 | Akses tanpa login | Session tidak tersedia | Pengguna diarahkan ke auth | Belum diuji | Belum diuji | Siswa.php::__construct() |
+
+---------------------------------------------------------------------
+3.9 VALIDASI LOKASI / RADIUS DUDI
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | GPS tidak tersedia | latitude atau longitude kosong | Ditolak RBV-006, status tidak_valid | Belum diuji | Belum diuji | Rule_based_validation.php::validate_geolocation() |
+| 2 | Lokasi di dalam radius | jarak < radius DUDI | Presensi/lokasi diterima | Belum diuji | Belum diuji | Rule_based_validation.php::validate_geolocation() |
+| 3 | Lokasi tepat pada batas | jarak = radius DUDI | Diterima karena penolakan hanya jika jarak > radius | Belum diuji | Belum diuji | Rule_based_validation.php::validate_geolocation() |
+| 4 | Lokasi di luar radius | jarak > radius DUDI | Ditolak RBV-006 | Belum diuji | Belum diuji | Rule_based_validation.php::validate_geolocation() |
+| 5 | DUDI tanpa koordinat | latitude/longitude DUDI kosong | Diterima sebagai tanpa_geolokasi sesuai kode aktual | Belum diuji | Belum diuji | Rule_based_validation.php::validate_geolocation() |
+| 6 | DUDI tanpa radius | radius kosong atau 0 | Radius default 100 meter digunakan | Belum diuji | Belum diuji | Rule_based_validation.php::validate_geolocation() |
+| 7 | Status izin/sakit | status bukan hadir | Geolokasi tidak diwajibkan | Belum diuji | Belum diuji | Rule_based_validation.php::validate_geolocation() |
+| 8 | Koordinat di luar rentang | latitude/longitude tidak wajar | Perilaku jalur presensi perlu diuji; validasi rentang eksplisit ditemukan pada update lokasi, bukan seluruh alur presensi | Belum diuji | Belum diuji | Rule_based_validation.php; Siswa.php::update_lokasi_realtime() |
+| 9 | Perhitungan jarak | Dua koordinat valid | Jarak dihitung dengan Haversine | Belum diuji | Belum diuji | Rule_based_validation.php::calculate_distance() |
+
+---------------------------------------------------------------------
+3.10 RIWAYAT PRESENSI DAN LOGBOOK HARIAN SISWA
+---------------------------------------------------------------------
+
+| No | Skenario Pengujian | Data Masukan / Kondisi | Hasil yang Diharapkan | Hasil Aktual | Status | Sumber Implementasi |
+|----|--------------------|------------------------|----------------------|--------------|--------|---------------------|
+| 1 | Melihat riwayat presensi | Siswa login memiliki data | Hanya riwayat milik siswa tampil | Belum diuji | Belum diuji | Siswa.php; M_presensi.php::get_riwayat_presensi_siswa() |
+| 2 | Riwayat presensi kosong | Siswa belum memiliki presensi | Kondisi data kosong ditampilkan | Belum diuji | Belum diuji | riwayat-presensi.php |
+| 3 | Melihat riwayat logbook | Siswa memiliki logbook | Riwayat logbook milik sendiri tampil | Belum diuji | Belum diuji | M_logbook.php::get_riwayat_logbook_siswa() |
+| 4 | Data siswa lain | Percobaan parameter siswa lain | Data siswa lain tidak ditampilkan | Belum diuji | Belum diuji | Siswa.php; query berdasarkan siswa_id |
+| 5 | Logbook sebelum presensi lengkap | Jam masuk atau pulang kosong | Akses/pengiriman logbook ditolak RBV-014 | Belum diuji | Belum diuji | Siswa.php; Rule_based_validation.php |
+| 6 | Logbook valid | Presensi masuk dan pulang lengkap, deskripsi valid, dokumentasi tersedia | Logbook disimpan | Belum diuji | Belum diuji | Siswa.php::do_tambah_logbook() |
+| 7 | Deskripsi kosong | deskripsi_kegiatan kosong | Ditolak RBV-008 | Belum diuji | Belum diuji | Rule_based_validation.php::validate_logbook() |
+| 8 | Deskripsi 19 karakter | Panjang deskripsi 19 | Ditolak karena strlen < 20 | Belum diuji | Belum diuji | Rule_based_validation.php::validate_logbook() |
+| 9 | Deskripsi tepat 20 karakter | Panjang deskripsi 20 | Diterima pada pemeriksaan panjang | Belum diuji | Belum diuji | Rule_based_validation.php::validate_logbook() |
+| 10 | Dokumentasi kosong | File kegiatan tidak dikirim | Ditolak pada validasi dokumentasi | Belum diuji | Belum diuji | Rule_based_validation.php; Siswa.php::do_tambah_logbook() |
+| 11 | Dokumentasi format valid | File sesuai daftar tipe dan <= 5 MB | Upload dan proses logbook dilanjutkan | Belum diuji | Belum diuji | Siswa.php upload config |
+| 12 | Dokumentasi format tidak valid | File di luar allowed_types | Upload ditolak | Belum diuji | Belum diuji | Siswa.php::do_tambah_logbook() |
+| 13 | Logbook duplikat | Record siswa/tanggal sudah ada | Ditolak RBV-007 | Belum diuji | Belum diuji | Rule_based_validation.php; unique key SQL |
+| 14 | Tanggal masa depan | tanggal logbook lebih besar dari tanggal server | Ditolak RBV-011 sesuai implementasi validator | Belum diuji | Belum diuji | Rule_based_validation.php::validate_logbook() |
+| 15 | User bukan siswa | Role selain level 3 | Akses ditolak | Belum diuji | Belum diuji | Siswa.php::__construct() |
+
+======================================================================
+4. PENGUJIAN RULE-BASED VALIDATION
+======================================================================
+
+| Rule ID | Kondisi yang Diuji | Implementasi / Caller | Hasil Diharapkan | Status Implementasi |
+|---------|--------------------|----------------------|------------------|---------------------|
+| RBV-001 | Presensi masuk pada tanggal sama sudah ada | validate_presensi_masuk(); Siswa::do_presensi_masuk() | Presensi kedua ditolak | Ditemukan |
+| RBV-002 | Presensi pulang tanpa presensi masuk | validate_presensi_pulang(); validate_status_harian() | Presensi pulang/logbook ditolak | Ditemukan |
+| RBV-003 | siswa_id atau tanggal kosong | validate_presensi_masuk(); validate_presensi_pulang() | Validasi parameter gagal | Sebagian |
+| RBV-004 | Foto presensi wajib | Parameter foto diterima, tetapi pemeriksaan wajib foto tidak ditemukan konsisten | Seharusnya menolak tanpa foto, perlu uji aktual | Tidak Ditemukan enforcement |
+| RBV-005 | Format dan ukuran foto presensi | Konfigurasi upload controller | File salah tipe/ukuran ditolak upload | Sebagian |
+| RBV-006 | Radius GPS DUDI | validate_geolocation() | Lokasi luar radius ditolak | Ditemukan |
+| RBV-007 | Duplikasi logbook | validate_logbook(); unique key SQL | Logbook kedua pada tanggal sama ditolak | Ditemukan |
+| RBV-008 | Deskripsi minimal 20 karakter | validate_logbook() | Deskripsi < 20 ditolak | Ditemukan |
+| RBV-009 | Dokumentasi logbook | validate_logbook(); upload controller | Dokumentasi kosong/invalid ditolak | Sebagian |
+| RBV-010 | Parameter logbook | validate_logbook() | siswa_id/tanggal wajib tersedia | Ditemukan |
+| RBV-011 | Tanggal logbook masa depan | validate_logbook() | Tanggal masa depan ditolak | Sebagian, perlu verifikasi alur lengkap |
+| RBV-012 | Satu presensi siswa per tanggal | unique key tb_presensi dan validasi masuk | Record ganda dicegah | Ditemukan pada database |
+| RBV-013 | Presensi pulang ganda | validate_presensi_pulang(); update dengan jam_pulang IS NULL | Presensi pulang kedua ditolak | Ditemukan |
+| RBV-014 | Presensi masuk dan pulang lengkap untuk logbook | validate_logbook() | Logbook sebelum checkout ditolak | Sebagian |
+| RBV-015 | Hak akses siswa dan status disetujui | validate_siswa_eligibility() | Siswa tidak eligible ditolak | Ditemukan |
+| RBV-016 | Sinkronisasi nilai dan penalti | sync_penilaian_siswa() | Nilai dihitung dan di-upsert ke tb_penilaian | Sebagian, pernah ada error runtime |
+
+======================================================================
+5. PENGUJIAN REKAP NILAI DAN PENALTI
+======================================================================
+
+Sumber: application/libraries/Rule_based_validation.php
+Method: sync_penilaian_siswa()
+
+Rumus yang ditemukan:
+- Penalti logbook = total logbook tidak valid x 5 poin
+- Penalti kehadiran = (total alpha + total terlambat) x 5 poin
+- Nilai kehadiran = max(0, 100 - penalti kehadiran)
+- Nilai logbook dasar = rata-rata nilai pembimbing valid, atau 100
+- Nilai logbook = max(0, nilai logbook dasar - penalti logbook)
+- Nilai akhir = (nilai kehadiran x 0.40) + (nilai logbook x 0.60)
+
+Skenario tambahan:
+1. Tidak ada pelanggaran: nilai penalti 0.
+2. Satu alpha: penalti kehadiran 5 poin.
+3. Satu keterlambatan: penalti kehadiran 5 poin.
+4. Satu logbook tidak valid: penalti logbook 5 poin.
+5. Kombinasi alpha, terlambat, dan logbook invalid: seluruh penalti dijumlahkan.
+6. Penalti melebihi nilai dasar: nilai dibatasi minimum 0.
+7. Nilai pembimbing tersedia: nilai logbook dasar menggunakan rata-rata nilai valid.
+8. Nilai pembimbing tidak tersedia: nilai logbook dasar menggunakan 100.
+9. Sinkronisasi ulang: tidak membuat data penilaian ganda karena menggunakan siswa_id.
+10. Kolom penalti belum ada: method ensure_penilaian_penalty_columns() dijalankan.
+
+Hasil Aktual seluruh skenario: Belum diuji
+Status seluruh skenario: Belum diuji
+
+======================================================================
+6. MATRIKS TRACEABILITY BLACK BOX
+======================================================================
+
+| No | Fitur | Skenario | Controller/Model/Library | Method | Rule ID | Status Implementasi |
+|----|-------|----------|--------------------------|--------|---------|---------------------|
+| 1 | Presensi masuk | Data valid disimpan | Siswa.php; Rule_based_validation.php | do_presensi_masuk(); validate_presensi_masuk() | RBV-001,003,006 | Ditemukan |
+| 2 | Presensi masuk | Presensi ganda | Rule_based_validation.php; db_sipkl.sql | validate_presensi_masuk() | RBV-001 | Ditemukan |
+| 3 | Presensi pulang | Tanpa presensi masuk | Rule_based_validation.php | validate_presensi_pulang() | RBV-002 | Ditemukan |
+| 4 | Presensi pulang | Pulang kedua | Rule_based_validation.php; M_presensi.php | validate_presensi_pulang(); update_presensi_pulang() | RBV-013 | Ditemukan |
+| 5 | Validasi radius | GPS kosong | Rule_based_validation.php | validate_geolocation() | RBV-006 | Ditemukan |
+| 6 | Validasi radius | Tepat batas radius | Rule_based_validation.php | validate_geolocation() | RBV-006 | Ditemukan |
+| 7 | Logbook | Sebelum checkout | Siswa.php; Rule_based_validation.php | do_tambah_logbook(); validate_logbook() | RBV-014 | Ditemukan |
+| 8 | Logbook | Deskripsi kurang 20 | Rule_based_validation.php | validate_logbook() | RBV-008 | Ditemukan |
+| 9 | Logbook | Duplikasi tanggal | Rule_based_validation.php; db_sipkl.sql | validate_logbook() | RBV-007 | Ditemukan |
+| 10 | Monitoring presensi Admin | Data global | M_presensi.php; Hubin.php | get_all_presensi_global() | - | Ditemukan |
+| 11 | Monitoring logbook Admin | Data global | M_logbook.php; Hubin.php | get_all_logbook_global() | - | Ditemukan |
+| 12 | Monitoring presensi Guru | Data siswa bimbingan | M_presensi.php; Guru.php | get_presensi_by_pembimbing() | - | Ditemukan |
+| 13 | Monitoring logbook Guru | Data siswa bimbingan | M_logbook.php; Guru.php | get_logbook_by_pembimbing() | - | Ditemukan |
+| 14 | Monitoring lokasi | Refresh berkala | Guru.php; monitoring-presensi.php | api_lokasi_siswa(); fetch(); setInterval() | - | Ditemukan |
+| 15 | Laporan monitoring | Rekap presensi/logbook/nilai | laporan-monitoring.php | Query tb_presensi/tb_logbook/tb_penilaian | RBV-016 | Ditemukan |
+| 16 | Cetak laporan | Checkbox siswa | laporan-monitoring.php | printDiv() | - | Ditemukan |
+| 17 | Rekap nilai | Penalti 5 poin per kejadian | Rule_based_validation.php | sync_penilaian_siswa() | RBV-016 | Sebagian |
+| 18 | Hak akses guru | Siswa milik guru lain | Guru.php | verify_siswa_bimbingan() | - | Ditemukan |
+| 19 | Hak akses siswa | Data siswa lain | Siswa.php; M_presensi.php; M_logbook.php | Query berdasarkan siswa_id | - | Ditemukan |
+| 20 | Foto presensi | Foto wajib | Rule_based_validation.php | validate_presensi_masuk/pulang() | RBV-004 | Tidak Ditemukan enforcement |
+
+======================================================================
+7. TEMUAN SOURCE CODE
+======================================================================
+
+A. Implementasi sesuai rancangan
+1. Pembagian role level 1, 2, dan 3 ditemukan pada constructor controller.
+2. Monitoring presensi global Hubin tersedia.
+3. Monitoring logbook global Hubin tersedia.
+4. Guru dapat melihat data siswa bimbingan berdasarkan pembimbing_id.
+5. Guru dapat memonitor presensi dan logbook siswa bimbingan.
+6. Sistem memiliki endpoint lokasi siswa dan polling setiap 30 detik.
+7. Validasi radius menggunakan koordinat DUDI dan perhitungan Haversine.
+8. Logbook dibatasi setelah presensi masuk dan pulang.
+9. Duplikasi presensi dan logbook diperkuat dengan unique key database.
+10. Laporan menggabungkan presensi, logbook, dan penilaian.
+11. Laporan Hubin memiliki pencarian nama dan pemilihan siswa menggunakan checkbox.
+
+B. Implementasi sebagian
+1. RBV-003 hanya memeriksa sebagian parameter dasar pada tiap alur.
+2. RBV-005 terdapat konfigurasi upload format dan ukuran, tetapi tidak seluruhnya berada di library validator.
+3. RBV-009 memiliki validasi file pada controller dan validator, tetapi daftar file juga menerima dokumen selain gambar.
+4. RBV-011 perlu pengujian alur lengkap untuk memastikan semua jalur tanggal masa depan ditolak.
+5. RBV-014 diterapkan sebagai prasyarat presensi-logbook, tetapi label rule digunakan pada beberapa kondisi yang berdekatan.
+6. RBV-016 menghitung dan menyimpan nilai, tetapi pernah muncul error kolom pada database runtime.
+
+C. Aturan yang tidak ditemukan
+1. Enforcement RBV-004 sebagai kewajiban foto presensi tidak ditemukan secara konsisten pada Rule_based_validation.php.
+2. WebSocket, Server-Sent Events, atau streaming lokasi kontinu tidak ditemukan.
+3. Implementasi AI, Machine Learning, prediksi, dan rekomendasi otomatis tidak ditemukan pada source code yang ditelusuri.
+
+D. Potensi ketidaksesuaian implementasi
+1. Dokumentasi menyebut real-time, sedangkan implementasi aktual adalah near-real-time dengan polling 30 detik.
+2. DUDI tanpa koordinat diterima sebagai tanpa_geolokasi sesuai kode, sehingga perlu konfirmasi kebijakan bisnis.
+3. View presensi pulang tertentu tidak terlihat mengirim latitude dan longitude, sementara server tetap memvalidasi radius pulang. Kondisi ini berpotensi menyebabkan penolakan karena koordinat kosong.
+4. Database SQL memiliki kolom total_bolos dan total_terlambat, tetapi log runtime sebelumnya menunjukkan kolom tersebut pernah belum tersedia.
+5. Laporan Hubin menjalankan sinkronisasi penilaian dari view, sehingga proses tampilan memiliki efek samping pembaruan data.
+6. Model global mendukung filter tanggal dan siswa melalui parameter, tetapi setiap halaman harus diperiksa agar pemanggil mengirim parameter yang benar.
+
+E. Fitur yang perlu diuji secara manual
+1. Izin browser untuk GPS.
+2. GPS tidak tersedia atau timeout.
+3. Koordinat tepat pada batas radius.
+4. Presensi pulang melalui semua halaman yang menyediakan form.
+5. Upload file dengan tipe dan ukuran batas.
+6. Cetak satu siswa dan beberapa siswa.
+7. Pencarian nama setelah checkbox dipilih.
+8. Akses data siswa milik pembimbing lain.
+9. Polling lokasi selama 30 detik dan status online 120 detik.
+10. Sinkronisasi nilai setelah presensi dan logbook berubah.
+11. Perbedaan struktur database runtime dengan db_sipkl.sql.
+
+======================================================================
+8. TABEL BLACK BOX FINAL UNTUK BAB V
+======================================================================
+
+Hasil Aktual dan Status seluruh baris: Belum diuji.
+
+---------------------------------------------------------------------
+8.1 MONITORING PRESENSI ADMIN
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Membuka monitoring presensi | Data presensi global tampil | Belum diuji | Belum diuji |
+| 2 | Memilih tanggal valid | Data tanggal terpilih tampil | Belum diuji | Belum diuji |
+| 3 | Tanggal tanpa data | Pesan data kosong tampil | Belum diuji | Belum diuji |
+| 4 | Melihat audit GPS presensi | Koordinat, jarak, radius, status lokasi tampil | Belum diuji | Belum diuji |
+| 5 | Akses bukan Admin | Akses ditolak atau dialihkan | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.2 MONITORING LOGBOOK ADMIN
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Membuka monitoring logbook | Data logbook global tampil | Belum diuji | Belum diuji |
+| 2 | Memilih tanggal | Data logbook tanggal terpilih tampil | Belum diuji | Belum diuji |
+| 3 | Tanggal tanpa data | Pesan data kosong tampil | Belum diuji | Belum diuji |
+| 4 | Melihat isi dan catatan logbook | Isi, pembimbing, dan catatan tampil | Belum diuji | Belum diuji |
+| 5 | Akses bukan Admin | Akses ditolak atau dialihkan | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.3 LAPORAN MONITORING ADMIN
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Membuka laporan | Presensi, logbook, dan nilai tampil | Belum diuji | Belum diuji |
+| 2 | Mencari nama siswa | Baris sesuai kata kunci tampil | Belum diuji | Belum diuji |
+| 3 | Mencentang satu siswa | Siswa dipilih untuk dicetak | Belum diuji | Belum diuji |
+| 4 | Mencentang beberapa siswa | Semua siswa pilihan dicetak | Belum diuji | Belum diuji |
+| 5 | Cetak tanpa pilihan | Alert dan pembatalan cetak terjadi | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.4 SISWA BIMBINGAN
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Guru membuka daftar siswa | Siswa bimbingan tampil | Belum diuji | Belum diuji |
+| 2 | Tidak memiliki siswa | Kondisi kosong tampil | Belum diuji | Belum diuji |
+| 3 | Meminta siswa guru lain | Akses ditolak | Belum diuji | Belum diuji |
+| 4 | User bukan guru | User dialihkan/ditolak | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.5 MONITORING LOKASI SISWA
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Siswa aktif mengirim koordinat | Marker lokasi tampil | Belum diuji | Belum diuji |
+| 2 | Refresh setelah 30 detik | Data lokasi diperbarui | Belum diuji | Belum diuji |
+| 3 | Siswa sudah pulang | Siswa tidak tampil sebagai aktif | Belum diuji | Belum diuji |
+| 4 | Koordinat tidak tersedia | Siswa tidak ditampilkan | Belum diuji | Belum diuji |
+| 5 | Data lebih dari 120 detik | Status online menjadi tidak aktif | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.6 MONITORING LOGBOOK PEMBIMBING
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Membuka logbook bimbingan | Logbook siswa bimbingan tampil | Belum diuji | Belum diuji |
+| 2 | Filter tanggal | Data sesuai tanggal tampil | Belum diuji | Belum diuji |
+| 3 | Filter siswa | Data siswa terpilih tampil | Belum diuji | Belum diuji |
+| 4 | Review dan catatan | Catatan tersimpan | Belum diuji | Belum diuji |
+| 5 | Mengubah logbook guru lain | Perubahan ditolak | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.7 REKAPITULASI DAN CETAK
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Membuka rekap semua siswa | Seluruh rekap bimbingan tampil | Belum diuji | Belum diuji |
+| 2 | Memilih satu siswa | Hanya rekap siswa terpilih tampil | Belum diuji | Belum diuji |
+| 3 | Mencetak rekap | Dialog cetak browser terbuka | Belum diuji | Belum diuji |
+| 4 | Menghitung penalti 5 poin | Penalti memengaruhi nilai akhir | Belum diuji | Belum diuji |
+| 5 | Data kosong | Pesan data kosong tampil | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.8 PRESENSI SISWA
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Presensi masuk valid | Presensi tersimpan | Belum diuji | Belum diuji |
+| 2 | Presensi masuk ganda | Presensi kedua ditolak | Belum diuji | Belum diuji |
+| 3 | Presensi pulang tanpa masuk | Ditolak RBV-002 | Belum diuji | Belum diuji |
+| 4 | Presensi pulang kedua | Ditolak RBV-013 | Belum diuji | Belum diuji |
+| 5 | Foto format/ukuran salah | Upload ditolak | Belum diuji | Belum diuji |
+| 6 | User tidak eligible | Presensi ditolak | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.9 RIWAYAT PRESENSI
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Siswa membuka riwayat | Riwayat milik sendiri tampil | Belum diuji | Belum diuji |
+| 2 | Belum ada data | Kondisi kosong tampil | Belum diuji | Belum diuji |
+| 3 | Meminta data siswa lain | Data tidak diberikan | Belum diuji | Belum diuji |
+
+---------------------------------------------------------------------
+8.10 LOGBOOK HARIAN SISWA
+---------------------------------------------------------------------
+| No. | Skenario Pengujian | Hasil yang Diharapkan | Hasil Aktual | Status |
+|-----|--------------------|----------------------|--------------|--------|
+| 1 | Logbook setelah masuk dan pulang | Form dapat diproses | Belum diuji | Belum diuji |
+| 2 | Logbook sebelum presensi lengkap | Ditolak RBV-014 | Belum diuji | Belum diuji |
+| 3 | Deskripsi kurang 20 karakter | Ditolak RBV-008 | Belum diuji | Belum diuji |
+| 4 | Deskripsi tepat 20 karakter | Lolos pemeriksaan panjang | Belum diuji | Belum diuji |
+| 5 | Dokumentasi kosong | Ditolak | Belum diuji | Belum diuji |
+| 6 | Logbook duplikat | Ditolak RBV-007 | Belum diuji | Belum diuji |
+| 7 | Tanggal masa depan | Ditolak RBV-011 | Belum diuji | Belum diuji |
+| 8 | Data siswa lain | Tidak dapat diakses | Belum diuji | Belum diuji |
+
+======================================================================
+9. KESIMPULAN
+======================================================================
+
+Berdasarkan penelusuran source code, aplikasi memiliki implementasi untuk
+monitoring presensi, monitoring logbook, laporan monitoring, monitoring
+siswa bimbingan, lokasi siswa near-real-time, presensi berbasis radius,
+riwayat presensi, dan logbook harian.
+
+Rule-Based Validation utama berada pada Rule_based_validation.php dan dipanggil
+oleh controller Siswa.php. Validasi radius menggunakan Haversine dan
+membandingkan jarak dengan radius DUDI. Validasi duplikasi presensi dan
+logbook juga diperkuat oleh unique key database.
+
+Namun, seluruh hasil aktual dalam dokumen ini tetap "Belum diuji" sampai
+skenario benar-benar dijalankan pada aplikasi. Beberapa kondisi perlu
+mendapat perhatian khusus, yaitu enforcement foto presensi RBV-004,
+perbedaan near-real-time dengan real-time, koordinat pada presensi pulang,
+dan kesesuaian struktur database runtime dengan db_sipkl.sql.

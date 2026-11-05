@@ -1,0 +1,388 @@
+LISTING PROGRAM BAB 5
+IMPLEMENTASI VALIDASI DAN MONITORING SISTEM SIPKL
+
+Catatan:
+Listing berikut merupakan inti logika program yang diringkas dari source code aplikasi SiPKL berbasis CodeIgniter 3.
+
+
+======================================================================
+LISTING 5.1 IMPLEMENTASI VALIDASI PRESENSI
+======================================================================
+
+Sumber: application/controllers/Siswa.php
+Method: do_presensi_masuk()
+
+$eligibility = $this->rule_validator
+    ->validate_siswa_eligibility($userdata['id']);
+
+if (!$eligibility['is_allowed']) {
+    $this->session->set_flashdata(
+        'error_message',
+        $eligibility['message']
+    );
+    redirect('siswa/view/home');
+    return;
+}
+
+$rule_check = $this->rule_validator->validate_presensi_masuk(
+    $siswa->siswa_id,
+    $tanggal,
+    [
+        'status_kehadiran' => $status_kehadiran,
+        'jam_masuk' => $jam_masuk
+    ],
+    $foto_masuk_name,
+    $latitude_siswa,
+    $longitude_siswa
+);
+
+if (!$rule_check['is_valid']) {
+    $this->session->set_flashdata(
+        'error_message',
+        '[' . $rule_check['rule_id'] . '] ' .
+        $rule_check['message']
+    );
+    redirect('siswa/view/home');
+    return;
+}
+
+Penjelasan:
+Program memeriksa hak akses siswa, kelengkapan presensi, duplikasi presensi,
+serta validasi lokasi sebelum data presensi disimpan.
+
+
+======================================================================
+LISTING 5.2 VALIDASI RADIUS LOKASI
+======================================================================
+
+Sumber: application/libraries/Rule_based_validation.php
+Method: validate_geolocation()
+
+$lat_dudi = $dudi_info->latitude;
+$lon_dudi = $dudi_info->longitude;
+$radius = !empty($dudi_info->radius)
+    ? (float) $dudi_info->radius
+    : 100.0;
+
+if (empty($lat_siswa) || empty($lon_siswa)) {
+    return [
+        'is_valid' => false,
+        'rule_id' => 'RBV-006',
+        'status_lokasi' => 'tidak_valid',
+        'message' => 'Koordinat GPS tidak terdeteksi.'
+    ];
+}
+
+$jarak = $this->calculate_distance(
+    $lat_siswa,
+    $lon_siswa,
+    $lat_dudi,
+    $lon_dudi
+);
+
+if ($jarak > $radius) {
+    return [
+        'is_valid' => false,
+        'rule_id' => 'RBV-006',
+        'jarak' => $jarak,
+        'radius' => $radius,
+        'status_lokasi' => 'tidak_valid',
+        'message' => 'Lokasi berada di luar radius DUDI.'
+    ];
+}
+
+return [
+    'is_valid' => true,
+    'rule_id' => 'RBV-PASS',
+    'jarak' => $jarak,
+    'radius' => $radius,
+    'status_lokasi' => 'valid'
+];
+
+Penjelasan:
+Koordinat siswa dibandingkan dengan koordinat DUDI menggunakan perhitungan
+Haversine. Presensi dinyatakan valid apabila jarak siswa tidak melebihi radius
+yang telah ditentukan pada data DUDI.
+
+
+======================================================================
+LISTING 5.3 VALIDASI LOGBOOK
+======================================================================
+
+Sumber: application/libraries/Rule_based_validation.php
+Method: validate_logbook()
+
+$presensi = $this->CI->db
+    ->where('siswa_id', $siswa_id)
+    ->where('tanggal', $tanggal)
+    ->get('tb_presensi')
+    ->row();
+
+if (
+    !$presensi ||
+    empty($presensi->jam_masuk) ||
+    empty($presensi->jam_pulang) ||
+    $presensi->status_validasi === 'tidak_valid'
+) {
+    return [
+        'is_valid' => false,
+        'rule_id' => 'RBV-014',
+        'message' => 'Presensi masuk dan pulang harus lengkap.'
+    ];
+}
+
+$existing = $this->CI->db
+    ->where('siswa_id', $siswa_id)
+    ->where('tanggal', $tanggal)
+    ->get('tb_logbook')
+    ->row();
+
+if ($existing) {
+    return [
+        'is_valid' => false,
+        'rule_id' => 'RBV-007',
+        'message' => 'Logbook pada tanggal tersebut sudah diisi.'
+    ];
+}
+
+$deskripsi = trim($data['deskripsi_kegiatan'] ?? '');
+
+if (strlen($deskripsi) < 20) {
+    return [
+        'is_valid' => false,
+        'rule_id' => 'RBV-008',
+        'message' => 'Deskripsi minimal 20 karakter.'
+    ];
+}
+
+Penjelasan:
+Logbook hanya dapat diisi apabila presensi masuk dan pulang telah lengkap.
+Program juga mencegah pengisian logbook ganda dan memeriksa panjang deskripsi
+kegiatan.
+
+
+======================================================================
+LISTING 5.4 MONITORING PRESENSI
+======================================================================
+
+Sumber: application/models/M_presensi.php
+Method: get_presensi_by_pembimbing()
+
+public function get_presensi_by_pembimbing(
+    $pembimbing_id,
+    $tanggal = null,
+    $siswa_id = null
+) {
+    $this->db->select(
+        'p.*, s.siswa_nama, s.siswa_kelas,
+         d.dudi_nama'
+    );
+
+    $this->db->from('tb_presensi p');
+    $this->db->join(
+        'tb_siswa s',
+        's.siswa_id = p.siswa_id'
+    );
+    $this->db->join(
+        'tb_pengelompokan k',
+        'k.siswa_id = s.siswa_id'
+    );
+    $this->db->join(
+        'tb_dudi d',
+        'd.dudi_id = s.dudi_id',
+        'left'
+    );
+
+    $this->db->where(
+        'k.pembimbing_id',
+        $pembimbing_id
+    );
+
+    if (!empty($tanggal)) {
+        $this->db->where('p.tanggal', $tanggal);
+    }
+
+    if (!empty($siswa_id)) {
+        $this->db->where('p.siswa_id', $siswa_id);
+    }
+
+    return $this->db
+        ->order_by('p.tanggal', 'DESC')
+        ->get()
+        ->result();
+}
+
+Penjelasan:
+Program mengambil data presensi berdasarkan guru pembimbing. Data yang diambil
+meliputi identitas siswa, tanggal, jam masuk, jam pulang, status kehadiran,
+dan informasi DUDI.
+
+
+======================================================================
+LISTING 5.5 MONITORING LOGBOOK
+======================================================================
+
+Sumber: application/models/M_logbook.php
+Method: get_logbook_by_pembimbing()
+
+public function get_logbook_by_pembimbing(
+    $pembimbing_id,
+    $tanggal = null,
+    $siswa_id = null
+) {
+    $this->db->select(
+        'l.*, s.siswa_nama, s.siswa_kelas,
+         d.dudi_nama'
+    );
+
+    $this->db->from('tb_logbook l');
+    $this->db->join(
+        'tb_siswa s',
+        's.siswa_id = l.siswa_id'
+    );
+    $this->db->join(
+        'tb_pengelompokan k',
+        'k.siswa_id = s.siswa_id'
+    );
+    $this->db->join(
+        'tb_dudi d',
+        'd.dudi_id = s.dudi_id',
+        'left'
+    );
+
+    $this->db->where(
+        'k.pembimbing_id',
+        $pembimbing_id
+    );
+
+    if (!empty($tanggal)) {
+        $this->db->where('l.tanggal', $tanggal);
+    }
+
+    if (!empty($siswa_id)) {
+        $this->db->where('l.siswa_id', $siswa_id);
+    }
+
+    return $this->db
+        ->order_by('l.tanggal', 'DESC')
+        ->get()
+        ->result();
+}
+
+Penjelasan:
+Program mengambil logbook hanya dari siswa yang menjadi tanggung jawab guru
+pembimbing. Data logbook dapat disaring berdasarkan tanggal dan siswa.
+
+
+======================================================================
+LISTING 5.6 REKAPITULASI MONITORING
+======================================================================
+
+Sumber: application/views/hubin/laporan-monitoring.php
+
+$presensi_list = $CI->M_presensi
+    ->get_all_presensi_global(null, null, 200);
+
+$logbook_list = $CI->M_logbook
+    ->get_all_logbook_global(null, 200);
+
+$CI->db->select(
+    'p.*, s.siswa_nama, s.siswa_nis,
+     s.siswa_kelas, d.dudi_nama,
+     pb.pembimbing_nama'
+);
+
+$CI->db->from('tb_penilaian p');
+$CI->db->join(
+    'tb_siswa s',
+    's.siswa_id = p.siswa_id'
+);
+$CI->db->join(
+    'tb_dudi d',
+    'd.dudi_id = s.dudi_id',
+    'left'
+);
+$CI->db->join(
+    'tb_pembimbing pb',
+    'pb.pembimbing_id = s.pembimbing_id',
+    'left'
+);
+
+$penilaian_global = $CI->db->get()->result();
+
+Penjelasan:
+Rekapitulasi monitoring menggabungkan data presensi, logbook, dan penilaian
+siswa. Data tersebut digunakan untuk menampilkan laporan monitoring PKL
+secara keseluruhan.
+
+
+======================================================================
+LISTING 5.7 SINKRONISASI NILAI MONITORING
+======================================================================
+
+Sumber: application/libraries/Rule_based_validation.php
+Method: sync_penilaian_siswa()
+
+$pengurangan_logbook =
+    $total_tidak_valid * 5.0;
+
+$pengurangan_kehadiran =
+    ($total_alpha + $total_terlambat) * 5.0;
+
+$nilai_kehadiran =
+    max(0, 100 - $pengurangan_kehadiran);
+
+$nilai_akhir = round(
+    ($nilai_kehadiran * 0.40) +
+    ($nilai_logbook * 0.60),
+    2
+);
+
+$data_penilaian = [
+    'siswa_id' => $siswa_id,
+    'total_kehadiran' => $total_hadir,
+    'total_bolos' => $total_alpha,
+    'total_terlambat' => $total_terlambat,
+    'total_logbook_valid' => $total_valid,
+    'total_logbook_tidak_valid' => $total_tidak_valid,
+    'total_pengurangan_nilai' => $pengurangan_nilai,
+    'nilai_kehadiran' => $nilai_kehadiran,
+    'nilai_logbook' => $nilai_logbook,
+    'nilai_akhir' => $nilai_akhir
+];
+
+Penjelasan:
+Sistem menghitung nilai berdasarkan data kehadiran dan logbook. Nilai akhir
+terdiri dari bobot nilai kehadiran sebesar 40 persen dan nilai logbook sebesar
+60 persen. Hasil perhitungan disimpan pada tabel tb_penilaian.
+
+
+======================================================================
+RINGKASAN FILE IMPLEMENTASI
+======================================================================
+
+1. Validasi presensi:
+   application/controllers/Siswa.php
+   application/libraries/Rule_based_validation.php
+
+2. Validasi radius lokasi:
+   application/libraries/Rule_based_validation.php
+
+3. Validasi logbook:
+   application/controllers/Siswa.php
+   application/libraries/Rule_based_validation.php
+
+4. Monitoring presensi:
+   application/controllers/Guru.php
+   application/models/M_presensi.php
+   application/views/guru/monitoring-presensi.php
+
+5. Monitoring logbook:
+   application/controllers/Guru.php
+   application/models/M_logbook.php
+   application/views/guru/monitoring-logbook.php
+
+6. Rekapitulasi monitoring:
+   application/views/hubin/laporan-monitoring.php
+   application/libraries/Rule_based_validation.php
+   tabel tb_presensi, tb_logbook, dan tb_penilaian

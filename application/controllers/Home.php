@@ -13,13 +13,19 @@ class Home extends CI_Controller {
         // Jika sudah login, redirect ke dashboard sesuai level
         if($this->session->userdata('userdata')){
             $userdata = $this->session->userdata('userdata');
-            //Cek level user
             if($userdata['level'] == 1){
-                //Hubin
+                // Hubin
                 redirect('hubin/view/home');
-            }elseif($userdata['level'] == 2){
-                //Siswa
+            } elseif($userdata['level'] == 2){
+                // Guru Pembimbing
+                redirect('guru/view/home');
+            } elseif($userdata['level'] == 3){
+                // Siswa
                 redirect('siswa/view/home');
+            } else {
+                // Level tidak valid → logout
+                $this->session->sess_destroy();
+                redirect('auth/index');
             }
         }
         

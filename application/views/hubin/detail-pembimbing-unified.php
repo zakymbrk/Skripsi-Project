@@ -52,6 +52,13 @@ if(isset($pembimbing_code)){
 </div>
 <?php else: ?>
 
+<?php
+$nama_pembimbing = $pembimbing->pembimbing_nama ?: $pembimbing->nama_lengkap;
+$email_pembimbing = $pembimbing->pembimbing_email ?: $pembimbing->user_email;
+$telepon_pembimbing = $pembimbing->pembimbing_telepon ?: $pembimbing->user_telepon;
+$alamat_pembimbing = $pembimbing->pembimbing_alamat ?: $pembimbing->user_alamat;
+?>
+
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">
@@ -64,7 +71,15 @@ if(isset($pembimbing_code)){
                 <tbody>
                     <tr>
                         <td width="30%" class="fw-bold bg-light">Nama Pembimbing</td>
-                        <td><?php echo $pembimbing->pembimbing_nama ?></td>
+                        <td><?php echo htmlspecialchars($nama_pembimbing ?: '-') ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-light">Username Login</td>
+                        <td><?php echo htmlspecialchars($pembimbing->username ?: '-') ?></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-light">Password Login</td>
+                        <td><code><?php echo htmlspecialchars($pembimbing->password ?: '-') ?></code></td>
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">NIP</td>
@@ -103,17 +118,7 @@ if(isset($pembimbing_code)){
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">Alamat</td>
-                        <td>
-                            <?php if(isset($pembimbing->pembimbing_alamat) && !empty($pembimbing->pembimbing_alamat)): ?>
-                                <?php echo nl2br(htmlspecialchars($pembimbing->pembimbing_alamat)) ?>
-                            <?php else: ?>
-                                <?php if(isset($pembimbing->alamat) && !empty($pembimbing->alamat)): ?>
-                                    <?php echo nl2br(htmlspecialchars($pembimbing->alamat)) ?>
-                                <?php else: ?>
-                                    -
-                                <?php endif; ?>
-                            <?php endif; ?>
-                        </td>
+                        <td><?php echo $alamat_pembimbing ? nl2br(htmlspecialchars($alamat_pembimbing)) : '-' ?></td>
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">Pendidikan Terakhir</td>
@@ -152,8 +157,8 @@ if(isset($pembimbing_code)){
                     <tr>
                         <td class="fw-bold bg-light">Email</td>
                         <td>
-                            <?php if(isset($pembimbing->pembimbing_email) && !empty($pembimbing->pembimbing_email)): ?>
-                                <a href="mailto:<?php echo $pembimbing->pembimbing_email ?>"><?php echo $pembimbing->pembimbing_email ?></a>
+                            <?php if(!empty($email_pembimbing)): ?>
+                                <a href="mailto:<?php echo htmlspecialchars($email_pembimbing) ?>"><?php echo htmlspecialchars($email_pembimbing) ?></a>
                             <?php else: ?>
                                 -
                             <?php endif; ?>
@@ -162,8 +167,8 @@ if(isset($pembimbing_code)){
                     <tr>
                         <td class="fw-bold bg-light">Telepon</td>
                         <td>
-                            <?php if(isset($pembimbing->pembimbing_telepon) && !empty($pembimbing->pembimbing_telepon)): ?>
-                                <a href="tel:<?php echo $pembimbing->pembimbing_telepon ?>"><?php echo $pembimbing->pembimbing_telepon ?></a>
+                            <?php if(!empty($telepon_pembimbing)): ?>
+                                <a href="tel:<?php echo htmlspecialchars($telepon_pembimbing) ?>"><?php echo htmlspecialchars($telepon_pembimbing) ?></a>
                             <?php else: ?>
                                 -
                             <?php endif; ?>

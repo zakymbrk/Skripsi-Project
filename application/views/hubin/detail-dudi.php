@@ -166,6 +166,29 @@
                             <?php endif; ?>
                         </td>
                     </tr>
+                    <tr class="table-light">
+                        <td class="fw-bold text-primary"><i class="fas fa-map-marker-alt me-2"></i>Koordinat Geolocation (GPS)</td>
+                        <td>
+                            <?php if(!empty($dudi->latitude) && !empty($dudi->longitude)): ?>
+                                <span class="badge bg-primary me-2">Lat: <?php echo htmlspecialchars($dudi->latitude); ?></span>
+                                <span class="badge bg-primary">Long: <?php echo htmlspecialchars($dudi->longitude); ?></span>
+                                <a href="https://maps.google.com/?q=<?php echo $dudi->latitude; ?>,<?php echo $dudi->longitude; ?>" target="_blank" class="btn btn-xs btn-outline-primary py-0 px-2 ms-2 small">
+                                    <i class="fas fa-external-link-alt me-1"></i> Buka Peta
+                                </a>
+                            <?php else: ?>
+                                <span class="text-muted"><i class="fas fa-exclamation-triangle text-warning me-1"></i> Koordinat belum disetel</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr class="table-light">
+                        <td class="fw-bold text-primary"><i class="fas fa-circle-notch me-2"></i>Radius Toleransi Presensi</td>
+                        <td>
+                            <span class="badge bg-info text-dark fw-bold">
+                                <?php echo isset($dudi->radius) ? (int)$dudi->radius : 100; ?> Meter
+                            </span>
+                            <small class="text-muted ms-2">(Aturan Rule-Based Validation RBV-006)</small>
+                        </td>
+                    </tr>
                     <tr>
                         <td class="fw-bold">Status Kerjasama</td>
                         <td>

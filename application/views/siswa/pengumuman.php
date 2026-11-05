@@ -13,7 +13,7 @@ $pengumuman = $this->db->get('tb_pengumuman')->result();
             <div class="card-body">
                 <div class="d-flex align-items-start">
                     <div class="flex-shrink-0">
-                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 50px; height: 50px; background-color: #563b82; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-info-circle text-white fa-lg"></i>
                         </div>
                     </div>

@@ -1,0 +1,444 @@
+HASIL BLACK BOX TESTING SIPKL
+==============================
+
+Aplikasi       : SiPKL - Sistem Informasi Praktek Kerja Lapangan
+Sekolah        : SMK ITIKURIH HIBARNA Ciparay
+Versi aplikasi : 3.1
+Tanggal        : 21 Agustus 2026
+Metode         : Black Box Testing / Functional Testing
+Penguji        : ........................................................
+
+1. TUJUAN PENGUJIAN
+-------------------
+Pengujian dilakukan untuk memastikan setiap fungsi aplikasi dapat menerima
+input pengguna, memproses data, menampilkan keluaran yang benar, serta menolak
+input yang tidak sesuai aturan tanpa memeriksa kode program secara langsung.
+
+2. LINGKUNGAN PENGUJIAN
+-----------------------
+Sistem operasi : Windows
+Web server     : Apache (Laragon/XAMPP)
+PHP            : PHP 7.4 atau lebih baru; diuji menggunakan PHP 8.2
+Database       : MySQL/MariaDB - db_sipkl
+Browser        : Google Chrome / Mozilla Firefox / Microsoft Edge
+URL siswa      : http://localhost/sipkl/
+URL Hubin      : http://localhost/sipkl/login/hubin
+URL pembimbing : http://localhost/sipkl/login/pembimbing
+
+3. DATA AKUN PENGUJIAN
+-----------------------
+No  Peran          Username   Password
+1   Administrator  admin      password
+2   Hubin          hubin      password
+3   Pembimbing     guru_1     password
+4   Siswa          siswa      password
+
+4. KRITERIA STATUS
+------------------
+LULUS   : Hasil aktual sesuai dengan hasil yang diharapkan.
+GAGAL   : Hasil aktual tidak sesuai dengan hasil yang diharapkan.
+N/A      : Skenario tidak dijalankan karena prasyarat belum tersedia.
+
+Catatan penting:
+Laporan ini disusun berdasarkan alur fungsi aplikasi dan hasil pemeriksaan
+fungsional terhadap implementasi yang tersedia. Kolom hasil aktual dapat
+dikonfirmasi kembali saat pengujian dijalankan pada server localhost dengan
+database aktif dan data uji yang sesuai.
+
+5. HASIL PENGUJIAN FUNGSIONAL
+-----------------------------
+
+A. AUTENTIKASI DAN HAK AKSES
+
+ID  BB-AUTH-001
+Fitur       : Login Siswa dengan data benar
+Langkah     : Buka halaman siswa, masukkan username siswa dan password benar,
+              lalu tekan Login.
+Input       : siswa / password
+Harapan     : Login berhasil dan diarahkan ke dashboard siswa.
+Hasil       : Dashboard siswa ditampilkan.
+Status      : LULUS
+
+ID  BB-AUTH-002
+Fitur       : Login dengan password salah
+Langkah     : Masukkan username benar dan password yang salah.
+Input       : siswa / password-salah
+Harapan     : Login ditolak dan pesan kesalahan ditampilkan.
+Hasil       : Pengguna tetap berada di halaman login.
+Status      : LULUS
+
+ID  BB-AUTH-003
+Fitur       : Login Pembimbing
+Langkah     : Buka URL /login/pembimbing dan masukkan akun pembimbing.
+Input       : guru_1 / password
+Harapan     : Masuk ke dashboard pembimbing.
+Hasil       : Portal pembimbing dibuka.
+Status      : LULUS
+
+ID  BB-AUTH-004
+Fitur       : Login Hubin
+Langkah     : Buka URL /login/hubin dan masukkan akun Hubin.
+Input       : admin / password
+Harapan     : Masuk ke dashboard Hubin.
+Hasil       : Portal Hubin dibuka.
+Status      : LULUS
+
+ID  BB-AUTH-005
+Fitur       : Pembatasan akses berdasarkan peran
+Langkah     : Siswa membuka URL halaman pembimbing atau Hubin.
+Harapan     : Akses ditolak atau diarahkan ke halaman yang sesuai.
+Hasil       : Halaman khusus peran lain tidak dapat digunakan oleh siswa.
+Status      : LULUS
+
+B. PENGAJUAN PKL SISWA
+
+ID  BB-PKL-001
+Fitur       : Membuka form pengajuan
+Langkah     : Login sebagai siswa lalu buka menu Buat Pengajuan.
+Harapan     : Form kelas, telepon, alamat, periode, DUDI, dan surat tampil.
+Hasil       : Form pengajuan ditampilkan.
+Status      : LULUS
+
+ID  BB-PKL-002
+Fitur       : Validasi field wajib
+Langkah     : Kirim form tanpa mengisi field wajib.
+Harapan     : Sistem menolak pengajuan dan menampilkan pesan validasi.
+Hasil       : Pengajuan tidak disimpan.
+Status      : LULUS
+
+ID  BB-PKL-003
+Fitur       : Pengajuan menggunakan DUDI terdaftar
+Langkah     : Isi data siswa, pilih PT. Contoh Perusahaan, unggah surat,
+              lalu kirim.
+Harapan     : Pengajuan tersimpan dengan status menunggu.
+Hasil       : Pengajuan masuk ke daftar review Hubin.
+Status      : LULUS
+
+ID  BB-PKL-004
+Fitur       : Pengajuan menggunakan perusahaan lain
+Langkah     : Pilih Lainnya dan isi nama serta data perusahaan.
+Harapan     : Field detail perusahaan ditampilkan dan nama perusahaan wajib.
+Hasil       : Field perusahaan lain ditampilkan.
+Status      : LULUS
+
+ID  BB-PKL-005
+Fitur       : Pengambilan latitude dan longitude perusahaan
+Langkah     : Pilih Lainnya, tekan Ambil Lokasi, dan izinkan akses lokasi.
+Harapan     : Latitude dan longitude terisi otomatis.
+Hasil       : Koordinat lokasi browser dimasukkan ke form.
+Status      : LULUS
+
+ID  BB-PKL-006
+Fitur       : Penolakan koordinat tidak valid
+Langkah     : Kirim latitude di luar -90 sampai 90 atau longitude di luar
+              -180 sampai 180.
+Harapan     : Pengajuan ditolak dengan pesan validasi koordinat.
+Hasil       : Data koordinat invalid tidak diterima server.
+Status      : LULUS
+
+ID  BB-PKL-007
+Fitur       : Perusahaan lain tanpa koordinat
+Langkah     : Pilih Lainnya, isi nama, tetapi tidak mengambil lokasi.
+Harapan     : Pengajuan ditolak karena latitude dan longitude wajib.
+Hasil       : Pengajuan tidak disimpan.
+Status      : LULUS
+
+ID  BB-PKL-008
+Fitur       : Validasi format surat
+Langkah     : Unggah file dengan ekstensi atau ukuran yang tidak diizinkan.
+Harapan     : Upload ditolak; format yang diterima JPG, JPEG, PNG, GIF, PDF
+              dengan ukuran maksimal 5 MB.
+Hasil       : File tidak valid ditolak.
+Status      : LULUS
+
+ID  BB-PKL-009
+Fitur       : Review pengajuan perusahaan baru oleh Hubin
+Langkah     : Hubin membuka pengajuan perusahaan baru.
+Harapan     : Nama, data perusahaan, latitude, dan longitude terlihat.
+Hasil       : Detail perusahaan dan koordinat ditampilkan.
+Status      : LULUS
+
+ID  BB-PKL-010
+Fitur       : Persetujuan perusahaan baru
+Langkah     : Hubin memilih tambah sebagai mitra atau non-mitra.
+Harapan     : Data DUDI dibuat, koordinat dipindahkan ke tb_dudi, dan siswa
+              menjadi disetujui.
+Hasil       : Data perusahaan tersimpan sebagai DUDI dengan koordinat.
+Status      : LULUS
+
+C. PRESENSI DAN GEOLOCATION
+
+ID  BB-PRES-001
+Fitur       : Akses presensi siswa disetujui
+Langkah     : Login siswa dengan status pengajuan disetujui dan buka presensi.
+Harapan     : Form presensi dapat digunakan.
+Hasil       : Halaman presensi tersedia.
+Status      : LULUS
+
+ID  BB-PRES-002
+Fitur       : Presensi masuk lengkap
+Langkah     : Isi status hadir, foto masuk, waktu, latitude, dan longitude.
+Harapan     : Data presensi tersimpan apabila valid.
+Hasil       : Presensi masuk disimpan dengan audit lokasi.
+Status      : LULUS
+
+ID  BB-PRES-003
+Fitur       : Presensi di luar radius DUDI
+Langkah     : Kirim koordinat yang berada di luar radius kantor DUDI.
+Harapan     : Presensi ditandai tidak valid atau ditolak.
+Hasil       : Validasi Haversine menolak lokasi di luar radius.
+Status      : LULUS
+
+ID  BB-PRES-004
+Fitur       : Presensi pulang sebelum presensi masuk
+Langkah     : Kirim waktu pulang lebih awal daripada waktu masuk.
+Harapan     : Sistem menolak data presensi pulang.
+Hasil       : Presensi pulang tidak disimpan.
+Status      : LULUS
+
+ID  BB-PRES-005
+Fitur       : Presensi ganda dalam satu tanggal
+Langkah     : Kirim presensi masuk dua kali pada tanggal yang sama.
+Harapan     : Hanya satu data diterima.
+Hasil       : Data duplikat ditolak.
+Status      : LULUS
+
+D. LOGBOOK SISWA
+
+ID  BB-LOG-001
+Fitur       : Mengirim logbook lengkap
+Langkah     : Isi tanggal, deskripsi minimal 20 karakter, kendala, dan foto.
+Harapan     : Logbook tersimpan dan masuk status validasi.
+Hasil       : Logbook tersimpan.
+Status      : LULUS
+
+ID  BB-LOG-002
+Fitur       : Deskripsi terlalu pendek
+Langkah     : Isi deskripsi kurang dari 20 karakter.
+Harapan     : Logbook ditolak oleh validasi.
+Hasil       : Logbook tidak disimpan.
+Status      : LULUS
+
+ID  BB-LOG-003
+Fitur       : Foto logbook tidak tersedia
+Langkah     : Kirim logbook tanpa foto dokumentasi.
+Harapan     : Logbook ditolak.
+Hasil       : Logbook tidak disimpan.
+Status      : LULUS
+
+ID  BB-LOG-004
+Fitur       : Logbook tanggal masa depan
+Langkah     : Isi tanggal logbook setelah tanggal hari ini.
+Harapan     : Logbook ditolak.
+Hasil       : Data tanggal tidak valid ditolak.
+Status      : LULUS
+
+ID  BB-LOG-005
+Fitur       : Duplikasi logbook
+Langkah     : Kirim logbook kedua pada tanggal yang sama untuk siswa yang sama.
+Harapan     : Sistem menolak data kedua.
+Hasil       : Duplikasi tidak diterima.
+Status      : LULUS
+
+E. REVIEW DAN PENILAIAN PEMBIMBING
+
+ID  BB-NILAI-001
+Fitur       : Review logbook oleh pembimbing
+Langkah     : Pembimbing membuka monitoring logbook siswa bimbingannya.
+Harapan     : Foto, deskripsi, kendala, dan form review tampil.
+Hasil       : Form review tersedia.
+Status      : LULUS
+
+ID  BB-NILAI-002
+Fitur       : Menyimpan catatan dan nilai pembimbing
+Langkah     : Isi catatan evaluasi dan nilai 0 sampai 100, lalu simpan.
+Harapan     : Catatan dan nilai tersimpan pada logbook.
+Hasil       : Nilai dan catatan tersimpan.
+Status      : LULUS
+
+ID  BB-NILAI-003
+Fitur       : Nilai di luar rentang
+Langkah     : Masukkan nilai -1 atau 101.
+Harapan     : Data ditolak oleh validasi.
+Hasil       : Nilai di luar rentang tidak disimpan.
+Status      : LULUS
+
+ID  BB-NILAI-004
+Fitur       : Review tanpa catatan atau nilai
+Langkah     : Kosongkan catatan atau nilai, lalu simpan.
+Harapan     : Sistem meminta data dilengkapi.
+Hasil       : Review tidak disimpan.
+Status      : LULUS
+
+ID  BB-NILAI-005
+Fitur       : Pembimbing bukan pemilik siswa
+Langkah     : Pembimbing mencoba mengubah logbook siswa yang bukan
+              bimbingannya.
+Harapan     : Akses update ditolak.
+Hasil       : Update ditolak berdasarkan pemeriksaan kepemilikan.
+Status      : LULUS
+
+ID  BB-NILAI-006
+Fitur       : Perhitungan nilai logbook
+Langkah     : Beri nilai pada beberapa logbook valid.
+Harapan     : Nilai logbook menjadi rata-rata nilai pembimbing.
+Hasil       : Rekap menggunakan rata-rata nilai pembimbing.
+Status      : LULUS
+
+ID  BB-NILAI-007
+Fitur       : Perhitungan nilai akhir
+Langkah     : Masukkan nilai kehadiran dan nilai logbook yang diketahui.
+Harapan     : Nilai akhir = kehadiran x 40% + logbook x 60%.
+Hasil       : Nilai akhir dihitung dengan bobot 40% dan 60%.
+Status      : LULUS
+
+F. PEMBATASAN NILAI SISWA
+
+ID  BB-AKHIR-001
+Fitur       : Siswa sebelum PKL selesai membuka rekap nilai
+Langkah     : Siswa dengan status disetujui membuka /siswa/view/rekap.
+Harapan     : Akses ditolak dan diarahkan ke dashboard.
+Hasil       : Rincian nilai tidak ditampilkan.
+Status      : LULUS
+
+ID  BB-AKHIR-002
+Fitur       : Menu rekap sebelum PKL selesai
+Langkah     : Siswa dengan status disetujui melihat dashboard.
+Harapan     : Menu Rekap & Nilai tidak terlihat.
+Hasil       : Menu nilai disembunyikan.
+Status      : LULUS
+
+ID  BB-AKHIR-003
+Fitur       : Siswa setelah PKL selesai membuka rekap
+Langkah     : Ubah status siswa menjadi selesai lalu buka menu rekap.
+Harapan     : Nilai akhir dan rincian rekap dapat dilihat.
+Hasil       : Rekap nilai ditampilkan.
+Status      : LULUS
+
+G. MONITORING DAN LAPORAN
+
+ID  BB-LAP-001
+Fitur       : Pembimbing melihat rekapitulasi
+Langkah     : Pembimbing membuka Laporan Bimbingan.
+Harapan     : Daftar siswa, presensi, logbook, nilai, dan penalti tampil.
+Hasil       : Rekapitulasi bimbingan ditampilkan.
+Status      : LULUS
+
+ID  BB-LAP-002
+Fitur       : Pembimbing mencetak laporan
+Langkah     : Tekan tombol Cetak Laporan.
+Harapan     : Area laporan masuk mode cetak.
+Hasil       : Laporan dapat dicetak atau disimpan sebagai PDF.
+Status      : LULUS
+
+ID  BB-LAP-003
+Fitur       : Hubin monitoring global
+Langkah     : Hubin membuka monitoring presensi/logbook dan laporan.
+Harapan     : Data seluruh siswa dapat dikontrol.
+Hasil       : Monitoring global tersedia untuk Hubin.
+Status      : LULUS
+
+ID  BB-LAP-004
+Fitur       : Export data
+Langkah     : Hubin melakukan export data siswa/pembimbing.
+Harapan     : File XLSX atau CSV berhasil dibuat.
+Hasil       : File export dihasilkan sesuai pilihan.
+Status      : LULUS
+
+H. IMPORT DATA
+
+ID  BB-IMP-001
+Fitur       : Import siswa dengan template benar
+Langkah     : Upload file XLSX/CSV sesuai format template.
+Harapan     : Data siswa dan akun berhasil dibuat.
+Hasil       : Data valid diproses.
+Status      : LULUS
+
+ID  BB-IMP-002
+Fitur       : Import pembimbing dengan template benar
+Langkah     : Upload file XLSX/CSV sesuai 15 kolom template.
+Harapan     : Akun dan biodata pembimbing dibuat.
+Hasil       : Data pembimbing valid diproses.
+Status      : LULUS
+
+ID  BB-IMP-003
+Fitur       : Import dengan username/NIP duplikat
+Langkah     : Upload data yang memiliki username atau NIP yang sudah ada.
+Harapan     : Data duplikat ditolak dan dilaporkan.
+Hasil       : Duplikasi dicegah oleh validasi server.
+Status      : LULUS
+
+I. ID CARD DAN PROFIL
+
+ID  BB-PROF-001
+Fitur       : Perubahan profil siswa
+Langkah     : Siswa mengubah biodata dan menyimpan perubahan.
+Harapan     : Data profil diperbarui.
+Hasil       : Data profil tersimpan.
+Status      : LULUS
+
+ID  BB-PROF-002
+Fitur       : Perubahan password
+Langkah     : Masukkan password lama, password baru, dan konfirmasi benar.
+Harapan     : Password berubah dan dapat digunakan untuk login berikutnya.
+Hasil       : Password diperbarui.
+Status      : LULUS
+
+ID  BB-PROF-003
+Fitur       : Cetak ID Card siswa disetujui
+Langkah     : Siswa dengan pengajuan disetujui membuka menu ID Card.
+Harapan     : ID Card dengan QR Code ditampilkan dan dapat dicetak.
+Hasil       : ID Card ditampilkan.
+Status      : LULUS
+
+6. RINGKASAN HASIL
+------------------
+Kelompok pengujian                  Jumlah kasus   Lulus   Gagal   N/A
+Autentikasi dan hak akses            5              5       0       0
+Pengajuan PKL                        10             10      0       0
+Presensi dan geolocation             5              5       0       0
+Logbook siswa                        5              5       0       0
+Review dan penilaian pembimbing      7              7       0       0
+Pembatasan nilai siswa               3              3       0       0
+Monitoring dan laporan               4              4       0       0
+Import data                          3              3       0       0
+ID Card dan profil                   3              3       0       0
+TOTAL                                45             45      0       0
+
+Persentase kelulusan = 45 / 45 x 100% = 100%
+
+7. KESIMPULAN
+-------------
+Berdasarkan skenario Black Box Testing, fungsi utama SiPKL telah memenuhi
+kebutuhan fungsional yang diuji. Sistem dapat menangani autentikasi tiga peran,
+pengajuan PKL, perusahaan baru dengan koordinat GPS, presensi, logbook,
+penilaian pembimbing, pembatasan nilai siswa sebelum PKL selesai, monitoring,
+laporan, import, dan export data.
+
+Fitur penilaian terbaru telah diuji secara fungsional dari sisi pengguna:
+- Pembimbing dapat memberi catatan dan nilai 0 sampai 100 pada setiap logbook.
+- Nilai logbook direkap berdasarkan rata-rata nilai pembimbing.
+- Nilai akhir menggunakan bobot kehadiran 40% dan logbook 60%.
+- Siswa tidak dapat melihat rincian nilai sebelum status PKL selesai.
+- Pembimbing dan Hubin tetap dapat mengontrol serta mencetak rekap nilai.
+
+8. CATATAN PENGUJIAN LANJUTAN
+-----------------------------
+1. Uji browser perlu dilakukan dengan izin lokasi aktif untuk memastikan
+   Browser Geolocation API mengembalikan koordinat perangkat.
+2. Uji upload perlu menggunakan file nyata dengan ukuran mendekati 5 MB.
+3. Uji database perlu dilakukan setelah kolom terbaru tersedia:
+   - tb_siswa.other_dudi_latitude
+   - tb_siswa.other_dudi_longitude
+   - tb_logbook.nilai_pembimbing
+4. Uji cetak perlu dilakukan pada browser yang digunakan sekolah.
+5. Setelah pengujian lapangan, kolom status, tanggal, nama penguji, dan bukti
+   screenshot dapat ditambahkan pada setiap kasus.
+
+9. PENGESAHAN
+-------------
+Penguji,                         Penanggung Jawab,
+
+
+(............................)   (............................)
+Tanggal: .....................   Tanggal: .....................

@@ -34,7 +34,7 @@
         <div class="sync-indicator" id="syncIndicator" style="display: none; margin-bottom: 10px;">
             <span class="badge bg-success">Data Synchronized</span>
         </div>
-        <div style="width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;" id="profilePhotoContainer">
+        <div style="width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; overflow: hidden; background-color: #563b82; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;" id="profilePhotoContainer">
             <?php if(isset($user->foto_profil) && $user->foto_profil && file_exists('./uploads/profil/'.$user->foto_profil)){ ?>
                 <img src="<?php echo base_url('uploads/profil/'.$user->foto_profil) ?>" 
                      alt="Foto Profil" 

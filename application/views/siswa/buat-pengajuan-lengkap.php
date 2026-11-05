@@ -105,8 +105,8 @@ $can_upload = !$siswa || $siswa->status_pengajuan == 'draft' || $siswa->status_p
             <div class="mb-3">
                 <label class="form-label">Surat Permohonan/Pernyataan</label>
                 <input type="file" name="surat_permohonan" class="form-control" 
-                       accept=".jpg,.jpeg,.png,.gif,.pdf">
-                <small class="text-muted">Upload surat permohonan atau surat pernyataan dari perusahaan (Format: JPG, PNG, GIF, PDF - Maksimal 5MB)</small>
+                      accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                  <small class="text-muted">Format: JPG, PNG, GIF, PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX - Maksimal 5MB</small>
                 <?php if($siswa && $siswa->surat_permohonan && file_exists('./uploads/pengajuan/'.$siswa->surat_permohonan)){ ?>
                 <div class="mt-2">
                     <small class="text-muted">File saat ini: </small>
@@ -123,8 +123,8 @@ $can_upload = !$siswa || $siswa->status_pengajuan == 'draft' || $siswa->status_p
             <div class="mb-3">
                 <label class="form-label">Foto Dokumentasi (Opsional)</label>
                 <input type="file" name="foto_dokumentasi" class="form-control" 
-                       accept=".jpg,.jpeg,.png,.gif" multiple>
-                <small class="text-muted">Upload foto-foto dokumentasi (Format: JPG, PNG, GIF - Maksimal 5MB per file)</small>
+                      accept=".jpg,.jpeg,.png,.gif" multiple>
+                  <small class="text-muted">Upload foto-foto dokumentasi (Format: JPG, PNG, GIF - Maksimal 5MB per file)</small>
                 <?php if($siswa && $siswa->foto_dokumentasi): ?>
                     <?php 
                     $foto_files = json_decode($siswa->foto_dokumentasi, true);

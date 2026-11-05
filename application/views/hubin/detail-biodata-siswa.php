@@ -26,11 +26,11 @@
                 <tbody>
                     <tr>
                         <td width="30%" class="fw-bold bg-light">Nama Siswa</td>
-                        <td><?php echo isset($biodata->siswa_nama) && $biodata->siswa_nama ? $biodata->siswa_nama : (isset($biodata->nama_lengkap) ? $biodata->nama_lengkap : '-') ?></td>
+                        <td><?php echo isset($biodata->siswa_nama) && $biodata->siswa_nama ? $biodata->siswa_nama : (isset($biodata->user_nama) && $biodata->user_nama ? $biodata->user_nama : (isset($biodata->nama_lengkap) ? $biodata->nama_lengkap : '-')) ?></td>
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">NIS (Nomor Induk Siswa)</td>
-                        <td><?php echo isset($biodata->siswa_nis) && $biodata->siswa_nis ? $biodata->siswa_nis : '-' ?></td>
+                        <td><?php echo isset($biodata->siswa_nis) && $biodata->siswa_nis ? $biodata->siswa_nis : (isset($biodata->user_nip_nim) && $biodata->user_nip_nim ? $biodata->user_nip_nim : (isset($biodata->nip_nim) ? $biodata->nip_nim : '-')) ?></td>
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">NISN (Nomor Induk Siswa Nasional)</td>
@@ -40,17 +40,15 @@
                         <td class="fw-bold bg-light">Jenis Kelamin</td>
                         <td>
                             <?php 
-                            // Use student gender if available, otherwise use user gender
-                            $jenis_kelamin = isset($biodata->siswa_jk) && !empty($biodata->siswa_jk) ? $biodata->siswa_jk : (isset($biodata->jenis_kelamin) ? $biodata->jenis_kelamin : '');
+                            $jenis_kelamin = isset($biodata->siswa_jk) && !empty($biodata->siswa_jk) ? $biodata->siswa_jk : (isset($biodata->user_jenis_kelamin) && !empty($biodata->user_jenis_kelamin) ? $biodata->user_jenis_kelamin : (isset($biodata->jenis_kelamin) ? $biodata->jenis_kelamin : ''));
                             
                             if(!empty($jenis_kelamin)) {
-                                // Handle both old format ('L'/'P') and new format ('Laki-laki'/'Perempuan')
                                 if ($jenis_kelamin == 'L' || $jenis_kelamin == 'Laki-laki') {
                                     echo 'Laki-laki';
                                 } elseif ($jenis_kelamin == 'P' || $jenis_kelamin == 'Perempuan') {
                                     echo 'Perempuan';
                                 } else {
-                                    echo $jenis_kelamin; // Display as-is if it's something else
+                                    echo $jenis_kelamin;
                                 }
                             } else {
                                 echo '-';
@@ -60,11 +58,14 @@
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">Tempat Lahir</td>
-                        <td><?php echo isset($biodata->siswa_tempat_lahir) && $biodata->siswa_tempat_lahir ? $biodata->siswa_tempat_lahir : (isset($biodata->tempat_lahir) ? $biodata->tempat_lahir : '-') ?></td>
+                        <td><?php echo isset($biodata->siswa_tempat_lahir) && $biodata->siswa_tempat_lahir ? $biodata->siswa_tempat_lahir : (isset($biodata->user_tempat_lahir) && $biodata->user_tempat_lahir ? $biodata->user_tempat_lahir : (isset($biodata->tempat_lahir) ? $biodata->tempat_lahir : '-')) ?></td>
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">Tanggal Lahir</td>
-                        <td><?php echo isset($biodata->siswa_tanggal_lahir) && $biodata->siswa_tanggal_lahir ? date('d F Y', strtotime($biodata->siswa_tanggal_lahir)) : (isset($biodata->tanggal_lahir) ? date('d F Y', strtotime($biodata->tanggal_lahir)) : '-') ?></td>
+                        <td><?php 
+                            $tgl_lahir = isset($biodata->siswa_tanggal_lahir) && $biodata->siswa_tanggal_lahir ? $biodata->siswa_tanggal_lahir : (isset($biodata->user_tanggal_lahir) && $biodata->user_tanggal_lahir ? $biodata->user_tanggal_lahir : (isset($biodata->tanggal_lahir) ? $biodata->tanggal_lahir : ''));
+                            echo ($tgl_lahir && $tgl_lahir != '0000-00-00') ? date('d F Y', strtotime($tgl_lahir)) : '-';
+                        ?></td>
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">Kelas</td>
@@ -76,15 +77,15 @@
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">Sekolah</td>
-                        <td><?php echo isset($biodata->siswa_asal_sekolah) && $biodata->siswa_asal_sekolah ? $biodata->siswa_asal_sekolah : '-' ?></td>
+                        <td><?php echo isset($biodata->siswa_asal_sekolah) && $biodata->siswa_asal_sekolah ? $biodata->siswa_asal_sekolah : 'SMK ITIKURIH HIBARNA' ?></td>
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">Telepon Siswa</td>
-                        <td><?php echo isset($biodata->siswa_telepon) && $biodata->siswa_telepon ? $biodata->siswa_telepon : (isset($biodata->telepon) ? $biodata->telepon : '-') ?></td>
+                        <td><?php echo isset($biodata->siswa_telepon) && $biodata->siswa_telepon ? $biodata->siswa_telepon : (isset($biodata->user_telepon) && $biodata->user_telepon ? $biodata->user_telepon : (isset($biodata->telepon) ? $biodata->telepon : '-')) ?></td>
                     </tr>
                     <tr>
                         <td class="fw-bold bg-light">Alamat Lengkap</td>
-                        <td><?php echo isset($biodata->siswa_alamat) && $biodata->siswa_alamat ? $biodata->siswa_alamat : (isset($biodata->alamat) ? $biodata->alamat : '-') ?></td>
+                        <td><?php echo isset($biodata->siswa_alamat) && $biodata->siswa_alamat ? $biodata->siswa_alamat : (isset($biodata->user_alamat) && $biodata->user_alamat ? $biodata->user_alamat : (isset($biodata->alamat) ? $biodata->alamat : '-')) ?></td>
                     </tr>
                 </tbody>
             </table>

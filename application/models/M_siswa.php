@@ -9,6 +9,18 @@ class M_siswa extends CI_Model {
         //Do your magic here
     }
 
+    public function normalize_status_pengajuan($status = null)
+    {
+        $allowed_status = array('draft', 'menunggu', 'disetujui', 'ditolak', 'selesai');
+        $normalized = is_string($status) ? trim(strtolower($status)) : '';
+
+        if ($normalized === '') {
+            return 'draft';
+        }
+
+        return in_array($normalized, $allowed_status, true) ? $normalized : 'draft';
+    }
+
     private $table = 'tb_siswa'; 
     private $status= true; 
 
@@ -22,6 +34,71 @@ class M_siswa extends CI_Model {
         return $randomString;
     }
 
+    function normalize_pkl_schedule_data($data)
+    {
+        if (empty($data) || (isset($data['status_pengajuan']) && $data['status_pengajuan'] !== 'disetujui')) {
+            return $data;
+        }
+
+        $tanggal_mulai = !empty($data['tanggal_mulai']) ? trim((string) $data['tanggal_mulai']) : date('Y-m-d');
+        $start_dt = DateTime::createFromFormat('Y-m-d', $tanggal_mulai);
+        if (!$start_dt || $start_dt->format('Y-m-d') !== $tanggal_mulai) {
+            $tanggal_mulai = date('Y-m-d');
+            $start_dt = new DateTime($tanggal_mulai);
+        }
+
+        $tanggal_selesai = !empty($data['tanggal_selesai']) ? trim((string) $data['tanggal_selesai']) : date('Y-m-d', strtotime($tanggal_mulai . ' +3 months -1 day'));
+        $end_dt = DateTime::createFromFormat('Y-m-d', $tanggal_selesai);
+        if (!$end_dt || $end_dt < $start_dt) {
+            $tanggal_selesai = date('Y-m-d', strtotime($tanggal_mulai . ' +3 months -1 day'));
+            $end_dt = new DateTime($tanggal_selesai);
+        }
+
+        $diff_days = $start_dt->diff($end_dt)->days;
+        if ($diff_days < 60 || $diff_days > 150) {
+            $tanggal_selesai = date('Y-m-d', strtotime($tanggal_mulai . ' +3 months -1 day'));
+        }
+
+        $data['tanggal_mulai'] = $tanggal_mulai;
+        $data['tanggal_selesai'] = $tanggal_selesai;
+        $data['lama_pelaksanaan'] = 90;
+        $data['periode'] = date('Y', strtotime($tanggal_mulai)) . '/' . (date('Y', strtotime($tanggal_mulai)) + 1);
+
+        return $data;
+    }
+
+    function normalize_all_approved_pkl_schedule()
+    {
+        $this->db->where('status_pengajuan', 'disetujui');
+        $students = $this->db->get($this->table)->result();
+
+        $updated = 0;
+        foreach ($students as $student) {
+            $normalized = $this->normalize_pkl_schedule_data((array) $student);
+            if (empty($normalized['tanggal_mulai']) || empty($normalized['tanggal_selesai'])) {
+                continue;
+            }
+
+            $changed = ($student->tanggal_mulai !== $normalized['tanggal_mulai']) ||
+                ($student->tanggal_selesai !== $normalized['tanggal_selesai']) ||
+                ((isset($student->lama_pelaksanaan) ? (int) $student->lama_pelaksanaan : 0) !== 90) ||
+                ((isset($student->periode) ? $student->periode : '') !== $normalized['periode']);
+
+            if ($changed) {
+                $this->db->where('siswa_id', $student->siswa_id);
+                $this->db->update($this->table, [
+                    'tanggal_mulai' => $normalized['tanggal_mulai'],
+                    'tanggal_selesai' => $normalized['tanggal_selesai'],
+                    'lama_pelaksanaan' => 90,
+                    'periode' => $normalized['periode']
+                ]);
+                $updated++;
+            }
+        }
+
+        return $updated;
+    }
+
     function get_semua_siswa()
     {
         $siswa = $this->db->get($this->table);
@@ -30,6 +107,8 @@ class M_siswa extends CI_Model {
 
     function tambah_data_siswa($data)
     {
+        $data = $this->normalize_pkl_schedule_data($data);
+
         // Ensure required fields are set with defaults if not provided
         if(!isset($data['siswa_nis'])) {
             $data['siswa_nis'] = NULL;
@@ -85,6 +164,8 @@ class M_siswa extends CI_Model {
 
     function update_siswa($data, $siswa_code)
     {
+        $data = $this->normalize_pkl_schedule_data($data);
+
         // Filter out fields that don't exist in the database
         $allowed_fields = $this->get_allowed_siswa_fields();
         $filtered_data = array();
@@ -107,39 +188,75 @@ class M_siswa extends CI_Model {
 
     function hapus_siswa($siswa_code)
     {
-        // Get the student record first to get the user_id
         $this->db->where('siswa_code', $siswa_code);
         $student = $this->db->get($this->table)->row();
-        
-        if($student) {
-            // If student record has a user_id, delete the user first (which will cascade delete the student record)
-            if($student->user_id) {
-                // Delete the user (this will cascade delete the student record and related pengelompokan records)
-                $this->db->where('id', $student->user_id);
-                $cek_user = $this->db->delete('tb_user');
-                
-                return $cek_user;
-            } else {
-                // If there's no user_id, just delete the student record
-                // This will also delete related pengelompokan records due to CASCADE
-                $this->db->where('siswa_code', $siswa_code);
-                $cek = $this->db->delete($this->table);
-                
-                return $cek;
-            }
-        } else {
-            // Student not found
+
+        if (!$student) {
             return false;
         }
+
+        $siswa_id = (int) $student->siswa_id;
+        $user_id = isset($student->user_id) ? (int) $student->user_id : null;
+
+        $this->db->trans_start();
+
+        $this->db->where('siswa_id', $siswa_id);
+        $this->db->delete('tb_pengelompokan');
+
+        $this->db->where('siswa_id', $siswa_id);
+        $this->db->delete('tb_presensi');
+
+        $this->db->where('siswa_id', $siswa_id);
+        $this->db->delete('tb_logbook');
+
+        $this->db->where('siswa_id', $siswa_id);
+        $this->db->delete('tb_penilaian');
+
+        $this->db->where('siswa_id', $siswa_id);
+        $this->db->update('tb_siswa', ['pembimbing_id' => null]);
+
+        $this->db->where('siswa_code', $siswa_code);
+        $this->db->delete($this->table);
+
+        if ($user_id) {
+            $this->db->where('id', $user_id);
+            $this->db->delete('tb_user');
+        }
+
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
     }
     
     // New function to get siswa with full biodata
     function get_siswa_with_biodata($siswa_code)
     {
-        $this->db->select('tb_siswa.*, tb_user.nama_lengkap as user_nama, tb_user.username, tb_user.foto_profil, tb_user.alamat, tb_user.telepon, tb_user.email, tb_dudi.dudi_nama, tb_dudi.is_mitra as dudi_is_mitra');
+        $this->db->select('
+            tb_siswa.*, 
+            tb_user.user_code,
+            tb_user.nama_lengkap as user_nama, 
+            tb_user.username, 
+            tb_user.foto_profil, 
+            tb_user.alamat as user_alamat, 
+            tb_user.telepon as user_telepon, 
+            tb_user.email as user_email, 
+            tb_user.tempat_lahir as user_tempat_lahir,
+            tb_user.tanggal_lahir as user_tanggal_lahir,
+            tb_user.jenis_kelamin as user_jenis_kelamin,
+            tb_user.nip_nim as user_nip_nim,
+            tb_user.is_active as user_is_active,
+            tb_dudi.dudi_nama, 
+            tb_dudi.is_mitra as dudi_is_mitra,
+            COALESCE(pembimbing_kelompok.pembimbing_nama, tb_pembimbing.pembimbing_nama) as pembimbing_nama,
+            COALESCE(pembimbing_kelompok.pembimbing_email, tb_pembimbing.pembimbing_email) as pembimbing_email,
+            COALESCE(pembimbing_kelompok.pembimbing_telepon, tb_pembimbing.pembimbing_telepon) as pembimbing_telepon
+        ');
         $this->db->from('tb_siswa');
         $this->db->join('tb_user', 'tb_user.id = tb_siswa.user_id', 'left');
         $this->db->join('tb_dudi', 'tb_dudi.dudi_id = tb_siswa.dudi_id', 'left');
+        $this->db->join('tb_pengelompokan', 'tb_pengelompokan.siswa_id = tb_siswa.siswa_id', 'left');
+        $this->db->join('tb_pembimbing as pembimbing_kelompok', 'pembimbing_kelompok.pembimbing_id = tb_pengelompokan.pembimbing_id', 'left');
+        $this->db->join('tb_pembimbing', 'tb_pembimbing.pembimbing_id = tb_siswa.pembimbing_id', 'left');
         $this->db->where('tb_siswa.siswa_code', $siswa_code);
         return $this->db->get()->row();
     }
@@ -147,10 +264,32 @@ class M_siswa extends CI_Model {
     // New function to get siswa with biodata by user_id
     function get_siswa_with_biodata_by_user_id($user_id)
     {
-        $this->db->select('tb_siswa.*, tb_user.user_code, tb_user.nama_lengkap as user_nama, tb_user.username, tb_user.foto_profil, tb_user.alamat as user_alamat, tb_user.telepon as user_telepon, tb_user.email as user_email, tb_user.tempat_lahir as user_tempat_lahir, tb_user.tanggal_lahir as user_tanggal_lahir, tb_user.jenis_kelamin as user_jenis_kelamin, tb_user.nip_nim as user_nip_nim, tb_dudi.dudi_nama, tb_dudi.is_mitra as dudi_is_mitra, tb_pembimbing.pembimbing_nama, tb_pembimbing.pembimbing_email, tb_pembimbing.pembimbing_telepon');
+        $this->db->select('
+            tb_siswa.*, 
+            tb_user.id as user_id,
+            tb_user.user_code, 
+            tb_user.nama_lengkap as user_nama, 
+            tb_user.username, 
+            tb_user.foto_profil, 
+            tb_user.alamat as user_alamat, 
+            tb_user.telepon as user_telepon, 
+            tb_user.email as user_email, 
+            tb_user.tempat_lahir as user_tempat_lahir, 
+            tb_user.tanggal_lahir as user_tanggal_lahir, 
+            tb_user.jenis_kelamin as user_jenis_kelamin, 
+            tb_user.nip_nim as user_nip_nim, 
+            tb_user.is_active as user_is_active,
+            tb_dudi.dudi_nama, 
+            tb_dudi.is_mitra as dudi_is_mitra,
+            COALESCE(pembimbing_kelompok.pembimbing_nama, tb_pembimbing.pembimbing_nama) as pembimbing_nama,
+            COALESCE(pembimbing_kelompok.pembimbing_email, tb_pembimbing.pembimbing_email) as pembimbing_email,
+            COALESCE(pembimbing_kelompok.pembimbing_telepon, tb_pembimbing.pembimbing_telepon) as pembimbing_telepon
+        ');
         $this->db->from('tb_user');
         $this->db->join('tb_siswa', 'tb_siswa.user_id = tb_user.id', 'left');
         $this->db->join('tb_dudi', 'tb_dudi.dudi_id = tb_siswa.dudi_id', 'left');
+        $this->db->join('tb_pengelompokan', 'tb_pengelompokan.siswa_id = tb_siswa.siswa_id', 'left');
+        $this->db->join('tb_pembimbing as pembimbing_kelompok', 'pembimbing_kelompok.pembimbing_id = tb_pengelompokan.pembimbing_id', 'left');
         $this->db->join('tb_pembimbing', 'tb_pembimbing.pembimbing_id = tb_siswa.pembimbing_id', 'left');
         $this->db->where('tb_user.id', $user_id);
         return $this->db->get()->row();

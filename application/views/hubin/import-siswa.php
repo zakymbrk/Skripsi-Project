@@ -84,25 +84,13 @@ $userdata = $this->session->userdata('userdata');
                 <p class="text-muted">Download template Excel yang dapat Anda edit untuk import data siswa. Template ini berisi struktur kolom yang benar dengan contoh data.</p>
                 <ul class="mb-3">
                     <li><strong>Nama Siswa *</strong> - Wajib diisi</li>
-                    <li>NIS - Jika diisi harus unik</li>
-                    <li>NISN - Jika diisi harus unik</li>
-                    <li><strong>Jenis Kelamin *</strong> - L atau P</li>
-                    <li>Tempat Lahir</li>
-                    <li>Tanggal Lahir (YYYY-MM-DD)</li>
+                    <li>NIS - Nomor Induk Siswa (opsional)</li>
+                    <li>NISN - Nomor Induk Siswa Nasional (opsional)</li>
+                    <li>Jenis Kelamin - L atau P (opsional)</li>
                     <li><strong>Kelas *</strong> - Wajib diisi</li>
-                    <li>Jurusan</li>
-                    <li>Sekolah</li>
-                    <li>Telepon Siswa</li>
-                    <li><strong>Username *</strong> - Harus unik</li>
-                    <li><strong>Password *</strong> - Minimal 6 karakter</li>
-                    <li>Email - Jika diisi harus unik</li>
-                    <li>Alamat Lengkap</li>
-                    <li>Perusahaan (DUDI)</li>
-                    <li>Tanggal Mulai PKL (YYYY-MM-DD)</li>
-                    <li>Tanggal Selesai PKL (YYYY-MM-DD)</li>
-                    <li>Lama Pelaksanaan (hari)</li>
-                    <li>Status Pengajuan (draft/menunggu/disetujui/ditolak/selesai)</li>
-                    <li>Periode PKL</li>
+                    <li>Jurusan (opsional)</li>
+                    <li><strong>Username *</strong> - Harus unik, wajib diisi</li>
+                    <li><strong>Password *</strong> - Wajib diisi</li>
                 </ul>
             </div>
             <div class="col-md-4 text-center">
@@ -141,144 +129,59 @@ $userdata = $this->session->userdata('userdata');
                     <tr>
                         <td>1</td>
                         <td><strong>Nama Siswa</strong></td>
-                        <td><span class="badge bg-danger">Ya</span></td>
+                        <td><span class="badge bg-danger">Wajib</span></td>
                         <td>Nama lengkap siswa</td>
-                        <td>John Doe</td>
+                        <td>Andi Setiawan</td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>NIS</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Nomor Induk Siswa (harus unik jika diisi)</td>
-                        <td>12345</td>
+                        <td><span class="badge bg-secondary">Opsional</span></td>
+                        <td>Nomor Induk Siswa</td>
+                        <td>2024001</td>
                     </tr>
                     <tr>
                         <td>3</td>
                         <td>NISN</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Nomor Induk Siswa Nasional (harus unik jika diisi)</td>
-                        <td>0012345678</td>
+                        <td><span class="badge bg-secondary">Opsional</span></td>
+                        <td>Nomor Induk Siswa Nasional</td>
+                        <td>0001234567890</td>
                     </tr>
                     <tr>
                         <td>4</td>
-                        <td><strong>Jenis Kelamin</strong></td>
-                        <td><span class="badge bg-danger">Ya</span></td>
+                        <td>Jenis Kelamin</td>
+                        <td><span class="badge bg-secondary">Opsional</span></td>
                         <td>L untuk Laki-laki, P untuk Perempuan</td>
                         <td>L atau P</td>
                     </tr>
                     <tr>
                         <td>5</td>
-                        <td>Tempat Lahir</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Tempat lahir siswa</td>
-                        <td>Jakarta</td>
+                        <td><strong>Kelas</strong></td>
+                        <td><span class="badge bg-danger">Wajib</span></td>
+                        <td>Kelas siswa saat ini</td>
+                        <td>XI TKJ 1</td>
                     </tr>
                     <tr>
                         <td>6</td>
-                        <td>Tanggal Lahir</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Format: YYYY-MM-DD</td>
-                        <td>2005-01-15</td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td><strong>Kelas</strong></td>
-                        <td><span class="badge bg-danger">Ya</span></td>
-                        <td>Kelas siswa saat ini</td>
-                        <td>XII TKJ 1</td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
                         <td>Jurusan</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
+                        <td><span class="badge bg-secondary">Opsional</span></td>
                         <td>Jurusan siswa</td>
                         <td>Teknik Komputer dan Jaringan</td>
                     </tr>
                     <tr>
-                        <td>9</td>
-                        <td>Sekolah</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Nama sekolah</td>
-                        <td>SMK Negeri 1</td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td>Telepon Siswa</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Nomor telepon siswa</td>
-                        <td>08123456789</td>
-                    </tr>
-                    <tr>
-                        <td>11</td>
+                        <td>7</td>
                         <td><strong>Username</strong></td>
-                        <td><span class="badge bg-danger">Ya</span></td>
+                        <td><span class="badge bg-danger">Wajib</span></td>
                         <td>Username untuk login (harus unik)</td>
-                        <td>john.doe</td>
+                        <td>andi_tkj</td>
                     </tr>
                     <tr>
-                        <td>12</td>
+                        <td>8</td>
                         <td><strong>Password</strong></td>
-                        <td><span class="badge bg-danger">Ya</span></td>
-                        <td>Password untuk login (minimal 6 karakter)</td>
+                        <td><span class="badge bg-danger">Wajib</span></td>
+                        <td>Password untuk login siswa</td>
                         <td>password123</td>
                     </tr>
-                    <tr>
-                        <td>13</td>
-                        <td>Email</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Email siswa (harus unik jika diisi)</td>
-                        <td>john@example.com</td>
-                    </tr>
-                    <tr>
-                        <td>14</td>
-                        <td>Alamat Lengkap</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Alamat lengkap siswa</td>
-                        <td>Jl. Contoh No. 123</td>
-                    </tr>
-                    <tr>
-                        <td>15</td>
-                        <td>Perusahaan (DUDI)</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Nama tempat PKL</td>
-                        <td>PT. Contoh Perusahaan</td>
-                    </tr>
-                    <tr>
-                        <td>16</td>
-                        <td>Tanggal Mulai PKL</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Format: YYYY-MM-DD</td>
-                        <td>2024-01-15</td>
-                    </tr>
-                    <tr>
-                        <td>17</td>
-                        <td>Tanggal Selesai PKL</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Format: YYYY-MM-DD</td>
-                        <td>2024-06-15</td>
-                    </tr>
-                    <tr>
-                        <td>18</td>
-                        <td>Lama Pelaksanaan</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Dalam hari</td>
-                        <td>90</td>
-                    </tr>
-                    <tr>
-                        <td>19</td>
-                        <td>Status Pengajuan</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>draft/menunggu/disetujui/ditolak/selesai</td>
-                        <td>menunggu</td>
-                    </tr>
-                    <tr>
-                        <td>20</td>
-                        <td>Periode PKL</td>
-                        <td><span class="badge bg-warning">Tidak</span></td>
-                        <td>Periode pelaksanaan PKL</td>
-                        <td>2024/2025</td>
-                    </tr>
-                </tbody>
             </table>
         </div>
     </div>

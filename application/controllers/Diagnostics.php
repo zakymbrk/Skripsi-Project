@@ -3,15 +3,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Diagnostics extends CI_Controller {
 
+    public function __construct()
+    {
+        parent::__construct();
+        require_role(1);
+    }
+
     public function check_template()
     {
         // Check if library exists before using it
-        $autoload_path = FCPATH . 'vendor/autoload.php';
-        if (!file_exists($autoload_path)) {
-            die('Fitur Diagnostic memerlukan library PhpSpreadsheet. Silakan install dependencies terlebih dahulu dengan composer install.');
+        if (!class_exists('\\PhpOffice\\PhpSpreadsheet\\IOFactory')) {
+            $autoload_path = FCPATH . 'vendor/autoload.php';
+            if (file_exists($autoload_path)) {
+                require_once $autoload_path;
+            } else {
+                die('Fitur Diagnostic memerlukan library PhpSpreadsheet. Silakan install dependencies terlebih dahulu dengan composer install.');
+            }
         }
-        
-        require_once $autoload_path;
         
         $template_path = FCPATH . 'assets/Template.xlsx';
         

@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 // Load helper
 $this->load->helper('view');
 
@@ -27,6 +27,18 @@ foreach($all_students as $student) {
                 <i class="fas fa-clock me-1"></i><span id="current-time"><?php echo date("H:i:s"); ?></span>
             </span>
         </div>
+    </div>
+</div>
+
+<div class="card border-warning shadow-sm mb-4">
+    <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h5 class="fw-bold mb-1"><i class="fas fa-rotate text-warning me-2"></i>Periode PKL</h5>
+            <p class="text-muted mb-0 small">Arsipkan seluruh monitoring dan buka pengajuan untuk periode PKL berikutnya.</p>
+        </div>
+        <form method="post" action="<?php echo base_url('hubin/reset_periode_pkl'); ?>" onsubmit="return confirm('Reset periode PKL? Data presensi, logbook, penilaian, dan assignment akan diarsipkan.');">
+            <button type="submit" class="btn btn-outline-warning"><i class="fas fa-rotate me-1"></i> Reset Periode PKL</button>
+        </form>
     </div>
 </div>
 
@@ -98,6 +110,58 @@ foreach($all_students as $student) {
                 </div>
             </div>
         </a>
+    </div>
+</div>
+
+<!-- Monitoring PKL Stats -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <a href="<?php echo base_url('hubin/view/monitoring-presensi') ?>" class="text-decoration-none d-block">
+            <div class="card border-0 rounded-lg shadow-sm h-100 text-center card-highlight-hover" style="cursor: pointer;">
+                <div class="card-body p-4">
+                    <div class="icon-wrapper bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 60px; height: 60px;">
+                        <i class="fas fa-calendar-check fa-lg"></i>
+                    </div>
+                    <h4 class="mb-1 fw-bold text-dark" id="card-total-presensi">0</h4>
+                    <p class="mb-0 text-muted">Total Presensi</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a href="<?php echo base_url('hubin/view/monitoring-logbook') ?>" class="text-decoration-none d-block">
+            <div class="card border-0 rounded-lg shadow-sm h-100 text-center card-highlight-hover" style="cursor: pointer;">
+                <div class="card-body p-4">
+                    <div class="icon-wrapper bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 60px; height: 60px;">
+                        <i class="fas fa-book-reader fa-lg"></i>
+                    </div>
+                    <h4 class="mb-1 fw-bold text-dark" id="card-total-logbook">0</h4>
+                    <p class="mb-0 text-muted">Total Logbook</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 rounded-lg shadow-sm h-100 text-center">
+            <div class="card-body p-4">
+                <div class="icon-wrapper bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 60px; height: 60px;">
+                    <i class="fas fa-check-circle fa-lg"></i>
+                </div>
+                <h4 class="mb-1 fw-bold text-success" id="card-logbook-valid">0</h4>
+                <p class="mb-0 text-muted">Logbook Valid</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 rounded-lg shadow-sm h-100 text-center">
+            <div class="card-body p-4">
+                <div class="icon-wrapper bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 60px; height: 60px;">
+                    <i class="fas fa-times-circle fa-lg"></i>
+                </div>
+                <h4 class="mb-1 fw-bold text-danger" id="card-logbook-tidak-valid">0</h4>
+                <p class="mb-0 text-muted">Logbook Tidak Valid</p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -414,6 +478,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (jumlahSiswaEl) jumlahSiswaEl.textContent = data.statistik.jumlah_siswa;
                 if (totalBerkasEl) totalBerkasEl.textContent = data.statistik.pengajuan_menunggu + data.statistik.pengajuan_disetujui + data.statistik.pengajuan_ditolak; // Approximation for total submissions
                 if (jumlahDudiEl) jumlahDudiEl.textContent = data.statistik.jumlah_dudi;
+
+                // Update monitoring PKL stats
+                const presensiEl = document.getElementById('card-total-presensi');
+                const logbookEl = document.getElementById('card-total-logbook');
+                const logbookValidEl = document.getElementById('card-logbook-valid');
+                const logbookInvalidEl = document.getElementById('card-logbook-tidak-valid');
+                if (presensiEl && data.statistik.total_presensi !== undefined) presensiEl.textContent = data.statistik.total_presensi;
+                if (logbookEl && data.statistik.total_logbook !== undefined) logbookEl.textContent = data.statistik.total_logbook;
+                if (logbookValidEl && data.statistik.logbook_valid !== undefined) logbookValidEl.textContent = data.statistik.logbook_valid;
+                if (logbookInvalidEl && data.statistik.logbook_tidak_valid !== undefined) logbookInvalidEl.textContent = data.statistik.logbook_tidak_valid;
                 
                 // Update notification banner
                 const pendingCount = data.statistik.pengajuan_menunggu;

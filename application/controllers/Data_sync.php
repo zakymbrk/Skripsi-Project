@@ -6,6 +6,7 @@ class Data_sync extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
+        require_role(array(1, 3));
         $this->load->model('M_data_sync');
         $this->load->model('M_user');
         $this->load->model('M_siswa');
@@ -15,6 +16,16 @@ class Data_sync extends CI_Controller {
             show_404();
             return;
         }
+    }
+
+    private function ensure_user_access($user)
+    {
+        $session_user = get_session_userdata();
+        if (!$user || !$session_user) {
+            return false;
+        }
+
+        return (int) $session_user['level'] === 1 || (int) $session_user['id'] === (int) $user->id;
     }
     
     /**
@@ -44,6 +55,10 @@ class Data_sync extends CI_Controller {
                     'message' => 'User not found'
                 )));
             return;
+        }
+
+        if (!$this->ensure_user_access($user)) {
+            show_error('Akses ditolak.', 403);
         }
         
         $student_data = $this->M_data_sync->get_complete_student_data($user->id);
@@ -84,6 +99,10 @@ class Data_sync extends CI_Controller {
                     'message' => 'User not found'
                 )));
             return;
+        }
+
+        if (!$this->ensure_user_access($user)) {
+            show_error('Akses ditolak.', 403);
         }
         
         $result = $this->M_data_sync->update_student_data($user->id, $data);
@@ -133,6 +152,10 @@ class Data_sync extends CI_Controller {
                 )));
             return;
         }
+
+        if (!$this->ensure_user_access($user)) {
+            show_error('Akses ditolak.', 403);
+        }
         
         $status = $this->M_data_sync->get_sync_status($user->id);
         
@@ -171,6 +194,10 @@ class Data_sync extends CI_Controller {
                     'message' => 'User not found'
                 )));
             return;
+        }
+
+        if (!$this->ensure_user_access($user)) {
+            show_error('Akses ditolak.', 403);
         }
         
         $result = $this->M_data_sync->synchronize_data($user->id);
@@ -220,6 +247,10 @@ class Data_sync extends CI_Controller {
                     'message' => 'User not found'
                 )));
             return;
+        }
+
+        if (!$this->ensure_user_access($user)) {
+            show_error('Akses ditolak.', 403);
         }
         
         $changes = $this->M_data_sync->get_recent_changes($user->id, $limit);

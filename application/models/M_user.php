@@ -22,8 +22,36 @@ class M_user extends CI_Model {
         return $randomString;
     }
 
+    function normalize_identifier_value($value)
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[Ee][-+]?\d+)$/', $value)) {
+            $numeric = (float) $value;
+            if (is_finite($numeric)) {
+                $normalized = preg_replace('/\.0+$/', '', sprintf('%.0f', $numeric));
+                if ($normalized !== '' && preg_match('/^\d+$/', $normalized)) {
+                    return $normalized;
+                }
+            }
+        }
+
+        return $value;
+    }
+
     function tambah_data_user($data)
     {
+        if (isset($data['nip_nim'])) {
+            $data['nip_nim'] = $this->normalize_identifier_value($data['nip_nim']);
+        }
+
         /*===========================
         =    INSERT KE DATABASE     =
         ===========================*/
@@ -50,6 +78,10 @@ class M_user extends CI_Model {
 
     function update_user($data, $user_code)
     {
+        if (isset($data['nip_nim'])) {
+            $data['nip_nim'] = $this->normalize_identifier_value($data['nip_nim']);
+        }
+
         $this->db->where('user_code', $user_code);
         $result = $this->db->update('tb_user', $data);
         
@@ -62,28 +94,59 @@ class M_user extends CI_Model {
 
     function delete_user($user_code)
     {
-        $result = true;
-        
-        // Get the user record first to get the user id
         $this->db->where('user_code', $user_code);
         $user = $this->db->get('tb_user')->row();
-        
-        if($user) {
-            $user_id = $user->id;
-            
-            // Delete from tb_user first
-            $this->db->where('user_code', $user_code);
-            $result = $this->db->delete('tb_user');
-            
-            // Also delete the corresponding student record if it exists
-            $this->db->where('user_id', $user_id);
-            $this->db->delete('tb_siswa');
-            
-            return $result;
-        } else {
-            // If user doesn't exist, return false
+
+        if (!$user) {
             return false;
         }
+
+        $user_id = (int) $user->id;
+        $this->db->trans_start();
+
+        $this->db->select('siswa_id');
+        $this->db->where('user_id', $user_id);
+        $siswa_rows = $this->db->get('tb_siswa')->result();
+
+        $siswa_ids = [];
+        foreach ($siswa_rows as $siswa) {
+            $siswa_ids[] = (int) $siswa->siswa_id;
+        }
+
+        if (!empty($siswa_ids)) {
+            $this->db->where_in('siswa_id', $siswa_ids)->delete('tb_pengelompokan');
+            $this->db->where_in('siswa_id', $siswa_ids)->delete('tb_presensi');
+            $this->db->where_in('siswa_id', $siswa_ids)->delete('tb_logbook');
+            $this->db->where_in('siswa_id', $siswa_ids)->delete('tb_penilaian');
+        }
+
+        $this->db->where('user_id', $user_id);
+        $this->db->delete('tb_siswa');
+
+        $this->db->select('pembimbing_id');
+        $this->db->where('user_id', $user_id);
+        $pembimbing_rows = $this->db->get('tb_pembimbing')->result();
+
+        $pembimbing_ids = [];
+        foreach ($pembimbing_rows as $pembimbing) {
+            $pembimbing_ids[] = (int) $pembimbing->pembimbing_id;
+        }
+
+        if (!empty($pembimbing_ids)) {
+            $this->db->where_in('pembimbing_id', $pembimbing_ids)->delete('tb_pengelompokan');
+            $this->db->where_in('pembimbing_id', $pembimbing_ids)->delete('tb_penilaian');
+            $this->db->where_in('pembimbing_id', $pembimbing_ids)->update('tb_siswa', ['pembimbing_id' => null]);
+        }
+
+        $this->db->where('user_id', $user_id);
+        $this->db->delete('tb_pembimbing');
+
+        $this->db->where('user_code', $user_code);
+        $result = $this->db->delete('tb_user');
+
+        $this->db->trans_complete();
+
+        return $this->db->trans_status() && $result;
     }
 
     function get_user_by_id($id)

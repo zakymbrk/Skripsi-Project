@@ -1,64 +1,28 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-?><!DOCTYPE html>
-<html lang="en">
+?>
+<!DOCTYPE html>
+<html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Database Error</title>
-<style type="text/css">
-
-::selection { background-color: #E13300; color: white; }
-::-moz-selection { background-color: #E13300; color: white; }
-
-body {
-	background-color: #fff;
-	margin: 40px;
-	font: 13px/20px normal Helvetica, Arial, sans-serif;
-	color: #4F5155;
-}
-
-a {
-	color: #003399;
-	background-color: transparent;
-	font-weight: normal;
-}
-
-h1 {
-	color: #444;
-	background-color: transparent;
-	border-bottom: 1px solid #D0D0D0;
-	font-size: 19px;
-	font-weight: normal;
-	margin: 0 0 14px 0;
-	padding: 14px 15px 10px 15px;
-}
-
-code {
-	font-family: Consolas, Monaco, Courier New, Courier, monospace;
-	font-size: 12px;
-	background-color: #f9f9f9;
-	border: 1px solid #D0D0D0;
-	color: #002166;
-	display: block;
-	margin: 14px 0 14px 0;
-	padding: 12px 10px 12px 10px;
-}
-
-#container {
-	margin: 10px;
-	border: 1px solid #D0D0D0;
-	box-shadow: 0 0 8px #D0D0D0;
-}
-
-p {
-	margin: 12px 15px 12px 15px;
-}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Layanan Sedang Terganggu - SiPKL</title>
+<style>
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; background: #f2f4f0; color: #263b33; font: 16px/1.6 'Segoe UI', Arial, sans-serif; }
+    main { width: min(100%, 520px); padding: 32px; background: #fff; border: 1px solid #dfe5df; border-top: 4px solid #c7953e; }
+    h1 { margin: 0 0 12px; font-size: 1.35rem; }
+    p { margin: 0 0 12px; color: #52645a; }
+    a { display: inline-block; margin-top: 8px; padding: 9px 15px; background: #24483b; color: #fff; text-decoration: none; border-radius: 4px; }
 </style>
 </head>
 <body>
-	<div id="container">
-		<h1><?php echo $heading; ?></h1>
-		<?php echo $message; ?>
-	</div>
+    <main role="alert">
+        <h1>Layanan sedang mengalami gangguan</h1>
+        <p>Permintaan Anda belum dapat diproses. Silakan coba kembali beberapa saat lagi.</p>
+        <p>Jika masalah berlanjut, hubungi administrator sekolah.</p>
+        <a href="<?php echo function_exists('base_url') ? base_url() : '/'; ?>">Kembali ke halaman utama</a>
+    </main>
 </body>
 </html>
